@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,11 +8,130 @@ generator client {
   binaryTargets = "native"
 }
 
-// Define your own datamodels here and run `yarn redwood prisma migrate dev`
-// to create migrations for them and apply to your dev DB.
-// TODO: Please remove the following example:
-model UserExample {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String?
+  fantasyTeams FantasyTeam[]
+  role         Role          @default(USER)
+  venmoHandle  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Event {
+  id           String        @id @default(cuid())
+  name         String
+  date         DateTime
+  location     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  fantasyEvent FantasyEvent?
+  eventRunners EventRunner[]
+  performances Performance[]
+}
+
+model FantasyEvent {
+  id       String @id @default(cuid())
+  eventId  String @unique
+  event    Event  @relation(fields: [eventId], references: [id])
+  teamSize Int
+
+  fantasyTeams FantasyTeam[]
+  rules        FantasyTeamRulesOnFantasyEvents[]
+  createdAt    DateTime                          @default(now())
+  updatedAt    DateTime                          @updatedAt
+}
+
+model Runner {
+  id                 String              @id @default(cuid())
+  name               String
+  performances       Performance[]
+  events             EventRunner[]
+  fantasyTeamMembers FantasyTeamMember[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model EventRunner {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  runnerId  String
+  runner    Runner   @relation(fields: [runnerId], references: [id])
+  seed      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Performance {
+  id        String   @id @default(cuid())
+  time      Float
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  runnerId  String
+  runner    Runner   @relation(fields: [runnerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FantasyTeam {
+  id                 String              @id @default(cuid())
+  name               String?
+  owner              User                @relation(fields: [userId], references: [id])
+  userId             String
+  FantasyTeamMember  FantasyTeamMember[]
+  FantasyEvent       FantasyEvent?       @relation(fields: [fantasyEventId], references: [id])
+  fantasyEventId     String?
+  fantasyTeamWagerId String
+  wager              FantasyTeamWager?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model FantasyTeamWager {
+  id            String      @id @default(cuid())
+  wager         Float
+  fantasyTeamId String      @unique
+  fantasyTeam   FantasyTeam @relation(fields: [fantasyTeamId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model FantasyTeamRule {
+  id             String                            @id @default(cuid())
+  pickNumberFrom Int
+  pickNumberTo   Int
+  rankMin        Int
+  rankMax        Int
+  events         FantasyTeamRulesOnFantasyEvents[]
+  createdAt      DateTime                          @default(now())
+  updatedAt      DateTime                          @updatedAt
+}
+
+model FantasyTeamRulesOnFantasyEvents {
+  id                String          @id @default(cuid())
+  fantasyTeamRuleId String
+  fantasyTeamRule   FantasyTeamRule @relation(fields: [fantasyTeamRuleId], references: [id])
+  fantasyEventId    String
+  fantasyEvent      FantasyEvent    @relation(fields: [fantasyEventId], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([fantasyTeamRuleId, fantasyEventId])
+}
+
+model FantasyTeamMember {
+  id            String      @id @default(cuid())
+  fantasyTeamId String
+  fantasyTeam   FantasyTeam @relation(fields: [fantasyTeamId], references: [id])
+  runnerId      String
+  runner        Runner      @relation(fields: [runnerId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
