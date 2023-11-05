@@ -17,6 +17,7 @@ model User {
   venmoHandle  String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  avatarUrl    String?
 }
 
 enum Role {

@@ -28,7 +28,6 @@ describe('events', () => {
         name: 'String',
         date: '2023-11-04T20:52:58.153Z',
         location: 'String',
-        updatedAt: '2023-11-04T20:52:58.153Z',
       },
     })
 
