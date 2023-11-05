@@ -1,17 +1,34 @@
 import {
-  Form,
-  FormError,
-  FieldError,
-  Label,
-  NumberField,
-  Submit,
-} from '@redwoodjs/forms'
-
+  Box,
+  FormControl,
+  VStack,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  ButtonGroup,
+  Button,
+  forwardRef,
+  PropsOf,
+  Stack,
+} from '@chakra-ui/react'
 import type {
   EditFantasyTeamRuleById,
   UpdateFantasyTeamRuleInput,
 } from 'types/graphql'
+
+import {
+  Form,
+  NumberField as RwNumberField,
+  Submit,
+  useForm,
+} from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
+import { back } from '@redwoodjs/router'
+
+import FormErrorMessage from 'src/components/FormErrorMessage'
+import FormLabel from 'src/components/FormLabel'
 
 type FormFantasyTeamRule = NonNullable<
   EditFantasyTeamRuleById['fantasyTeamRule']
@@ -32,96 +49,114 @@ const FantasyTeamRuleForm = (props: FantasyTeamRuleFormProps) => {
     props.onSave(data, props?.fantasyTeamRule?.id)
   }
 
+  const formMethods = useForm<FormFantasyTeamRule>()
+  const { formState } = formMethods
+
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormFantasyTeamRule> onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+    <Box maxW="xl">
+      <Form<FormFantasyTeamRule>
+        onSubmit={onSubmit}
+        error={props.error}
+        formMethods={formMethods}
+      >
+        <VStack alignItems="flex-start">
+          <Stack direction={{ base: 'column', sm: 'row' }} spacing="4" w="full">
+            <FormControl
+              id="pickNumberFrom"
+              isRequired
+              isInvalid={Boolean(formState.errors.pickNumberFrom)}
+            >
+              <FormLabel>From seed</FormLabel>
 
-        <Label
-          name="pickNumberFrom"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Pick number from
-        </Label>
+              <NumberField
+                name="pickNumberFrom"
+                defaultValue={props.fantasyTeamRule?.pickNumberFrom}
+                validation={{ required: true, setValueAs: Number }}
+              />
 
-        <NumberField
-          name="pickNumberFrom"
-          defaultValue={props.fantasyTeamRule?.pickNumberFrom}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
+              <FormErrorMessage />
+            </FormControl>
 
-        <FieldError name="pickNumberFrom" className="rw-field-error" />
+            <FormControl
+              id="pickNumberTo"
+              isRequired
+              isInvalid={Boolean(formState.errors.pickNumberTo)}
+            >
+              <FormLabel name="pickNumberTo">To seed</FormLabel>
 
-        <Label
-          name="pickNumberTo"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Pick number to
-        </Label>
+              <NumberField
+                name="pickNumberTo"
+                defaultValue={props.fantasyTeamRule?.pickNumberTo}
+                validation={{ required: true, setValueAs: Number }}
+              />
 
-        <NumberField
-          name="pickNumberTo"
-          defaultValue={props.fantasyTeamRule?.pickNumberTo}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
+              <FormErrorMessage />
+            </FormControl>
+          </Stack>
 
-        <FieldError name="pickNumberTo" className="rw-field-error" />
+          <Stack direction={{ base: 'column', sm: 'row' }} spacing="4" w="full">
+            <FormControl
+              id="rankMin"
+              isRequired
+              isInvalid={Boolean(formState.errors.rankMin)}
+            >
+              <FormLabel>Rank min</FormLabel>
+              <NumberField
+                name="rankMin"
+                defaultValue={props.fantasyTeamRule?.rankMin}
+                validation={{ required: true, setValueAs: Number }}
+              />
 
-        <Label
-          name="rankMin"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Rank min
-        </Label>
+              <FormErrorMessage />
+            </FormControl>
 
-        <NumberField
-          name="rankMin"
-          defaultValue={props.fantasyTeamRule?.rankMin}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
+            <FormControl
+              id="rankMax"
+              isRequired
+              isInvalid={Boolean(formState.errors.rankMax)}
+            >
+              <FormLabel>Rank max</FormLabel>
 
-        <FieldError name="rankMin" className="rw-field-error" />
+              <NumberField
+                name="rankMax"
+                defaultValue={props.fantasyTeamRule?.rankMax}
+                validation={{ required: true, setValueAs: Number }}
+              />
 
-        <Label
-          name="rankMax"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Rank max
-        </Label>
+              <FormErrorMessage />
+            </FormControl>
+          </Stack>
 
-        <NumberField
-          name="rankMax"
-          defaultValue={props.fantasyTeamRule?.rankMax}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
+          <ButtonGroup justifyContent="flex-end" w="full">
+            <Button onClick={back}>Cancel</Button>
 
-        <FieldError name="rankMax" className="rw-field-error" />
-
-        <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
-            Save
-          </Submit>
-        </div>
+            <Button
+              as={Submit}
+              type="submit"
+              disabled={props.loading}
+              colorScheme="blue"
+            >
+              Save
+            </Button>
+          </ButtonGroup>
+        </VStack>
       </Form>
-    </div>
+    </Box>
   )
 }
 
 export default FantasyTeamRuleForm
+
+const NumberField = forwardRef<PropsOf<typeof RwNumberField>, 'input'>(
+  (props, ref) => {
+    return (
+      <NumberInput>
+        <NumberInputField as={RwNumberField} {...props} ref={ref} />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+    )
+  }
+)

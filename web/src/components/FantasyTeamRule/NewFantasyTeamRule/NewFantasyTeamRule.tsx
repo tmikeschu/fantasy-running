@@ -1,10 +1,11 @@
+import { Box, Heading } from '@chakra-ui/react'
+import type { CreateFantasyTeamRuleInput } from 'types/graphql'
+
 import { navigate, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
 import FantasyTeamRuleForm from 'src/components/FantasyTeamRule/FantasyTeamRuleForm'
-
-import type { CreateFantasyTeamRuleInput } from 'types/graphql'
 
 const CREATE_FANTASY_TEAM_RULE_MUTATION = gql`
   mutation CreateFantasyTeamRuleMutation($input: CreateFantasyTeamRuleInput!) {
@@ -33,14 +34,14 @@ const NewFantasyTeamRule = () => {
   }
 
   return (
-    <div className="rw-segment">
-      <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">New FantasyTeamRule</h2>
-      </header>
-      <div className="rw-segment-main">
+    <Box>
+      <Box as="header">
+        <Heading as="h2">New Fantasy Team Rule</Heading>
+      </Box>
+      <Box py="8">
         <FantasyTeamRuleForm onSave={onSave} loading={loading} error={error} />
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
 
