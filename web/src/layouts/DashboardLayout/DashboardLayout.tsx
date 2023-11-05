@@ -1,14 +1,10 @@
 import { Box, Flex, Stack, useColorModeValue as mode } from '@chakra-ui/react'
 import {
-  BiCalendar,
   BiCalendarEvent,
-  BiCog,
   BiGroup,
-  BiListCheck,
   BiLogOut,
   BiRun,
-  BiTestTube,
-  BiUser,
+  BiTable,
 } from 'react-icons/bi'
 
 import { routes } from '@redwoodjs/router'
@@ -18,12 +14,13 @@ import AccountHeader from 'src/components/AccountHeader'
 import NavGroup from 'src/components/NavGroup'
 import NavItem from 'src/components/NavItem'
 
-type AdminLayoutProps = {
+type DashboardLayoutProps = {
   children?: React.ReactNode
 }
 
-const AdminLayout = ({ children }: AdminLayoutProps) => {
-  const { logOut } = useAuth()
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  const { logOut, hasRole } = useAuth()
+  const isAdmin = hasRole('ADMIN')
 
   return (
     <Box height="100vh" overflow="hidden" position="relative">
@@ -36,61 +33,34 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 <NavItem
                   icon={<BiRun />}
                   label="Home"
-                  to={routes.adminHome()}
-                />
-
-                <NavItem
-                  icon={<BiUser />}
-                  label="Dashboard"
                   to={routes.dashboard()}
                 />
+                {isAdmin && (
+                  <NavItem
+                    icon={<BiTable />}
+                    label="Admin"
+                    to={routes.adminHome()}
+                  />
+                )}
               </Stack>
-              <NavGroup label="Events">
-                <NavItem
-                  icon={<BiCalendar />}
-                  label="Events"
-                  to={routes.events()}
-                />
-
-                <NavItem
-                  icon={<BiTestTube />}
-                  label="Performances"
-                  to={routes.performances()}
-                />
-              </NavGroup>
 
               <NavGroup label="Fantasy">
                 <NavItem
                   icon={<BiCalendarEvent />}
                   label="Events"
-                  to={routes.adminFantasyEvents()}
+                  to={routes.fantasyEvents()}
                 />
 
                 <NavItem
                   icon={<BiGroup />}
-                  label="Teams"
-                  to={routes.fantasyTeams()}
-                />
-
-                <NavItem
-                  icon={<BiListCheck />}
-                  label="Rules"
-                  to={routes.fantasyTeamRules()}
-                />
-              </NavGroup>
-
-              <NavGroup label="Runners">
-                <NavItem
-                  icon={<BiRun />}
-                  label="Runners"
-                  to={routes.runners()}
+                  label="My Teams"
+                  to={routes.myTeams()}
                 />
               </NavGroup>
             </Stack>
 
             <Box>
               <Stack spacing="1">
-                <NavItem subtle icon={<BiCog />} label="Settings" />
                 <NavItem
                   subtle
                   icon={<BiLogOut />}
@@ -111,4 +81,4 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   )
 }
 
-export default AdminLayout
+export default DashboardLayout

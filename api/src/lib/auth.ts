@@ -2,6 +2,8 @@ import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
 
 import { logger } from 'src/lib/logger'
 
+import { db } from './db'
+
 /**
  * getCurrentUser returns the user information.
  * Once you're ready you can also return a collection of roles
@@ -26,10 +28,11 @@ export const getCurrentUser = async (
     return null
   }
 
-  const { id, ..._rest } = decoded
+  const { id, avatarUrl, email, ..._rest } = decoded
+  const roles = (await db.user.findUnique({ where: { externalId: id } })).roles
 
   // Be careful to only return information that should be accessible on the web side.
-  return { id }
+  return { id, avatarUrl, email, roles }
 }
 
 /**

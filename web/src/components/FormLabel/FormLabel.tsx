@@ -11,7 +11,6 @@ export type FormLabelProps = Partial<ChLabelProps & RwLabelProps>
 
 const FormLabel = forwardRef<FormLabelProps, 'label'>((props, ref) => {
   const { id } = useFormControlContext()
-  console.log({ id })
   return <ChLabel as={RwLabel} ref={ref} {...props} name={id} />
 })
 
