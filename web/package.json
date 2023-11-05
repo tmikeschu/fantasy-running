@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2",
+    "@clerk/clerk-react": "^4",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@redwoodjs/auth-clerk-web": "6.3.2",
     "@redwoodjs/forms": "6.3.2",
     "@redwoodjs/router": "6.3.2",
     "@redwoodjs/web": "6.3.2",
