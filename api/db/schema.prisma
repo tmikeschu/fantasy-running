@@ -28,7 +28,7 @@ enum Role {
 
 model Event {
   id           String        @id @default(cuid())
-  name         String
+  name         String        @unique
   date         DateTime
   location     String
   createdAt    DateTime      @default(now())
@@ -53,6 +53,7 @@ model FantasyEvent {
 model Runner {
   id                 String              @id @default(cuid())
   name               String
+  genderDivision     String
   performances       Performance[]
   events             EventRunner[]
   fantasyTeamMembers FantasyTeamMember[]
@@ -69,6 +70,8 @@ model EventRunner {
   seed      Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([eventId, runnerId])
 }
 
 model Performance {
