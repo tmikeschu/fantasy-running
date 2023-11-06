@@ -3,20 +3,26 @@ import { BiEditAlt, BiSolidBullseye, BiTrashAlt } from 'react-icons/bi'
 
 import { Link } from '@redwoodjs/router'
 
+import { useAdminTableContext } from '../AdminTableWrapper/AdminTableWrapper'
+
 type AdminTableCrudActionsProps = {
-  resource: string
   id: string
 }
 
-const AdminTableCrudContext =
-  React.createContext<AdminTableCrudActionsProps>(undefined)
+const AdminTableCrudContext = React.createContext<
+  AdminTableCrudActionsProps & { resource: string }
+>(undefined)
 
 const AdminTableCrudProvider = ({
   children,
   ...props
 }: React.PropsWithChildren<AdminTableCrudActionsProps>) => {
+  const { resource } = useAdminTableContext()
+  const value = React.useMemo(() => {
+    return { ...props, resource }
+  }, [props, resource])
   return (
-    <AdminTableCrudContext.Provider value={props}>
+    <AdminTableCrudContext.Provider value={value}>
       {children}
     </AdminTableCrudContext.Provider>
   )
@@ -32,12 +38,14 @@ const useContext = () => {
   return context
 }
 
-const AdminTableCrudActions = (
+const Wrapper = (
   props: React.PropsWithChildren<AdminTableCrudActionsProps>
 ) => {
   return (
     <AdminTableCrudProvider {...props}>
-      <HStack spacing="2">{props.children}</HStack>
+      <HStack spacing="2" justifyContent="flex-end">
+        {props.children}
+      </HStack>
     </AdminTableCrudProvider>
   )
 }
@@ -46,7 +54,7 @@ type ShowProps = {
   to: string
 }
 const Show = ({ to }: ShowProps) => {
-  const { resource, id } = useContext()
+  const { id, resource } = useContext()
 
   return (
     <IconButton
@@ -105,7 +113,7 @@ const AdminTableCrudAction = {
   Show,
   Edit,
   Delete,
-  Wrapper: AdminTableCrudActions,
+  Wrapper: Wrapper,
   useContext,
 }
 

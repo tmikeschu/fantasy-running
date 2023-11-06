@@ -1,4 +1,4 @@
-import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react'
 import type {
   DeleteFantasyTeamRuleMutationVariables,
   FindFantasyTeamRules,
@@ -10,6 +10,7 @@ import { toast } from '@redwoodjs/web/toast'
 
 import AdminTableCrudAction from 'src/components/AdminTableCrudAction/AdminTableCrudAction'
 import AdminTableWrapper, {
+  AdminTableCreateResourceButton,
   AdminTableHeader,
 } from 'src/components/AdminTableWrapper/AdminTableWrapper'
 import { QUERY } from 'src/components/FantasyTeamRule/FantasyTeamRulesCell'
@@ -52,8 +53,13 @@ const FantasyTeamRulesList = ({ fantasyTeamRules }: FindFantasyTeamRules) => {
   return (
     <AdminTableWrapper
       newPath={routes.newFantasyTeamRule()}
-      resource="event"
-      header={<AdminTableHeader>FantasyTeamRules</AdminTableHeader>}
+      resource="fantasy team rule"
+      header={
+        <>
+          <AdminTableHeader>Fantasy Team Rules</AdminTableHeader>
+          <AdminTableCreateResourceButton />
+        </>
+      }
     >
       <Table>
         <Thead>
@@ -70,16 +76,17 @@ const FantasyTeamRulesList = ({ fantasyTeamRules }: FindFantasyTeamRules) => {
           {fantasyTeamRules.map(
             ({ id, pickNumberFrom, pickNumberTo, rankMax, rankMin }) => (
               <Tr key={id}>
-                <Td>{truncate(id)}</Td>
+                <Td>
+                  <Text fontSize="sm" color="gray.500">
+                    {truncate(id)}
+                  </Text>
+                </Td>
                 <Td>{truncate(pickNumberFrom)}</Td>
                 <Td>{truncate(pickNumberTo)}</Td>
                 <Td>{truncate(rankMin)}</Td>
                 <Td>{truncate(rankMax)}</Td>
                 <Td>
-                  <AdminTableCrudAction.Wrapper
-                    resource="fantasy team rule"
-                    id={id}
-                  >
+                  <AdminTableCrudAction.Wrapper id={id}>
                     <AdminTableCrudAction.Show to={routes.event({ id })} />
                     <AdminTableCrudAction.Edit to={routes.editEvent({ id })} />
                     <AdminTableCrudAction.Delete

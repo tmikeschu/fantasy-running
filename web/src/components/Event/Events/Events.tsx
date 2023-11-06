@@ -7,6 +7,7 @@ import { toast } from '@redwoodjs/web/toast'
 
 import AdminTableCrudAction from 'src/components/AdminTableCrudAction/AdminTableCrudAction'
 import AdminTableWrapper, {
+  AdminTableCreateResourceButton,
   AdminTableHeader,
 } from 'src/components/AdminTableWrapper/AdminTableWrapper'
 import { QUERY } from 'src/components/Event/EventsCell'
@@ -43,7 +44,12 @@ const EventsList = ({ events }: FindEvents) => {
 
   return (
     <AdminTableWrapper
-      header={<AdminTableHeader>Events</AdminTableHeader>}
+      header={
+        <>
+          <AdminTableHeader>Events</AdminTableHeader>
+          <AdminTableCreateResourceButton />
+        </>
+      }
       newPath={routes.newEvent()}
       resource="event"
     >
@@ -53,8 +59,6 @@ const EventsList = ({ events }: FindEvents) => {
             <Th>Name (id)</Th>
             <Th>Date</Th>
             <Th>Location</Th>
-            <Th>Created at</Th>
-            <Th>Updated at</Th>
             <Th>&nbsp;</Th>
           </Tr>
         </Thead>
@@ -64,17 +68,17 @@ const EventsList = ({ events }: FindEvents) => {
               <Td>
                 <VStack alignItems="flex-start" spacing="0">
                   <Text fontWeight="medium">{truncate(event.name)}</Text>
-                  <Text color="gray.400">{event.id}</Text>
+                  <Text fontSize="sm" color="gray.400">
+                    {event.id}
+                  </Text>
                 </VStack>
               </Td>
               <Td>
                 <Text color="gray.500">{timeTag(event.date)}</Text>
               </Td>
               <Td>{truncate(event.location)}</Td>
-              <Td>{timeTag(event.createdAt)}</Td>
-              <Td>{timeTag(event.updatedAt)}</Td>
               <Td>
-                <AdminTableCrudAction.Wrapper resource="event" id={event.id}>
+                <AdminTableCrudAction.Wrapper id={event.id}>
                   <AdminTableCrudAction.Show
                     to={routes.event({ id: event.id })}
                   />
