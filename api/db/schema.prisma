@@ -27,27 +27,27 @@ enum Role {
 }
 
 model Event {
-  id           String        @id @default(cuid())
-  name         String        @unique
-  date         DateTime
-  location     String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  fantasyEvent FantasyEvent?
-  eventRunners EventRunner[]
-  performances Performance[]
+  id            String         @id @default(cuid())
+  name          String         @unique
+  date          DateTime
+  location      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  fantasyEvents FantasyEvent[]
+  eventRunners  EventRunner[]
+  performances  Performance[]
 }
 
 model FantasyEvent {
   id       String @id @default(cuid())
-  eventId  String @unique
+  eventId  String
   event    Event  @relation(fields: [eventId], references: [id])
   teamSize Int
 
   fantasyTeams FantasyTeam[]
-  rules        FantasyTeamRulesOnFantasyEvents[]
-  createdAt    DateTime                          @default(now())
-  updatedAt    DateTime                          @updatedAt
+  rules        FantasyTeamRule[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
 
 model Runner {
@@ -109,26 +109,14 @@ model FantasyTeamWager {
 }
 
 model FantasyTeamRule {
-  id             String                            @id @default(cuid())
+  id             String         @id @default(cuid())
   pickNumberFrom Int
   pickNumberTo   Int
   rankMin        Int
   rankMax        Int
-  events         FantasyTeamRulesOnFantasyEvents[]
-  createdAt      DateTime                          @default(now())
-  updatedAt      DateTime                          @updatedAt
-}
-
-model FantasyTeamRulesOnFantasyEvents {
-  id                String          @id @default(cuid())
-  fantasyTeamRuleId String
-  fantasyTeamRule   FantasyTeamRule @relation(fields: [fantasyTeamRuleId], references: [id])
-  fantasyEventId    String
-  fantasyEvent      FantasyEvent    @relation(fields: [fantasyEventId], references: [id])
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-
-  @@unique([fantasyTeamRuleId, fantasyEventId])
+  events         FantasyEvent[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model FantasyTeamMember {

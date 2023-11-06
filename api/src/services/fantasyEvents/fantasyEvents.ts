@@ -18,28 +18,29 @@ export const fantasyEvent: QueryResolvers['fantasyEvent'] = ({ id }) => {
 
 export const createFantasyEvent: MutationResolvers['createFantasyEvent'] =
   async ({ input: { ruleIds, ...input } }) => {
-    // todo create rule associations
-    const fantasyEvent = await db.fantasyEvent.create({
-      data: input,
+    console.log({ ruleIds, input })
+    return db.fantasyEvent.create({
+      data: {
+        ...input,
+        rules: {
+          connect: ruleIds.map((id) => ({ id })),
+        },
+      },
     })
-
-    await db.fantasyTeamRulesOnFantasyEvents.createMany({
-      data: ruleIds.map((ruleId) => ({
-        fantasyEventId: fantasyEvent.id,
-        fantasyTeamRuleId: ruleId,
-      })),
-    })
-
-    return fantasyEvent
   }
 
 export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] = ({
   id,
-  input,
+  input: { ruleIds, ...input },
 }) => {
   return db.fantasyEvent.update({
-    data: input,
     where: { id },
+    data: {
+      ...input,
+      rules: {
+        connect: ruleIds.map((id) => ({ id })),
+      },
+    },
   })
 }
 

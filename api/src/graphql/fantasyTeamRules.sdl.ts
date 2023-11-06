@@ -5,7 +5,7 @@ export const schema = gql`
     pickNumberTo: Int!
     rankMin: Int!
     rankMax: Int!
-    events: [FantasyTeamRulesOnFantasyEvents]!
+    events: [FantasyEvent]!
     createdAt: DateTime!
     updatedAt: DateTime!
   }

@@ -1,14 +1,20 @@
-import { Link, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-
-import { QUERY } from 'src/components/FantasyEvent/FantasyEventsCell'
-import { timeTag, truncate } from 'src/lib/formatters'
-
+import { Table, Th, Thead, Tbody, Tr, Td } from '@chakra-ui/react'
 import type {
   DeleteFantasyEventMutationVariables,
   FindFantasyEvents,
 } from 'types/graphql'
+
+import { routes } from '@redwoodjs/router'
+import { useMutation } from '@redwoodjs/web'
+import { toast } from '@redwoodjs/web/toast'
+
+import AdminTableCrudAction from 'src/components/AdminTableCrudAction/AdminTableCrudAction'
+import AdminTableWrapper, {
+  AdminTableCreateResourceButton,
+  AdminTableHeader,
+} from 'src/components/AdminTableWrapper/AdminTableWrapper'
+import { QUERY } from 'src/components/FantasyEvent/FantasyEventsCell'
+import { timeTag, truncate } from 'src/lib/formatters'
 
 const DELETE_FANTASY_EVENT_MUTATION = gql`
   mutation DeleteFantasyEventMutation($id: String!) {
@@ -40,57 +46,53 @@ const FantasyEventsList = ({ fantasyEvents }: FindFantasyEvents) => {
   }
 
   return (
-    <div className="rw-segment rw-table-wrapper-responsive">
-      <table className="rw-table">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Event id</th>
-            <th>Team size</th>
-            <th>Created at</th>
-            <th>Updated at</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
+    <AdminTableWrapper
+      resource="fantasy event"
+      newPath={routes.newFantasyEvent()}
+      header={
+        <>
+          <AdminTableHeader>Fantasy Events</AdminTableHeader>
+          <AdminTableCreateResourceButton />
+        </>
+      }
+    >
+      <Table className="rw-table">
+        <Thead>
+          <Tr>
+            <Th>Id</Th>
+            <Th>Event id</Th>
+            <Th>Team size</Th>
+            <Th>Created at</Th>
+            <Th>Updated at</Th>
+            <Th>&nbsp;</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {fantasyEvents.map((fantasyEvent) => (
-            <tr key={fantasyEvent.id}>
-              <td>{truncate(fantasyEvent.id)}</td>
-              <td>{truncate(fantasyEvent.eventId)}</td>
-              <td>{truncate(fantasyEvent.teamSize)}</td>
-              <td>{timeTag(fantasyEvent.createdAt)}</td>
-              <td>{timeTag(fantasyEvent.updatedAt)}</td>
-              <td>
-                <nav className="rw-table-actions">
-                  <Link
+            <Tr key={fantasyEvent.id}>
+              <Td>{truncate(fantasyEvent.id)}</Td>
+              <Td>{truncate(fantasyEvent.eventId)}</Td>
+              <Td>{truncate(fantasyEvent.teamSize)}</Td>
+              <Td>{timeTag(fantasyEvent.createdAt)}</Td>
+              <Td>{timeTag(fantasyEvent.updatedAt)}</Td>
+              <Td>
+                <AdminTableCrudAction.Wrapper id={fantasyEvent.id}>
+                  <AdminTableCrudAction.Show
                     to={routes.fantasyEvent({ id: fantasyEvent.id })}
-                    title={'Show fantasyEvent ' + fantasyEvent.id + ' detail'}
-                    className="rw-button rw-button-small"
-                  >
-                    Show
-                  </Link>
-                  <Link
+                  />
+                  <AdminTableCrudAction.Edit
                     to={routes.editFantasyEvent({ id: fantasyEvent.id })}
-                    title={'Edit fantasyEvent ' + fantasyEvent.id}
-                    className="rw-button rw-button-small rw-button-blue"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    type="button"
-                    title={'Delete fantasyEvent ' + fantasyEvent.id}
-                    className="rw-button rw-button-small rw-button-red"
+                  />
+                  <AdminTableCrudAction.Delete
                     onClick={() => onDeleteClick(fantasyEvent.id)}
-                  >
-                    Delete
-                  </button>
-                </nav>
-              </td>
-            </tr>
+                  />
+                </AdminTableCrudAction.Wrapper>
+              </Td>
+            </Tr>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </Tbody>
+      </Table>
+    </AdminTableWrapper>
   )
 }
 
