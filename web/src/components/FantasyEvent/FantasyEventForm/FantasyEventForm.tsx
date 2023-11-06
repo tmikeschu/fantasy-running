@@ -1,86 +1,123 @@
 import {
-  Form,
-  FormError,
-  FieldError,
-  Label,
-  TextField,
-  NumberField,
-  Submit,
-} from '@redwoodjs/forms'
-
+  Box,
+  Button,
+  ButtonGroup,
+  FormControl,
+  FormHelperText,
+  Select,
+  VStack,
+} from '@chakra-ui/react'
 import type {
+  CreateFantasyEventInput,
   EditFantasyEventById,
+  Event,
+  FantasyTeamRule,
   UpdateFantasyEventInput,
 } from 'types/graphql'
+
+import { Form, Submit, SelectField } from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
 
-type FormFantasyEvent = NonNullable<EditFantasyEventById['fantasyEvent']>
+import AdminNumberField from 'src/components/AdminNumberField/AdminNumberField'
+import FormErrorMessage from 'src/components/FormErrorMessage/FormErrorMessage'
+import FormLabel from 'src/components/FormLabel/FormLabel'
+
+type FormFantasyEvent = CreateFantasyEventInput & { id?: string }
 
 interface FantasyEventFormProps {
   fantasyEvent?: EditFantasyEventById['fantasyEvent']
-  onSave: (data: UpdateFantasyEventInput, id?: FormFantasyEvent['id']) => void
+  onSave: (input: UpdateFantasyEventInput, id?: FormFantasyEvent['id']) => void
   error: RWGqlError
   loading: boolean
+  events: Pick<Event, 'id' | 'name'>[]
+  fantasyTeamRules: Pick<
+    FantasyTeamRule,
+    'id' | 'pickNumberFrom' | 'pickNumberTo' | 'rankMin' | 'rankMax'
+  >[]
 }
 
 const FantasyEventForm = (props: FantasyEventFormProps) => {
   const onSubmit = (data: FormFantasyEvent) => {
-    props.onSave(data, props?.fantasyEvent?.id)
+    props.onSave(data, props.fantasyEvent?.id)
   }
 
   return (
-    <div className="rw-form-wrapper">
+    <Box maxW="xl">
       <Form<FormFantasyEvent> onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+        <VStack alignItems="flex-start">
+          <FormControl id="event" isRequired>
+            <FormLabel>Event id</FormLabel>
 
-        <Label
-          name="eventId"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Event id
-        </Label>
+            <Select
+              as={SelectField}
+              name="eventId"
+              defaultValue={props.fantasyEvent?.eventId}
+              placeholder="Select event"
+              validation={{ required: true }}
+            >
+              {props.events.map((event) => (
+                <option key={event.id} value={event.id}>
+                  {event.name}
+                </option>
+              ))}
+            </Select>
 
-        <TextField
-          name="eventId"
-          defaultValue={props.fantasyEvent?.eventId}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
+            <FormErrorMessage />
+          </FormControl>
 
-        <FieldError name="eventId" className="rw-field-error" />
+          <FormControl id="teamSize" isRequired>
+            <FormLabel>Team size</FormLabel>
 
-        <Label
-          name="teamSize"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Team size
-        </Label>
+            <AdminNumberField
+              defaultValue={props.fantasyEvent?.teamSize}
+              validation={{ required: true }}
+              placeholder="7"
+            />
 
-        <NumberField
-          name="teamSize"
-          defaultValue={props.fantasyEvent?.teamSize}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
+            <FormErrorMessage />
+          </FormControl>
 
-        <FieldError name="teamSize" className="rw-field-error" />
+          <FormControl id="ruleIds" isRequired>
+            <FormLabel>Rules</FormLabel>
 
-        <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
-            Save
-          </Submit>
-        </div>
+            <Select
+              as={SelectField}
+              name="ruleIds"
+              defaultValue={props.fantasyEvent?.rules.map((rule) => rule.id)}
+              placeholder="Select rules"
+              validation={{ required: true }}
+              multiple
+              h="auto"
+              sx={{ py: 2 }}
+            >
+              {props.fantasyTeamRules.map((rule) => (
+                <option key={rule.id} value={rule.id}>
+                  Picks {rule.pickNumberFrom} to {rule.pickNumberTo} have rank{' '}
+                  {rule.rankMin} to {rule.rankMax}
+                </option>
+              ))}
+            </Select>
+
+            <FormErrorMessage />
+            <FormHelperText>
+              Select multiple rules by holding down the shift or
+              cmd/meta/windows key
+            </FormHelperText>
+          </FormControl>
+
+          <ButtonGroup w="full" justifyContent="flex-end">
+            <Button
+              as={Submit}
+              type="submit"
+              isLoading={props.loading}
+              colorScheme="blue"
+            >
+              Save
+            </Button>
+          </ButtonGroup>
+        </VStack>
       </Form>
-    </div>
+    </Box>
   )
 }
 

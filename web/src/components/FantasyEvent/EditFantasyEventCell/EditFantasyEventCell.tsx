@@ -18,6 +18,20 @@ export const QUERY = gql`
       teamSize
       createdAt
       updatedAt
+      rules {
+        id
+      }
+    }
+    events {
+      id
+      name
+    }
+    fantasyTeamRules {
+      id
+      pickNumberFrom
+      pickNumberTo
+      rankMin
+      rankMax
     }
   }
 `
@@ -44,6 +58,8 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   fantasyEvent,
+  events,
+  fantasyTeamRules,
 }: CellSuccessProps<EditFantasyEventById>) => {
   const [updateFantasyEvent, { loading, error }] = useMutation(
     UPDATE_FANTASY_EVENT_MUTATION,
@@ -78,6 +94,8 @@ export const Success = ({
           onSave={onSave}
           error={error}
           loading={loading}
+          events={events}
+          fantasyTeamRules={fantasyTeamRules}
         />
       </div>
     </div>

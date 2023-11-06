@@ -18,11 +18,13 @@ export const schema = gql`
   input CreateFantasyEventInput {
     eventId: String!
     teamSize: Int!
+    ruleIds: [String!]!
   }
 
   input UpdateFantasyEventInput {
     eventId: String
     teamSize: Int
+    ruleIds: [String!]!
   }
 
   type Mutation {

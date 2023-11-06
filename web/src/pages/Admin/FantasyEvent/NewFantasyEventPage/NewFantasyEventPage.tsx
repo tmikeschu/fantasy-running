@@ -1,7 +1,7 @@
-import NewFantasyEvent from 'src/components/FantasyEvent/NewFantasyEvent'
+import NewFantasyEventCell from 'src/components/FantasyEvent/NewFantasyEventCell'
 
 const NewFantasyEventPage = () => {
-  return <NewFantasyEvent />
+  return <NewFantasyEventCell />
 }
 
 export default NewFantasyEventPage

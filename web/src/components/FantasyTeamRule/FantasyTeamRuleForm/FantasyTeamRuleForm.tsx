@@ -2,15 +2,8 @@ import {
   Box,
   FormControl,
   VStack,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   ButtonGroup,
   Button,
-  forwardRef,
-  PropsOf,
   Stack,
 } from '@chakra-ui/react'
 import type {
@@ -18,15 +11,11 @@ import type {
   UpdateFantasyTeamRuleInput,
 } from 'types/graphql'
 
-import {
-  Form,
-  NumberField as RwNumberField,
-  Submit,
-  useForm,
-} from '@redwoodjs/forms'
+import { Form, Submit, useForm } from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
 import { back } from '@redwoodjs/router'
 
+import AdminNumberField from 'src/components/AdminNumberField/AdminNumberField'
 import FormErrorMessage from 'src/components/FormErrorMessage'
 import FormLabel from 'src/components/FormLabel'
 
@@ -68,10 +57,9 @@ const FantasyTeamRuleForm = (props: FantasyTeamRuleFormProps) => {
             >
               <FormLabel>From seed</FormLabel>
 
-              <NumberField
-                name="pickNumberFrom"
+              <AdminNumberField
                 defaultValue={props.fantasyTeamRule?.pickNumberFrom}
-                validation={{ required: true, setValueAs: Number }}
+                validation={{ required: true }}
               />
 
               <FormErrorMessage />
@@ -84,10 +72,9 @@ const FantasyTeamRuleForm = (props: FantasyTeamRuleFormProps) => {
             >
               <FormLabel name="pickNumberTo">To seed</FormLabel>
 
-              <NumberField
-                name="pickNumberTo"
+              <AdminNumberField
                 defaultValue={props.fantasyTeamRule?.pickNumberTo}
-                validation={{ required: true, setValueAs: Number }}
+                validation={{ required: true }}
               />
 
               <FormErrorMessage />
@@ -101,10 +88,9 @@ const FantasyTeamRuleForm = (props: FantasyTeamRuleFormProps) => {
               isInvalid={Boolean(formState.errors.rankMin)}
             >
               <FormLabel>Rank min</FormLabel>
-              <NumberField
-                name="rankMin"
+              <AdminNumberField
                 defaultValue={props.fantasyTeamRule?.rankMin}
-                validation={{ required: true, setValueAs: Number }}
+                validation={{ required: true }}
               />
 
               <FormErrorMessage />
@@ -117,10 +103,9 @@ const FantasyTeamRuleForm = (props: FantasyTeamRuleFormProps) => {
             >
               <FormLabel>Rank max</FormLabel>
 
-              <NumberField
-                name="rankMax"
+              <AdminNumberField
                 defaultValue={props.fantasyTeamRule?.rankMax}
-                validation={{ required: true, setValueAs: Number }}
+                validation={{ required: true }}
               />
 
               <FormErrorMessage />
@@ -146,17 +131,3 @@ const FantasyTeamRuleForm = (props: FantasyTeamRuleFormProps) => {
 }
 
 export default FantasyTeamRuleForm
-
-const NumberField = forwardRef<PropsOf<typeof RwNumberField>, 'input'>(
-  (props, ref) => {
-    return (
-      <NumberInput>
-        <NumberInputField as={RwNumberField} {...props} ref={ref} />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-    )
-  }
-)
