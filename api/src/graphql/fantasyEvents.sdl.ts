@@ -4,8 +4,8 @@ export const schema = gql`
     eventId: String!
     event: Event!
     teamSize: Int!
-    fantasyTeams: [FantasyTeam]!
-    rules: [FantasyTeamRule]!
+    fantasyTeams: [FantasyTeam!]!
+    rules: [FantasyTeamRule!]!
     createdAt: DateTime!
     updatedAt: DateTime!
   }

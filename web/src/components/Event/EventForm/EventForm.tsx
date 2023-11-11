@@ -24,7 +24,7 @@ import ErrorAlert from 'src/components/ErrorAlert/ErrorAlert'
 import FormErrorMessage from 'src/components/FormErrorMessage/FormErrorMessage'
 import FormLabel from 'src/components/FormLabel'
 
-const formatDatetime = (value) => {
+const formatDatetime = (value?: string) => {
   if (value) {
     return value.replace(/:\d{2}\.\d{3}\w/, '')
   }
@@ -69,7 +69,7 @@ const EventForm = ({
               as={TextField}
               name="name"
               defaultValue={event?.name}
-              validation={{ required: true, pattern: /^[a-z]+$/ }}
+              validation={{ required: true }}
             />
 
             <FormErrorMessage />

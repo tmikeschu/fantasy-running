@@ -11,6 +11,9 @@ export const QUERY = gql`
     fantasyEvents {
       id
       eventId
+      event {
+        name
+      }
       teamSize
       createdAt
       updatedAt

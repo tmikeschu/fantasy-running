@@ -57,7 +57,7 @@ export const Success = ({
   >(CREATE_FANTASY_EVENT_MUTATION, {
     onCompleted: () => {
       toast.success('FantasyEvent created')
-      navigate(routes.fantasyEvents())
+      navigate(routes.adminFantasyEvents())
     },
     onError: (error) => {
       toast.error(error.message)

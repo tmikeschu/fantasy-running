@@ -66,7 +66,7 @@ export const Success = ({
     {
       onCompleted: () => {
         toast.success('FantasyEvent updated')
-        navigate(routes.fantasyEvents())
+        navigate(routes.adminFantasyEvents())
       },
       onError: (error) => {
         toast.error(error.message)

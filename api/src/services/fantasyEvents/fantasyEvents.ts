@@ -29,20 +29,23 @@ export const createFantasyEvent: MutationResolvers['createFantasyEvent'] =
     })
   }
 
-export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] = ({
-  id,
-  input: { ruleIds, ...input },
-}) => {
-  return db.fantasyEvent.update({
-    where: { id },
-    data: {
-      ...input,
-      rules: {
-        connect: ruleIds.map((id) => ({ id })),
+export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] =
+  async ({ id, input: { ruleIds, ...input } }) => {
+    const current = await db.fantasyEvent.findUnique({
+      where: { id },
+      select: { rules: { select: { id: true } } },
+    })
+    return db.fantasyEvent.update({
+      where: { id },
+      data: {
+        ...input,
+        rules: {
+          disconnect: current.rules.map((rule) => ({ id: rule.id })),
+          connect: ruleIds.map((id) => ({ id })),
+        },
       },
-    },
-  })
-}
+    })
+  }
 
 export const deleteFantasyEvent: MutationResolvers['deleteFantasyEvent'] = ({
   id,

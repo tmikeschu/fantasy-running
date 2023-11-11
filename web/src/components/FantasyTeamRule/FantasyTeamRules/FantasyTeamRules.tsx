@@ -87,8 +87,12 @@ const FantasyTeamRulesList = ({ fantasyTeamRules }: FindFantasyTeamRules) => {
                 <Td>{truncate(rankMax)}</Td>
                 <Td>
                   <AdminTableCrudAction.Wrapper id={id}>
-                    <AdminTableCrudAction.Show to={routes.event({ id })} />
-                    <AdminTableCrudAction.Edit to={routes.editEvent({ id })} />
+                    <AdminTableCrudAction.Show
+                      to={routes.fantasyTeamRule({ id })}
+                    />
+                    <AdminTableCrudAction.Edit
+                      to={routes.editFantasyTeamRule({ id })}
+                    />
                     <AdminTableCrudAction.Delete
                       onClick={(id) => onDeleteClick(id)}
                     />

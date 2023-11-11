@@ -4,9 +4,10 @@ import {
   ButtonGroup,
   FormControl,
   FormHelperText,
-  Select,
   VStack,
 } from '@chakra-ui/react'
+import { Select } from 'chakra-react-select'
+import { Option } from 'space-monad'
 import type {
   CreateFantasyEventInput,
   EditFantasyEventById,
@@ -15,7 +16,7 @@ import type {
   UpdateFantasyEventInput,
 } from 'types/graphql'
 
-import { Form, Submit, SelectField } from '@redwoodjs/forms'
+import { Form, Submit, Controller, useForm } from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
 
 import AdminNumberField from 'src/components/AdminNumberField/AdminNumberField'
@@ -27,7 +28,7 @@ type FormFantasyEvent = CreateFantasyEventInput & { id?: string }
 interface FantasyEventFormProps {
   fantasyEvent?: EditFantasyEventById['fantasyEvent']
   onSave: (input: UpdateFantasyEventInput, id?: FormFantasyEvent['id']) => void
-  error: RWGqlError
+  error?: RWGqlError
   loading: boolean
   events: Pick<Event, 'id' | 'name'>[]
   fantasyTeamRules: Pick<
@@ -41,69 +42,119 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
     props.onSave(data, props.fantasyEvent?.id)
   }
 
+  const eventOptions = React.useMemo(() => {
+    return props.events.map((event) => ({
+      value: event.id,
+      label: event.name,
+    }))
+  }, [props.events])
+
+  const eventOptionsMap = React.useMemo(() => {
+    return new Map(eventOptions.map((option) => [option.value, option]))
+  }, [eventOptions])
+
+  const ruleOptions = React.useMemo(
+    () =>
+      props.fantasyTeamRules.map((rule) => ({
+        value: rule.id,
+        label: `Picks ${rule.pickNumberFrom} to ${rule.pickNumberTo} have rank ${rule.rankMin} to ${rule.rankMax}`,
+      })),
+    [props.fantasyTeamRules]
+  )
+
+  const ruleOptionsMap = React.useMemo(() => {
+    return new Map(ruleOptions.map((option) => [option.value, option]))
+  }, [ruleOptions])
+
+  const formMethods = useForm<FormFantasyEvent>()
+
   return (
     <Box maxW="xl">
-      <Form<FormFantasyEvent> onSubmit={onSubmit} error={props.error}>
+      <Form<FormFantasyEvent>
+        onSubmit={onSubmit}
+        error={props.error}
+        formMethods={formMethods}
+      >
         <VStack alignItems="flex-start">
-          <FormControl id="event" isRequired>
-            <FormLabel>Event id</FormLabel>
+          <Controller<FormFantasyEvent, 'eventId'>
+            name="eventId"
+            defaultValue={props.fantasyEvent?.eventId}
+            render={({ field }) => (
+              <FormControl id="eventId" isRequired>
+                <FormLabel>Event id</FormLabel>
 
-            <Select
-              as={SelectField}
-              name="eventId"
-              defaultValue={props.fantasyEvent?.eventId}
-              placeholder="Select event"
-              validation={{ required: true }}
-            >
-              {props.events.map((event) => (
-                <option key={event.id} value={event.id}>
-                  {event.name}
-                </option>
-              ))}
-            </Select>
+                <Select
+                  {...field}
+                  onChange={(value) => {
+                    if (!value) return
+                    field.onChange({ target: { value: value.value } })
+                  }}
+                  name="eventId"
+                  value={
+                    Option(field.value)
+                      .map((id) => eventOptionsMap.get(id))
+                      .get() ?? null
+                  }
+                  placeholder="Select event"
+                  options={eventOptions}
+                />
 
-            <FormErrorMessage />
-          </FormControl>
+                <FormErrorMessage />
+              </FormControl>
+            )}
+          />
 
-          <FormControl id="teamSize" isRequired>
-            <FormLabel>Team size</FormLabel>
+          <Controller
+            name="teamSize"
+            defaultValue={props.fantasyEvent?.teamSize}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <FormControl id="teamSize" isRequired>
+                <FormLabel>Team size</FormLabel>
 
-            <AdminNumberField
-              defaultValue={props.fantasyEvent?.teamSize}
-              validation={{ required: true }}
-              placeholder="7"
-            />
+                <AdminNumberField {...field} placeholder="e.g., 7" />
 
-            <FormErrorMessage />
-          </FormControl>
+                <FormErrorMessage />
+              </FormControl>
+            )}
+          />
 
-          <FormControl id="ruleIds" isRequired>
-            <FormLabel>Rules</FormLabel>
+          <Controller<FormFantasyEvent, 'ruleIds'>
+            name="ruleIds"
+            defaultValue={props.fantasyEvent?.rules
+              .map((rule) => rule?.id)
+              .filter(Boolean)}
+            render={({ field }) => (
+              <FormControl id="ruleIds" isRequired>
+                <FormLabel>Rules</FormLabel>
 
-            <Select
-              as={SelectField}
-              name="ruleIds"
-              defaultValue={props.fantasyEvent?.rules.map((rule) => rule.id)}
-              placeholder="Select rules"
-              validation={{ required: true }}
-              multiple
-              h="auto"
-              sx={{ py: 2 }}
-            >
-              {props.fantasyTeamRules.map((rule) => (
-                <option key={rule.id} value={rule.id}>
-                  Picks {rule.pickNumberFrom} to {rule.pickNumberTo} have rank{' '}
-                  {rule.rankMin} to {rule.rankMax}
-                </option>
-              ))}
-            </Select>
+                <Select
+                  {...field}
+                  onChange={(values) => {
+                    field.onChange({
+                      target: { value: values.map((v) => v.value) },
+                    })
+                  }}
+                  value={field.value?.reduce((acc, rule) => {
+                    Option(rule)
+                      .map((id) => ruleOptionsMap.get(id))
+                      .forEach((r) => acc.push(r))
+                    return acc
+                  }, [] as { value: string; label: string }[])}
+                  placeholder="Select rules"
+                  getOptionLabel={(option) => option.label}
+                  isMulti
+                  options={ruleOptions}
+                />
 
-            <FormErrorMessage />
-            <FormHelperText>
-              Select multiple rules by holding down the shift or
-              cmd/meta/windows key
-            </FormHelperText>
-          </FormControl>
+                <FormErrorMessage />
+                <FormHelperText>
+                  Select multiple rules by holding down the shift or
+                  cmd/meta/windows key
+                </FormHelperText>
+              </FormControl>
+            )}
+          />
 
           <ButtonGroup w="full" justifyContent="flex-end">
             <Button

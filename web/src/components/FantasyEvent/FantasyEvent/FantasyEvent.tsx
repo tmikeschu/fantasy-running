@@ -25,7 +25,7 @@ const FantasyEvent = ({ fantasyEvent }: Props) => {
   const [deleteFantasyEvent] = useMutation(DELETE_FANTASY_EVENT_MUTATION, {
     onCompleted: () => {
       toast.success('FantasyEvent deleted')
-      navigate(routes.fantasyEvents())
+      navigate(routes.adminFantasyEvents())
     },
     onError: (error) => {
       toast.error(error.message)

@@ -23,7 +23,12 @@ const AdminNumberField = forwardRef<
         {...props}
         name={props.name ?? id}
         ref={ref}
-        validation={{ valueAsNumber: true, ...props.validation }}
+        {...({
+          validation: {
+            setValueAs: (v) => (v == null ? undefined : Number(v)),
+            ...props.validation,
+          },
+        } as Partial<PropsOf<typeof RwNumberField>>)}
       />
       <NumberInputStepper>
         <NumberIncrementStepper />

@@ -1,4 +1,4 @@
-import { Table, Th, Thead, Tbody, Tr, Td } from '@chakra-ui/react'
+import { Table, Th, Thead, Tbody, Tr, Td, Text, VStack } from '@chakra-ui/react'
 import type {
   DeleteFantasyEventMutationVariables,
   FindFantasyEvents,
@@ -14,7 +14,7 @@ import AdminTableWrapper, {
   AdminTableHeader,
 } from 'src/components/AdminTableWrapper/AdminTableWrapper'
 import { QUERY } from 'src/components/FantasyEvent/FantasyEventsCell'
-import { timeTag, truncate } from 'src/lib/formatters'
+import { truncate } from 'src/lib/formatters'
 
 const DELETE_FANTASY_EVENT_MUTATION = gql`
   mutation DeleteFantasyEventMutation($id: String!) {
@@ -59,22 +59,24 @@ const FantasyEventsList = ({ fantasyEvents }: FindFantasyEvents) => {
       <Table className="rw-table">
         <Thead>
           <Tr>
-            <Th>Id</Th>
-            <Th>Event id</Th>
+            <Th>Event</Th>
             <Th>Team size</Th>
-            <Th>Created at</Th>
-            <Th>Updated at</Th>
             <Th>&nbsp;</Th>
           </Tr>
         </Thead>
         <Tbody>
           {fantasyEvents.map((fantasyEvent) => (
             <Tr key={fantasyEvent.id}>
-              <Td>{truncate(fantasyEvent.id)}</Td>
-              <Td>{truncate(fantasyEvent.eventId)}</Td>
+              <Td>
+                <VStack alignItems="flex-start" spacing="0">
+                  <Text>{truncate(fantasyEvent.event.name)}</Text>
+
+                  <Text fontSize="sm" color="gray.500">
+                    {truncate(fantasyEvent.id)}
+                  </Text>
+                </VStack>
+              </Td>
               <Td>{truncate(fantasyEvent.teamSize)}</Td>
-              <Td>{timeTag(fantasyEvent.createdAt)}</Td>
-              <Td>{timeTag(fantasyEvent.updatedAt)}</Td>
               <Td>
                 <AdminTableCrudAction.Wrapper id={fantasyEvent.id}>
                   <AdminTableCrudAction.Show
