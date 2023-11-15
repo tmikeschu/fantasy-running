@@ -4,7 +4,7 @@ export const schema = gql`
     pickNumberFrom: Int!
     pickNumberTo: Int!
     rankMin: Int!
-    rankMax: Int!
+    rankMax: Int
     events: [FantasyEvent]!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -19,7 +19,7 @@ export const schema = gql`
     pickNumberFrom: Int!
     pickNumberTo: Int!
     rankMin: Int!
-    rankMax: Int!
+    rankMax: Int
   }
 
   input UpdateFantasyTeamRuleInput {

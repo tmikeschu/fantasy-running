@@ -18,6 +18,11 @@ export const schema = gql`
     fantasyTeam(id: String!): FantasyTeam @requireAuth
   }
 
+  input FantasyTeamMemberInput {
+    eventRunnerId: String!
+    seed: Int!
+  }
+
   input CreateFantasyTeamInput {
     name: String
     userId: String!
@@ -33,10 +38,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createFantasyTeam(input: CreateFantasyTeamInput!): FantasyTeam! @requireAuth
+    createFantasyTeam(
+      input: CreateFantasyTeamInput!
+      members: [FantasyTeamMemberInput!]!
+    ): FantasyTeam! @requireAuth
     updateFantasyTeam(
       id: String!
       input: UpdateFantasyTeamInput!
+      members: [FantasyTeamMemberInput!]!
     ): FantasyTeam! @requireAuth
     deleteFantasyTeam(id: String!): FantasyTeam! @requireAuth
   }

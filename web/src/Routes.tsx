@@ -23,6 +23,7 @@ const Routes = () => {
         <Route path="/dashboard" page={DashboardPage} name="dashboard" />
         <Route path="/fantasy-events" page={FantasyEventsPage} name="fantasyEvents" />
         <Route path="/my-teams" page={MyTeamsPage} name="myTeams" />
+        <Route path="/fantasy-events/{id}/new-fantasy-team" page={NewFantasyTeamPage} name="newFantasyTeam" />
       </Set>
 
       <Set wrap={AdminLayout} private roles="ADMIN" unauthenticated="home">
@@ -47,7 +48,6 @@ const Routes = () => {
         <Route path="/admin/fantasy-team-rules/{id}" page={AdminFantasyTeamRuleFantasyTeamRulePage} name="fantasyTeamRule" />
         <Route path="/admin/fantasy-team-rules/{id}/edit" page={AdminFantasyTeamRuleEditFantasyTeamRulePage} name="editFantasyTeamRule" />
         <Route path="/admin/fantasy-teams" page={AdminFantasyTeamFantasyTeamsPage} name="fantasyTeams" />
-        <Route path="/admin/fantasy-teams/new" page={AdminFantasyTeamNewFantasyTeamPage} name="newFantasyTeam" />
         <Route path="/admin/fantasy-teams/{id}" page={AdminFantasyTeamFantasyTeamPage} name="fantasyTeam" />
         <Route path="/admin/fantasy-teams/{id}/edit" page={AdminFantasyTeamEditFantasyTeamPage} name="editFantasyTeam" />
 

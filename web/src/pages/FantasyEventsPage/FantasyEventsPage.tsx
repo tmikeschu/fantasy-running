@@ -1,20 +1,17 @@
-import { Link, routes } from '@redwoodjs/router'
+import { Heading, VStack } from '@chakra-ui/react'
+
 import { MetaTags } from '@redwoodjs/web'
+
+import FantasyEventsCell from 'src/components/FantasyEventsCell'
 
 const FantasyEventsPage = () => {
   return (
     <>
       <MetaTags title="FantasyEvents" description="FantasyEvents page" />
-
-      <h1>FantasyEventsPage</h1>
-      <p>
-        Find me in{' '}
-        <code>./web/src/pages/FantasyEventsPage/FantasyEventsPage.tsx</code>
-      </p>
-      <p>
-        My default route is named <code>fantasyEvents</code>, link to me with `
-        <Link to={routes.fantasyEvents()}>FantasyEvents</Link>`
-      </p>
+      <VStack alignItems="flex-start" spacing="8">
+        <Heading color="gray.700">Fantasy Events</Heading>
+        <FantasyEventsCell />
+      </VStack>
     </>
   )
 }

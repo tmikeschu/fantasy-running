@@ -51,14 +51,13 @@ model FantasyEvent {
 }
 
 model Runner {
-  id                 String              @id @default(cuid())
-  name               String
-  genderDivision     String
-  performances       Performance[]
-  events             EventRunner[]
-  fantasyTeamMembers FantasyTeamMember[]
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
+  id             String        @id @default(cuid())
+  name           String
+  genderDivision String
+  performances   Performance[]
+  events         EventRunner[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model EventRunner {
@@ -70,6 +69,9 @@ model EventRunner {
   seed      Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  seedNotes String?
+
+  fantasyTeamMembers FantasyTeamMember[]
 
   @@unique([eventId, runnerId])
 }
@@ -90,7 +92,7 @@ model FantasyTeam {
   name               String?
   owner              User                @relation(fields: [userId], references: [id])
   userId             String
-  FantasyTeamMember  FantasyTeamMember[]
+  teamMembers        FantasyTeamMember[]
   FantasyEvent       FantasyEvent?       @relation(fields: [fantasyEventId], references: [id])
   fantasyEventId     String?
   fantasyTeamWagerId String
@@ -113,7 +115,7 @@ model FantasyTeamRule {
   pickNumberFrom Int
   pickNumberTo   Int
   rankMin        Int
-  rankMax        Int
+  rankMax        Int?
   events         FantasyEvent[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -123,8 +125,9 @@ model FantasyTeamMember {
   id            String      @id @default(cuid())
   fantasyTeamId String
   fantasyTeam   FantasyTeam @relation(fields: [fantasyTeamId], references: [id])
-  runnerId      String
-  runner        Runner      @relation(fields: [runnerId], references: [id])
+  eventRunnerId String
+  runner        EventRunner @relation(fields: [eventRunnerId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  pickNumber    Int
 }

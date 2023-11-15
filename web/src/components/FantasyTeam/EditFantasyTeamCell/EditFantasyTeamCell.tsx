@@ -1,4 +1,8 @@
-import type { EditFantasyTeamById, UpdateFantasyTeamInput } from 'types/graphql'
+import type {
+  EditFantasyTeamById,
+  UpdateFantasyTeamInput,
+  FantasyTeamMemberInput,
+} from 'types/graphql'
 
 import { navigate, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -24,8 +28,9 @@ const UPDATE_FANTASY_TEAM_MUTATION = gql`
   mutation UpdateFantasyTeamMutation(
     $id: String!
     $input: UpdateFantasyTeamInput!
+    $members: [FantasyTeamMemberInput!]!
   ) {
-    updateFantasyTeam(id: $id, input: $input) {
+    updateFantasyTeam(id: $id, input: $input, members: $members) {
       id
       name
       userId

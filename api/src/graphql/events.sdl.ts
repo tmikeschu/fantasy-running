@@ -4,9 +4,9 @@ export const schema = gql`
     name: String!
     date: DateTime!
     location: String!
-    performances: [Performance]!
-    eventRunners: [EventRunner]!
-    fantasyEvent: [FantasyEvent]!
+    performances: [Performance!]!
+    eventRunners: [EventRunner!]!
+    fantasyEvent: [FantasyEvent!]!
     createdAt: DateTime!
     updatedAt: DateTime!
   }

@@ -3,8 +3,8 @@ import type { FindFantasyEvents } from 'types/graphql'
 import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import FantasyEvents from 'src//components/AdminFantasyEvent/FantasyEvents'
 import EmptyResource from 'src/components/EmptyResource/EmptyResource'
-import FantasyEvents from 'src/components/FantasyEvent/FantasyEvents'
 
 export const QUERY = gql`
   query FindFantasyEvents {

@@ -25,7 +25,7 @@ const AdminNumberField = forwardRef<
         ref={ref}
         {...({
           validation: {
-            setValueAs: (v) => (v == null ? undefined : Number(v)),
+            setValueAs: (v) => (v == null || v === '' ? null : Number(v)),
             ...props.validation,
           },
         } as Partial<PropsOf<typeof RwNumberField>>)}

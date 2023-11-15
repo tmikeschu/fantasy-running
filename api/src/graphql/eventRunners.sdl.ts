@@ -8,6 +8,7 @@ export const schema = gql`
     seed: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
+    seedNotes: String
   }
 
   type Query {

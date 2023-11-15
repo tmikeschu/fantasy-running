@@ -8,7 +8,7 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import FantasyEventForm from 'src/components/FantasyEvent/FantasyEventForm'
+import FantasyEventForm from 'src/components/AdminFantasyEvent/FantasyEventForm'
 
 export const QUERY = gql`
   query EditFantasyEventById($id: String!) {

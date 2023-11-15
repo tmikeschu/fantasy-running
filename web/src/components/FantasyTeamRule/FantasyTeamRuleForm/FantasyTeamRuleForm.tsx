@@ -11,7 +11,7 @@ import type {
   UpdateFantasyTeamRuleInput,
 } from 'types/graphql'
 
-import { Form, Submit, useForm } from '@redwoodjs/forms'
+import { Controller, Form, Submit, useForm } from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
 import { back } from '@redwoodjs/router'
 
@@ -50,66 +50,80 @@ const FantasyTeamRuleForm = (props: FantasyTeamRuleFormProps) => {
       >
         <VStack alignItems="flex-start">
           <Stack direction={{ base: 'column', sm: 'row' }} spacing="4" w="full">
-            <FormControl
-              id="pickNumberFrom"
-              isRequired
-              isInvalid={Boolean(formState.errors.pickNumberFrom)}
-            >
-              <FormLabel>From seed</FormLabel>
+            <Controller
+              name="pickNumberFrom"
+              defaultValue={props.fantasyTeamRule?.pickNumberFrom}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <FormControl
+                  id="pickNumberFrom"
+                  isRequired
+                  isInvalid={Boolean(formState.errors.pickNumberFrom)}
+                >
+                  <FormLabel>From seed</FormLabel>
 
-              <AdminNumberField
-                defaultValue={props.fantasyTeamRule?.pickNumberFrom}
-                validation={{ required: true }}
-              />
+                  <AdminNumberField {...field} />
 
-              <FormErrorMessage />
-            </FormControl>
+                  <FormErrorMessage />
+                </FormControl>
+              )}
+            />
 
-            <FormControl
-              id="pickNumberTo"
-              isRequired
-              isInvalid={Boolean(formState.errors.pickNumberTo)}
-            >
-              <FormLabel name="pickNumberTo">To seed</FormLabel>
+            <Controller
+              name="pickNumberTo"
+              defaultValue={props.fantasyTeamRule?.pickNumberTo}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <FormControl
+                  id="pickNumberTo"
+                  isRequired
+                  isInvalid={Boolean(formState.errors.pickNumberTo)}
+                >
+                  <FormLabel name="pickNumberTo">To seed</FormLabel>
 
-              <AdminNumberField
-                defaultValue={props.fantasyTeamRule?.pickNumberTo}
-                validation={{ required: true }}
-              />
+                  <AdminNumberField {...field} />
 
-              <FormErrorMessage />
-            </FormControl>
+                  <FormErrorMessage />
+                </FormControl>
+              )}
+            />
           </Stack>
 
           <Stack direction={{ base: 'column', sm: 'row' }} spacing="4" w="full">
-            <FormControl
-              id="rankMin"
-              isRequired
-              isInvalid={Boolean(formState.errors.rankMin)}
-            >
-              <FormLabel>Rank min</FormLabel>
-              <AdminNumberField
-                defaultValue={props.fantasyTeamRule?.rankMin}
-                validation={{ required: true }}
-              />
+            <Controller
+              name="rankMin"
+              defaultValue={props.fantasyTeamRule?.rankMin}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <FormControl
+                  id="rankMin"
+                  isRequired
+                  isInvalid={Boolean(formState.errors.rankMin)}
+                >
+                  <FormLabel>Rank min</FormLabel>
+                  <AdminNumberField {...field} />
 
-              <FormErrorMessage />
-            </FormControl>
+                  <FormErrorMessage />
+                </FormControl>
+              )}
+            />
 
-            <FormControl
-              id="rankMax"
-              isRequired
-              isInvalid={Boolean(formState.errors.rankMax)}
-            >
-              <FormLabel>Rank max</FormLabel>
+            <Controller
+              name="rankMax"
+              defaultValue={props.fantasyTeamRule?.rankMax}
+              render={({ field }) => (
+                <FormControl
+                  id="rankMax"
+                  isInvalid={Boolean(formState.errors.rankMax)}
+                >
+                  <FormLabel>Rank max</FormLabel>
 
-              <AdminNumberField
-                defaultValue={props.fantasyTeamRule?.rankMax}
-                validation={{ required: true }}
-              />
+                  <AdminNumberField {...field} />
 
-              <FormErrorMessage />
-            </FormControl>
+                  <FormErrorMessage />
+                </FormControl>
+              )}
+            />
           </Stack>
 
           <ButtonGroup justifyContent="flex-end" w="full">

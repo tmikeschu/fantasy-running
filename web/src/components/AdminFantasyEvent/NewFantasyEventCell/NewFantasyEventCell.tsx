@@ -9,7 +9,7 @@ import { toast } from '@redwoodjs/web/toast'
 
 import EmptyResource from 'src/components/EmptyResource/EmptyResource'
 import ErrorAlert from 'src/components/ErrorAlert/ErrorAlert'
-import FantasyEventForm from 'src/components/FantasyEvent/FantasyEventForm'
+import FantasyEventForm from 'src/components/AdminFantasyEvent/FantasyEventForm'
 
 export const QUERY = gql`
   query GetNewFantasyEventRelations {

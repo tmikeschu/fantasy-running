@@ -7,6 +7,7 @@ export const schema = gql`
     fantasyTeamMembers: [FantasyTeamMember]!
     createdAt: DateTime!
     updatedAt: DateTime!
+    genderDivision: String
   }
 
   type Query {

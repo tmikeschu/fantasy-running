@@ -1,3 +1,5 @@
+import type { EditEventRunnerById, UpdateEventRunnerInput } from 'types/graphql'
+
 import {
   Form,
   FormError,
@@ -7,8 +9,6 @@ import {
   NumberField,
   Submit,
 } from '@redwoodjs/forms'
-
-import type { EditEventRunnerById, UpdateEventRunnerInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 
 type FormEventRunner = NonNullable<EditEventRunnerById['eventRunner']>
@@ -16,7 +16,7 @@ type FormEventRunner = NonNullable<EditEventRunnerById['eventRunner']>
 interface EventRunnerFormProps {
   eventRunner?: EditEventRunnerById['eventRunner']
   onSave: (data: UpdateEventRunnerInput, id?: FormEventRunner['id']) => void
-  error: RWGqlError
+  error?: RWGqlError
   loading: boolean
 }
 

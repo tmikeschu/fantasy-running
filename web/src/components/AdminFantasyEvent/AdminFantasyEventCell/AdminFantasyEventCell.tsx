@@ -2,7 +2,7 @@ import type { FindFantasyEventById } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import FantasyEvent from 'src/components/FantasyEvent/FantasyEvent'
+import FantasyEvent from 'src/components/AdminFantasyEvent/FantasyEvent'
 
 export const QUERY = gql`
   query FindFantasyEventById($id: String!) {

@@ -8,12 +8,12 @@ import { routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
+import { QUERY } from 'src//components/AdminFantasyEvent/FantasyEventsCell'
 import AdminTableCrudAction from 'src/components/AdminTableCrudAction/AdminTableCrudAction'
 import AdminTableWrapper, {
   AdminTableCreateResourceButton,
   AdminTableHeader,
 } from 'src/components/AdminTableWrapper/AdminTableWrapper'
-import { QUERY } from 'src/components/FantasyEvent/FantasyEventsCell'
 import { truncate } from 'src/lib/formatters'
 
 const DELETE_FANTASY_EVENT_MUTATION = gql`

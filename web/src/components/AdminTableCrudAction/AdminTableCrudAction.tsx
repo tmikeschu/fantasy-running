@@ -10,7 +10,7 @@ type AdminTableCrudActionsProps = {
 }
 
 const AdminTableCrudContext = React.createContext<
-  AdminTableCrudActionsProps & { resource: string }
+  (AdminTableCrudActionsProps & { resource: string }) | undefined
 >(undefined)
 
 const AdminTableCrudProvider = ({

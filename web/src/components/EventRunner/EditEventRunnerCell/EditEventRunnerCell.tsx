@@ -59,7 +59,7 @@ export const Success = ({
 
   const onSave = (
     input: UpdateEventRunnerInput,
-    id: EditEventRunnerById['eventRunner']['id']
+    id?: NonNullable<EditEventRunnerById['eventRunner']>['id']
   ) => {
     updateEventRunner({ variables: { id, input } })
   }
