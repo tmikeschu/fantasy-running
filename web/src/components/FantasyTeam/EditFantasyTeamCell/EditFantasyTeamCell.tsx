@@ -1,8 +1,4 @@
-import type {
-  EditFantasyTeamById,
-  UpdateFantasyTeamInput,
-  FantasyTeamMemberInput,
-} from 'types/graphql'
+import type { EditFantasyTeamById, UpdateFantasyTeamInput } from 'types/graphql'
 
 import { navigate, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -66,7 +62,8 @@ export const Success = ({
 
   const onSave = (
     input: UpdateFantasyTeamInput,
-    id: EditFantasyTeamById['fantasyTeam']['id']
+
+    id?: NonNullable<EditFantasyTeamById['fantasyTeam']>['id']
   ) => {
     updateFantasyTeam({ variables: { id, input } })
   }

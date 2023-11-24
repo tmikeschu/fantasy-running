@@ -7,9 +7,9 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
+import FantasyEventForm from 'src/components/AdminFantasyEvent/FantasyEventForm'
 import EmptyResource from 'src/components/EmptyResource/EmptyResource'
 import ErrorAlert from 'src/components/ErrorAlert/ErrorAlert'
-import FantasyEventForm from 'src/components/AdminFantasyEvent/FantasyEventForm'
 
 export const QUERY = gql`
   query GetNewFantasyEventRelations {
@@ -42,7 +42,7 @@ export const Empty = () => (
 )
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <ErrorAlert message={error.message} />
+  <ErrorAlert message={error?.message ?? 'Something went wrong'} />
 )
 
 export const Success = ({

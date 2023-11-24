@@ -1,10 +1,10 @@
+import type { DeleteEventMutationVariables, FindEventById } from 'types/graphql'
+
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
 import { timeTag } from 'src/lib/formatters'
-
-import type { DeleteEventMutationVariables, FindEventById } from 'types/graphql'
 
 const DELETE_EVENT_MUTATION = gql`
   mutation DeleteEventMutation($id: String!) {

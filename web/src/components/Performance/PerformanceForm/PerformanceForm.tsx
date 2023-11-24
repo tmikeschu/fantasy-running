@@ -1,3 +1,5 @@
+import type { EditPerformanceById, UpdatePerformanceInput } from 'types/graphql'
+
 import {
   Form,
   FormError,
@@ -6,8 +8,6 @@ import {
   TextField,
   Submit,
 } from '@redwoodjs/forms'
-
-import type { EditPerformanceById, UpdatePerformanceInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 
 type FormPerformance = NonNullable<EditPerformanceById['performance']>

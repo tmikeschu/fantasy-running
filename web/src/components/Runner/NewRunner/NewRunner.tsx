@@ -1,10 +1,10 @@
+import type { CreateRunnerInput } from 'types/graphql'
+
 import { navigate, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
 import RunnerForm from 'src/components/Runner/RunnerForm'
-
-import type { CreateRunnerInput } from 'types/graphql'
 
 const CREATE_RUNNER_MUTATION = gql`
   mutation CreateRunnerMutation($input: CreateRunnerInput!) {

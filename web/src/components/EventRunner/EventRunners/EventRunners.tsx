@@ -1,14 +1,14 @@
+import type {
+  DeleteEventRunnerMutationVariables,
+  FindEventRunners,
+} from 'types/graphql'
+
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
 import { QUERY } from 'src/components/EventRunner/EventRunnersCell'
 import { timeTag, truncate } from 'src/lib/formatters'
-
-import type {
-  DeleteEventRunnerMutationVariables,
-  FindEventRunners,
-} from 'types/graphql'
 
 const DELETE_EVENT_RUNNER_MUTATION = gql`
   mutation DeleteEventRunnerMutation($id: String!) {

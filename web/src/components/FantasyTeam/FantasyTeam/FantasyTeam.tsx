@@ -1,13 +1,13 @@
+import type {
+  DeleteFantasyTeamMutationVariables,
+  FindFantasyTeamById,
+} from 'types/graphql'
+
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
 import { timeTag } from 'src/lib/formatters'
-
-import type {
-  DeleteFantasyTeamMutationVariables,
-  FindFantasyTeamById,
-} from 'types/graphql'
 
 const DELETE_FANTASY_TEAM_MUTATION = gql`
   mutation DeleteFantasyTeamMutation($id: String!) {

@@ -1,3 +1,5 @@
+import type { EditFantasyTeamById, UpdateFantasyTeamInput } from 'types/graphql'
+
 import {
   Form,
   FormError,
@@ -6,8 +8,6 @@ import {
   TextField,
   Submit,
 } from '@redwoodjs/forms'
-
-import type { EditFantasyTeamById, UpdateFantasyTeamInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 
 type FormFantasyTeam = NonNullable<EditFantasyTeamById['fantasyTeam']>
@@ -15,7 +15,7 @@ type FormFantasyTeam = NonNullable<EditFantasyTeamById['fantasyTeam']>
 interface FantasyTeamFormProps {
   fantasyTeam?: EditFantasyTeamById['fantasyTeam']
   onSave: (data: UpdateFantasyTeamInput, id?: FormFantasyTeam['id']) => void
-  error: RWGqlError
+  error?: RWGqlError
   loading: boolean
 }
 
@@ -44,7 +44,7 @@ const FantasyTeamForm = (props: FantasyTeamFormProps) => {
 
         <TextField
           name="name"
-          defaultValue={props.fantasyTeam?.name}
+          defaultValue={props.fantasyTeam?.name ?? ''}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
@@ -79,7 +79,7 @@ const FantasyTeamForm = (props: FantasyTeamFormProps) => {
 
         <TextField
           name="fantasyEventId"
-          defaultValue={props.fantasyTeam?.fantasyEventId}
+          defaultValue={props.fantasyTeam?.fantasyEventId ?? undefined}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
