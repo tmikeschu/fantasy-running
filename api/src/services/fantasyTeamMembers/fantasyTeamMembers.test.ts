@@ -44,16 +44,20 @@ describe('fantasyTeamMembers', () => {
       const result = await createFantasyTeamMember({
         input: {
           fantasyTeamId: scenario.fantasyTeamMember.two.fantasyTeamId,
-          runnerId: scenario.fantasyTeamMember.two.runnerId,
-          updatedAt: '2023-11-04T21:28:57.703Z',
+          eventRunnerId: scenario.fantasyTeamMember.two.eventRunnerId,
+          updatedAt: '2023-11-24T09:17:37.466Z',
+          pickNumber: 9350498,
         },
       })
 
       expect(result.fantasyTeamId).toEqual(
         scenario.fantasyTeamMember.two.fantasyTeamId
       )
-      expect(result.runnerId).toEqual(scenario.fantasyTeamMember.two.runnerId)
-      expect(result.updatedAt).toEqual(new Date('2023-11-04T21:28:57.703Z'))
+      expect(result.eventRunnerId).toEqual(
+        scenario.fantasyTeamMember.two.eventRunnerId
+      )
+      expect(result.updatedAt).toEqual(new Date('2023-11-24T09:17:37.466Z'))
+      expect(result.pickNumber).toEqual(9350498)
     }
   )
 
@@ -65,10 +69,10 @@ describe('fantasyTeamMembers', () => {
       })) as FantasyTeamMember
       const result = await updateFantasyTeamMember({
         id: original.id,
-        input: { updatedAt: '2023-11-05T22:28:57.704Z' },
+        input: { updatedAt: '2023-11-25T09:17:37.466Z' },
       })
 
-      expect(result.updatedAt).toEqual(new Date('2023-11-05T22:28:57.704Z'))
+      expect(result.updatedAt).toEqual(new Date('2023-11-25T09:17:37.466Z'))
     }
   )
 

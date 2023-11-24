@@ -9,11 +9,15 @@ import { navigate } from '@redwoodjs/router'
 export const _auth = createAuth()
 export const ClerkRwAuthProvider = _auth.AuthProvider
 export type CurrentUser = Omit<User, 'fantasyTeams'>
-export const useAuth = () => {
+export const useAuth = <
+  AssertUser extends { assertUser: boolean } = { assertUser: false }
+>() => {
   const all = _auth.useAuth()
   return {
     ...all,
-    currentUser: all.currentUser as CurrentUser,
+    currentUser: all.currentUser as AssertUser extends { assertUser: true }
+      ? CurrentUser
+      : CurrentUser | null,
   }
 }
 

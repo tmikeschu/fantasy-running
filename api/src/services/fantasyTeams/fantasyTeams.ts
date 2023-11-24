@@ -18,9 +18,24 @@ export const fantasyTeam: QueryResolvers['fantasyTeam'] = ({ id }) => {
 
 export const createFantasyTeam: MutationResolvers['createFantasyTeam'] = ({
   input,
+  members,
 }) => {
+  const { userId, fantasyEventId, venmoHandle, name } = input
   return db.fantasyTeam.create({
-    data: input,
+    data: {
+      name,
+      fantasyEvent: { connect: { id: fantasyEventId } },
+      owner: { connect: { id: userId } },
+      wager: { create: { venmoHandle, wager: 0 } },
+      teamMembers: {
+        createMany: {
+          data: members.map((member) => ({
+            eventRunnerId: member.eventRunnerId,
+            pickNumber: member.seed,
+          })),
+        },
+      },
+    },
   })
 }
 
@@ -46,13 +61,12 @@ export const FantasyTeam: FantasyTeamRelationResolvers = {
   owner: (_obj, { root }) => {
     return db.fantasyTeam.findUnique({ where: { id: root?.id } }).owner()
   },
+
   FantasyTeamMember: (_obj, { root }) => {
-    return db.fantasyTeam
-      .findUnique({ where: { id: root?.id } })
-      .FantasyTeamMember()
+    return db.fantasyTeam.findUnique({ where: { id: root?.id } }).teamMembers()
   },
   FantasyEvent: (_obj, { root }) => {
-    return db.fantasyTeam.findUnique({ where: { id: root?.id } }).FantasyEvent()
+    return db.fantasyTeam.findUnique({ where: { id: root?.id } }).fantasyEvent()
   },
   wager: (_obj, { root }) => {
     return db.fantasyTeam.findUnique({ where: { id: root?.id } }).wager()

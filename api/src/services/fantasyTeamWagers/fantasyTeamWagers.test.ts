@@ -38,19 +38,18 @@ describe('fantasyTeamWagers', () => {
     }
   )
 
-  scenario('creates a fantasyTeamWager', async (scenario: StandardScenario) => {
+  scenario('creates a fantasyTeamWager', async () => {
     const result = await createFantasyTeamWager({
       input: {
-        wager: 6942971.0325647285,
-        fantasyTeamId: scenario.fantasyTeamWager.two.fantasyTeamId,
+        wager: 8919023.156473016,
+        updatedAt: '2023-11-24T09:31:42.145Z',
+        venmoHandle: 'String',
       },
     })
 
-    expect(result.wager).toEqual(6942971.0325647285)
-    expect(result.fantasyTeamId).toEqual(
-      scenario.fantasyTeamWager.two.fantasyTeamId
-    )
-    expect(result.updatedAt).toEqual(new Date('2023-11-04T21:13:53.888Z'))
+    expect(result.wager).toEqual(8919023.156473016)
+    expect(result.updatedAt).toEqual(new Date('2023-11-24T09:31:42.145Z'))
+    expect(result.venmoHandle).toEqual('String')
   })
 
   scenario('updates a fantasyTeamWager', async (scenario: StandardScenario) => {
@@ -59,10 +58,10 @@ describe('fantasyTeamWagers', () => {
     })) as FantasyTeamWager
     const result = await updateFantasyTeamWager({
       id: original.id,
-      input: { wager: 1661301.4022486163 },
+      input: { wager: 4677532.074544757 },
     })
 
-    expect(result.wager).toEqual(1661301.4022486163)
+    expect(result.wager).toEqual(4677532.074544757)
   })
 
   scenario('deletes a fantasyTeamWager', async (scenario: StandardScenario) => {

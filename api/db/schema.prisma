@@ -70,7 +70,7 @@ model EventRunner {
   updatedAt DateTime @updatedAt
   seedNotes String?
 
-  fantasyTeamMembers FantasyTeamMember[]
+  fantasyTeams FantasyTeamMember[]
 
   @@unique([eventId, runnerId])
 }
@@ -94,20 +94,19 @@ model FantasyTeam {
   teamMembers        FantasyTeamMember[]
   fantasyEvent       FantasyEvent?       @relation(fields: [fantasyEventId], references: [id])
   fantasyEventId     String?
-  fantasyTeamWagerId String
-  wager              FantasyTeamWager?
+  fantasyTeamWagerId String              @unique
+  wager              FantasyTeamWager    @relation(fields: [fantasyTeamWagerId], references: [id])
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }
 
 model FantasyTeamWager {
-  id            String      @id @default(cuid())
-  wager         Float
-  fantasyTeamId String      @unique
-  fantasyTeam   FantasyTeam @relation(fields: [fantasyTeamId], references: [id])
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  venmoHandle   String
+  id          String       @id @default(cuid())
+  wager       Float
+  fantasyTeam FantasyTeam?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  venmoHandle String
 }
 
 model FantasyTeamRule {

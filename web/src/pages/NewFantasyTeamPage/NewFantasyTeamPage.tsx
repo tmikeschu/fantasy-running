@@ -1,3 +1,5 @@
+import { Heading, VStack } from '@chakra-ui/react'
+
 import { MetaTags } from '@redwoodjs/web'
 
 import NewFantasyTeamCell from 'src/components/NewFantasyTeamCell'
@@ -13,8 +15,10 @@ const NewFantasyTeamPage = ({
     <>
       <MetaTags title="NewFantasyTeam" description="NewFantasyTeam page" />
 
-      <h1>NewFantasyTeamPage</h1>
-      <NewFantasyTeamCell id={fantasyEventId} />
+      <VStack alignItems="stretch" w="full" spacing="8">
+        <Heading as="h1">New Fantasy Team</Heading>
+        <NewFantasyTeamCell id={fantasyEventId} />
+      </VStack>
     </>
   )
 }

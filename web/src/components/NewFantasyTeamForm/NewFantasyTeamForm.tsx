@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  Input,
   Stack,
   VStack,
 } from '@chakra-ui/react'
@@ -14,26 +15,29 @@ import {
   CreateFantasyTeamInput,
   FantasyTeamMemberInput,
   FindNewFantasyTeamQuery,
+  UpdateFantasyTeamInput,
 } from 'types/graphql'
 
 import { Controller, Form, RWGqlError, useForm } from '@redwoodjs/forms'
 
+import { CurrentUser } from 'src/auth'
+
 type NewFantasyTeamFormProps = {
-  onSave: (
-    input: CreateFantasyTeamInput,
-    members: FantasyTeamMemberInput
-  ) => void
+  onSave: (data: {
+    input: CreateFantasyTeamInput
+    members: FantasyTeamMemberInput[]
+  }) => void
   fantasyEvent: NonNullable<FindNewFantasyTeamQuery['fantasyEvent']>
+  currentUser: CurrentUser
   error?: RWGqlError
   loading: boolean
 }
 
-type FormFantasyTeam = CreateFantasyTeamInput & {
-  id?: string
-} & Record<`pick-${number}-${string}`, { label: string; value: string }>
+type FormFantasyTeam = (CreateFantasyTeamInput | UpdateFantasyTeamInput) &
+  Record<`pick-${number}-${string}`, { label: string; value: string }>
 
-const NewFantasyTeamForm = (props: NewFantasyTeamFormProps) => {
-  const { fantasyEvent } = props
+const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
+  const { fantasyEvent, currentUser } = props
   const { eventRunners } = fantasyEvent.event
   const byGenderDivision = Object.entries(
     eventRunners.reduce((acc, er) => {
@@ -50,10 +54,13 @@ const NewFantasyTeamForm = (props: NewFantasyTeamFormProps) => {
       ([key, value]) => [key, value.sort((a, b) => a.seed - b.seed)] as const
     )
     .sort(([a], [_b]) => (a === 'women' ? -1 : 1))
+
   const formMethods = useForm<FormFantasyTeam>()
+
   const onSubmit = (data: FormFantasyTeam) => {
     // todo translate multi selects to single list
-    const members: FantasyTeamMemberInput[] = Object.entries(data)
+    const { venmoHandle, name, ...rest } = data
+    const members: FantasyTeamMemberInput[] = Object.entries(rest)
       .filter(
         (set): set is [string, FormFantasyTeam[`pick-${number}-${string}`]] =>
           set[0].startsWith('pick-')
@@ -62,7 +69,16 @@ const NewFantasyTeamForm = (props: NewFantasyTeamFormProps) => {
         eventRunnerId: value?.value,
         seed: Number(key.split('-')[1]),
       }))
-    console.log({ members })
+
+    props.onSave({
+      input: {
+        fantasyEventId: fantasyEvent.id,
+        userId: currentUser.id,
+        venmoHandle,
+        name,
+      },
+      members,
+    })
   }
 
   return (
@@ -82,7 +98,7 @@ const NewFantasyTeamForm = (props: NewFantasyTeamFormProps) => {
                 alignItems="flex-start"
                 w="full"
               >
-                <Heading>
+                <Heading fontSize="lg">
                   {match(genderDivision)
                     .with('men', () => 'Men')
                     .with('women', () => 'Women')
@@ -145,6 +161,16 @@ const NewFantasyTeamForm = (props: NewFantasyTeamFormProps) => {
               </VStack>
             ))}
           </Stack>
+          <Controller<FormFantasyTeam, 'venmoHandle'>
+            name="venmoHandle"
+            render={({ field }) => (
+              <FormControl maxW="sm">
+                <FormLabel>Venmo handle</FormLabel>
+
+                <Input {...field} value={field.value ?? ''} />
+              </FormControl>
+            )}
+          />
           <ButtonGroup>
             <Button type="submit" colorScheme="blue" isLoading={props.loading}>
               Save

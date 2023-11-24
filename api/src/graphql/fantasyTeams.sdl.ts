@@ -26,15 +26,15 @@ export const schema = gql`
   input CreateFantasyTeamInput {
     name: String
     userId: String!
-    fantasyEventId: String
-    fantasyTeamWagerId: String!
+    fantasyEventId: String!
+    venmoHandle: String!
   }
 
   input UpdateFantasyTeamInput {
     name: String
-    userId: String
-    fantasyEventId: String
-    fantasyTeamWagerId: String
+    userId: String!
+    fantasyEventId: String!
+    venmoHandle: String!
   }
 
   type Mutation {

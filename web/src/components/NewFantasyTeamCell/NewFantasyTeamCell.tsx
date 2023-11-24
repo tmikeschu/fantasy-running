@@ -14,6 +14,8 @@ import {
 } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
+import { useAuth } from 'src/auth'
+
 import NewFantasyTeamForm from '../NewFantasyTeamForm/NewFantasyTeamForm'
 
 export const QUERY = gql`
@@ -82,20 +84,28 @@ export const Success = ({
     }
   )
 
-  const onSave = (
-    input: CreateFantasyTeamInput,
-    members: FantasyTeamMemberInput
-  ) => {
+  const { currentUser } = useAuth<{ assertUser: true }>()
+
+  const onSave = ({
+    input,
+    members,
+  }: {
+    input: CreateFantasyTeamInput
+    members: FantasyTeamMemberInput[]
+  }) => {
     createFantasyTeam({ variables: { input, members } })
   }
 
   return (
     <Box overflow="auto" h="full">
       <NewFantasyTeamForm
-        fantasyEvent={fantasyEvent}
-        onSave={onSave}
-        error={error}
-        loading={loading}
+        {...{
+          currentUser,
+          fantasyEvent,
+          onSave,
+          error,
+          loading,
+        }}
       />
     </Box>
   )

@@ -3,10 +3,11 @@ export const schema = gql`
     id: String!
     fantasyTeamId: String!
     fantasyTeam: FantasyTeam!
-    runnerId: String!
-    runner: Runner!
+    eventRunnerId: String!
+    runner: EventRunner!
     createdAt: DateTime!
     updatedAt: DateTime!
+    pickNumber: Int!
   }
 
   type Query {
@@ -16,12 +17,14 @@ export const schema = gql`
 
   input CreateFantasyTeamMemberInput {
     fantasyTeamId: String!
-    runnerId: String!
+    eventRunnerId: String!
+    pickNumber: Int!
   }
 
   input UpdateFantasyTeamMemberInput {
     fantasyTeamId: String
-    runnerId: String
+    eventRunnerId: String
+    pickNumber: Int
   }
 
   type Mutation {
