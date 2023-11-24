@@ -1,9 +1,10 @@
 import { Flex, HStack, Img, Box, FlexProps, Tooltip } from '@chakra-ui/react'
 
-import { useAuth } from 'src/auth'
+import { CurrentUser } from 'src/auth'
 
-const AccountHeader = (props: FlexProps) => {
-  const { currentUser } = useAuth()
+export type AccountHeaderProps = FlexProps & { currentUser: CurrentUser }
+
+const AccountHeader = ({ currentUser, ...props }: AccountHeaderProps) => {
   return (
     <Flex
       {...props}
@@ -26,12 +27,12 @@ const AccountHeader = (props: FlexProps) => {
           h="8"
           rounded="md"
           objectFit="cover"
-          src={currentUser.avatarUrl}
+          src={currentUser.avatarUrl ?? ''}
           alt={currentUser.email}
         />
         <Box textAlign="start" overflow="hidden">
           <Tooltip label={currentUser.email} openDelay={1000} hasArrow>
-            <Box noOfLines={1} fontWeight="semibold" w="full">
+            <Box noOfLines={1} fontWeight="semibold" w="full" color="white">
               {currentUser.email}
             </Box>
           </Tooltip>

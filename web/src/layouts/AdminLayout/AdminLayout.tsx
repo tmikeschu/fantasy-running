@@ -23,14 +23,14 @@ type AdminLayoutProps = {
 }
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
-  const { logOut } = useAuth()
+  const { logOut, currentUser } = useAuth()
 
   return (
     <Box height="100vh" overflow="hidden" position="relative">
       <Flex h="full" id="app-container">
         <Box w="64" bg="gray.900" color="white" fontSize="sm" flexShrink="0">
           <Flex h="full" direction="column" px="4" py="4">
-            <AccountHeader />
+            {currentUser && <AccountHeader {...{ currentUser }} />}
             <Stack spacing="8" flex="1" overflow="auto" pt="8">
               <Stack spacing="1">
                 <NavItem

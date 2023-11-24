@@ -1,11 +1,21 @@
 import React, { useEffect } from 'react'
 
 import { ClerkProvider, useUser } from '@clerk/clerk-react'
+import { User } from 'types/graphql'
 
 import { createAuth } from '@redwoodjs/auth-clerk-web'
 import { navigate } from '@redwoodjs/router'
 
-export const { AuthProvider: ClerkRwAuthProvider, useAuth } = createAuth()
+export const _auth = createAuth()
+export const ClerkRwAuthProvider = _auth.AuthProvider
+export type CurrentUser = Omit<User, 'fantasyTeams'>
+export const useAuth = () => {
+  const all = _auth.useAuth()
+  return {
+    ...all,
+    currentUser: all.currentUser as CurrentUser,
+  }
+}
 
 const ClerkStatusUpdater = () => {
   const { isSignedIn, user, isLoaded } = useUser()
@@ -48,7 +58,7 @@ const ClerkProviderWrapper = ({
 export const AuthProvider = ({ children }: Props) => {
   const publishableKey = process.env.CLERK_PUBLISHABLE_KEY
   const frontendApi =
-    process.env.CLERK_FRONTEND_API_URL || process.env.CLERK_FRONTEND_API
+    (process.env.CLERK_FRONTEND_API_URL || process.env.CLERK_FRONTEND_API) ?? ''
 
   const clerkOptions: ClerkOptions = publishableKey
     ? { publishableKey }

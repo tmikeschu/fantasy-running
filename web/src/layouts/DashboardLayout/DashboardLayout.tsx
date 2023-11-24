@@ -19,7 +19,7 @@ type DashboardLayoutProps = {
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  const { logOut, hasRole } = useAuth()
+  const { logOut, hasRole, currentUser } = useAuth()
   const isAdmin = hasRole('ADMIN')
 
   return (
@@ -27,7 +27,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <Flex h="full" id="app-container">
         <Box w="64" bg="gray.900" color="white" fontSize="sm" flexShrink="0">
           <Flex h="full" direction="column" px="4" py="4">
-            <AccountHeader />
+            {currentUser && <AccountHeader {...{ currentUser }} />}
             <Stack spacing="8" flex="1" overflow="auto" pt="8">
               <Stack spacing="1">
                 <NavItem

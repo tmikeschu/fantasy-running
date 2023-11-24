@@ -1,3 +1,5 @@
+import { User } from 'types/graphql'
+
 import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
 
 import { logger } from 'src/lib/logger'
@@ -22,17 +24,17 @@ export const getCurrentUser = async (
   { token, type },
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   { event, context }
-) => {
+): Promise<Omit<User, 'fantasyTeams'> | null> => {
   if (!decoded) {
     logger.warn('Missing decoded user')
     return null
   }
 
-  const { id, avatarUrl, email, ..._rest } = decoded
-  const roles = (await db.user.findUnique({ where: { externalId: id } })).roles
+  const { id } = decoded
+  const user = await db.user.findUnique({ where: { externalId: id } })
 
   // Be careful to only return information that should be accessible on the web side.
-  return { id, avatarUrl, email, roles }
+  return user
 }
 
 /**
