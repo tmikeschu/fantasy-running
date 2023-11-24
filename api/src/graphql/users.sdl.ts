@@ -3,11 +3,12 @@ export const schema = gql`
     id: String!
     email: String!
     name: String
-    fantasyTeams: [FantasyTeam]!
-    role: Role!
+    fantasyTeams: [FantasyTeam!]!
+    roles: [Role!]!
     venmoHandle: String
     createdAt: DateTime!
     updatedAt: DateTime!
+    avatarUrl: String
   }
 
   enum Role {

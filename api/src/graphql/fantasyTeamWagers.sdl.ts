@@ -6,6 +6,7 @@ export const schema = gql`
     fantasyTeam: FantasyTeam!
     createdAt: DateTime!
     updatedAt: DateTime!
+    venmoHandle: String
   }
 
   type Query {

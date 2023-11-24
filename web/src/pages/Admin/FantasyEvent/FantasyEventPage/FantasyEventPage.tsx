@@ -1,4 +1,4 @@
-import FantasyEventCell from 'src/components/AdminFantasyEvent/FantasyEventCell'
+import FantasyEventCell from 'src/components/AdminFantasyEvent/AdminFantasyEventCell'
 
 type FantasyEventPageProps = {
   id: string

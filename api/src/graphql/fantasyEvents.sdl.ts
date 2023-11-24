@@ -22,8 +22,8 @@ export const schema = gql`
   }
 
   input UpdateFantasyEventInput {
-    eventId: String
-    teamSize: Int
+    eventId: String!
+    teamSize: Int!
     ruleIds: [String!]!
   }
 
