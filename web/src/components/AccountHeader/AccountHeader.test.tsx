@@ -1,14 +1,15 @@
-import { render } from '@redwoodjs/testing/web'
+import { composeStories } from '@storybook/react'
 
-import AccountHeader from './AccountHeader'
+import * as Test from '@redwoodjs/testing/web'
 
-//   Improve this test with help from the Redwood Testing Doc:
-//    https://redwoodjs.com/docs/testing#testing-components
+import * as stories from './AccountHeader.stories'
+
+const Story = composeStories(stories)
 
 describe('AccountHeader', () => {
   it('renders successfully', () => {
-    expect(() => {
-      render(<AccountHeader />)
-    }).not.toThrow()
+    Test.render(<Story.Primary />)
+    Test.screen.getByText(/\w+@\w+\.\w+/i)
+    Test.screen.getByAltText(/\w+@\w+\.\w+/i)
   })
 })
