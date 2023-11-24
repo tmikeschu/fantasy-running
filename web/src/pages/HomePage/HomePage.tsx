@@ -17,7 +17,7 @@ import { useAuth } from 'src/auth'
 import img from './runners.jpg'
 
 const HomePage = () => {
-  const { isAuthenticated, logIn } = useAuth()
+  const { isAuthenticated, loading, logIn } = useAuth()
 
   return (
     <>
@@ -61,12 +61,18 @@ const HomePage = () => {
               >
                 {isAuthenticated ? (
                   <>
-                    <Button as={Link} to={routes.dashboard()}>
+                    <Button
+                      as={Link}
+                      to={routes.dashboard()}
+                      isLoading={loading}
+                    >
                       Dashboard
                     </Button>
                   </>
                 ) : (
-                  <Button onClick={() => logIn()}>log in</Button>
+                  <Button onClick={() => logIn()} isLoading={loading}>
+                    log in
+                  </Button>
                 )}
               </ButtonGroup>
             </LightMode>
