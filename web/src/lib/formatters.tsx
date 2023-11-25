@@ -56,3 +56,6 @@ export const timeTag = (dateTime?: string) => {
 export const checkboxInputTag = (checked: boolean) => {
   return <input type="checkbox" checked={checked} disabled />
 }
+
+export const capitalize = (str: string) =>
+  `${str[0].toUpperCase()}${str.slice(1)}`

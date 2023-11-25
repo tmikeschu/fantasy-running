@@ -4,9 +4,9 @@ export const schema = gql`
     name: String
     owner: User!
     userId: String!
-    FantasyTeamMember: [FantasyTeamMember]!
-    FantasyEvent: FantasyEvent
-    fantasyEventId: String
+    teamMembers: [FantasyTeamMember!]!
+    fantasyEvent: FantasyEvent!
+    fantasyEventId: String!
     fantasyTeamWagerId: String!
     wager: FantasyTeamWager
     createdAt: DateTime!

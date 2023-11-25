@@ -62,10 +62,10 @@ export const FantasyTeam: FantasyTeamRelationResolvers = {
     return db.fantasyTeam.findUnique({ where: { id: root?.id } }).owner()
   },
 
-  FantasyTeamMember: (_obj, { root }) => {
+  teamMembers: (_obj, { root }) => {
     return db.fantasyTeam.findUnique({ where: { id: root?.id } }).teamMembers()
   },
-  FantasyEvent: (_obj, { root }) => {
+  fantasyEvent: (_obj, { root }) => {
     return db.fantasyTeam.findUnique({ where: { id: root?.id } }).fantasyEvent()
   },
   wager: (_obj, { root }) => {

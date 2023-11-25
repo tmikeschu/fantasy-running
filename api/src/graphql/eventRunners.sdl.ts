@@ -9,6 +9,7 @@ export const schema = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
     seedNotes: String
+    fantasyTeams: [FantasyTeamMember!]!
   }
 
   type Query {

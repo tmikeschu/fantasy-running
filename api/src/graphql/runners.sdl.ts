@@ -3,7 +3,7 @@ export const schema = gql`
     id: String!
     name: String!
     performances: [Performance]!
-    events: [EventRunner]!
+    events: [EventRunner!]!
     fantasyTeamMembers: [FantasyTeamMember]!
     createdAt: DateTime!
     updatedAt: DateTime!

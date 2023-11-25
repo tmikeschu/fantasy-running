@@ -1,19 +1,13 @@
-import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
+
+import MyTeamsCell from 'src/components/MyTeamsCell'
 
 const MyTeamsPage = () => {
   return (
     <>
       <MetaTags title="MyTeams" description="MyTeams page" />
 
-      <h1>MyTeamsPage</h1>
-      <p>
-        Find me in <code>./web/src/pages/MyTeamsPage/MyTeamsPage.tsx</code>
-      </p>
-      <p>
-        My default route is named <code>myTeams</code>, link to me with `
-        <Link to={routes.myTeams()}>MyTeams</Link>`
-      </p>
+      <MyTeamsCell />
     </>
   )
 }

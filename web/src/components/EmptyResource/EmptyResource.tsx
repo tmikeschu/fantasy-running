@@ -13,8 +13,14 @@ const EmptyResource: React.FC<EmptyResourceProps> = ({ newPath, children }) => {
     <Box as="section" bg="bg.surface">
       <Container py={{ base: '16', md: '24' }}>
         <Stack spacing={{ base: '8', md: '10' }}>
-          <Stack spacing={{ base: '4', md: '5' }} align="center">
-            <Heading size={{ base: 'sm', md: 'md' }}>No {children} yet</Heading>
+          <Stack
+            spacing={{ base: '4', md: '5' }}
+            align="center"
+            color="gray.500"
+          >
+            <Heading size={{ base: 'sm', md: 'md' }}>
+              No {children} yet!
+            </Heading>
             <Text fontSize="2rem">
               <BiMehBlank />
             </Text>
@@ -25,7 +31,7 @@ const EmptyResource: React.FC<EmptyResourceProps> = ({ newPath, children }) => {
             justify="center"
           >
             <Button as={Link} to={newPath} variant="solid" colorScheme="blue">
-              Create one?
+              Create one
             </Button>
           </Stack>
         </Stack>

@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertIcon } from '@chakra-ui/react'
 
 export type ErrorAlertProps = {
-  message: string
+  message?: string
 }
 const ErrorAlert: React.FC<React.PropsWithChildren<ErrorAlertProps>> = ({
   message,
@@ -9,7 +9,9 @@ const ErrorAlert: React.FC<React.PropsWithChildren<ErrorAlertProps>> = ({
   return (
     <Alert status="error">
       <AlertIcon />
-      <AlertDescription>{message}</AlertDescription>
+      <AlertDescription>
+        {message ?? 'Oops! Something went wrong.'}
+      </AlertDescription>
     </Alert>
   )
 }
