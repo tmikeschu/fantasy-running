@@ -1,4 +1,4 @@
-import EditFantasyTeamRuleCell from 'src/components/FantasyTeamRule/EditFantasyTeamRuleCell'
+import EditFantasyTeamRuleCell from 'src/components/Admin/FantasyTeamRule/EditFantasyTeamRuleCell'
 
 type FantasyTeamRulePageProps = {
   id: string

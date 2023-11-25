@@ -23,9 +23,9 @@ export const schema = gql`
   }
 
   input UpdateFantasyTeamRuleInput {
-    pickNumberFrom: Int
-    pickNumberTo: Int
-    rankMin: Int
+    pickNumberFrom: Int!
+    pickNumberTo: Int!
+    rankMin: Int!
     rankMax: Int
   }
 

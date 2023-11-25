@@ -1,4 +1,4 @@
-import FantasyTeamsCell from 'src/components/FantasyTeam/FantasyTeamsCell'
+import FantasyTeamsCell from 'src/components/Admin/FantasyTeam/FantasyTeamsCell'
 
 const FantasyTeamsPage = () => {
   return <FantasyTeamsCell />

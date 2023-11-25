@@ -9,7 +9,7 @@ import {
   Tr,
 } from '@chakra-ui/react'
 
-import AdminTableWrapper from '../AdminTableWrapper/AdminTableWrapper'
+import AdminTableWrapper from '../Admin/AdminTableWrapper/AdminTableWrapper'
 
 type LoadingTableProps = {
   header: React.ReactNode

@@ -1,4 +1,4 @@
-import NewFantasyTeamRule from 'src/components/FantasyTeamRule/NewFantasyTeamRule'
+import NewFantasyTeamRule from 'src/components/Admin/FantasyTeamRule/NewFantasyTeamRule'
 
 const NewFantasyTeamRulePage = () => {
   return <NewFantasyTeamRule />

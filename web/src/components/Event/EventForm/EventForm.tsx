@@ -21,8 +21,8 @@ import type { RWGqlError } from '@redwoodjs/forms'
 import { back } from '@redwoodjs/router'
 
 import ErrorAlert from 'src/components/ErrorAlert/ErrorAlert'
-import FormErrorMessage from 'src/components/FormErrorMessage/FormErrorMessage'
-import FormLabel from 'src/components/FormLabel'
+import FormErrorMessage from 'src/components/forms/FormErrorMessage/FormErrorMessage'
+import FormLabel from 'src/components/forms/FormLabel'
 
 const formatDatetime = (value?: string) => {
   if (value) {

@@ -1,4 +1,4 @@
-import RunnersCell from 'src/components/Runner/RunnersCell'
+import RunnersCell from 'src/components/Admin/Runner/RunnersCell'
 
 const RunnersPage = () => {
   return <RunnersCell />

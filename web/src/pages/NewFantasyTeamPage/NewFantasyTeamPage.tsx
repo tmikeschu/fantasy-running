@@ -2,7 +2,7 @@ import { Heading, VStack } from '@chakra-ui/react'
 
 import { MetaTags } from '@redwoodjs/web'
 
-import NewFantasyTeamCell from 'src/components/NewFantasyTeamCell'
+import NewFantasyTeamCell from 'src/components/FantasyTeam/NewFantasyTeamCell'
 
 type NewFantasyTeamPageProps = {
   id: string

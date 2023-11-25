@@ -5,11 +5,11 @@ import { routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import AdminTableCrudAction from 'src/components/AdminTableCrudAction/AdminTableCrudAction'
+import AdminTableCrudAction from 'src/components/Admin/AdminTableCrudAction/AdminTableCrudAction'
 import AdminTableWrapper, {
   AdminTableCreateResourceButton,
   AdminTableHeader,
-} from 'src/components/AdminTableWrapper/AdminTableWrapper'
+} from 'src/components/Admin/AdminTableWrapper/AdminTableWrapper'
 import { QUERY } from 'src/components/Event/EventsCell'
 import { timeTag, truncate } from 'src/lib/formatters'
 

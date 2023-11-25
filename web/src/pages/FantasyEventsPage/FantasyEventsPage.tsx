@@ -2,7 +2,7 @@ import { Heading, VStack } from '@chakra-ui/react'
 
 import { MetaTags } from '@redwoodjs/web'
 
-import FantasyEventsCell from 'src/components/FantasyEventsCell'
+import FantasyEventsCell from 'src/components/FantasyEvent/FantasyEventsCell'
 
 const FantasyEventsPage = () => {
   return (

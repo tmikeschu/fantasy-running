@@ -3,7 +3,7 @@ import type { FindEvents } from 'types/graphql'
 import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import { AdminTableHeader } from 'src/components/AdminTableWrapper/AdminTableWrapper'
+import { AdminTableHeader } from 'src/components/Admin/AdminTableWrapper/AdminTableWrapper'
 import EmptyResource from 'src/components/EmptyResource/EmptyResource'
 import Events from 'src/components/Event/Events'
 import LoadingTable from 'src/components/LoadingTable/LoadingTable'

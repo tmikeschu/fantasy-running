@@ -1,7 +1,7 @@
 import { MetaTags } from '@redwoodjs/web'
 
 import { useAuth } from 'src/auth'
-import MyTeamsCell from 'src/components/MyTeamsCell'
+import MyTeamsCell from 'src/components/FantasyTeam/MyTeamsCell'
 
 const MyTeamsPage = () => {
   const { currentUser } = useAuth()

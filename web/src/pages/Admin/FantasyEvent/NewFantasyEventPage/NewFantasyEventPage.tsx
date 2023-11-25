@@ -1,4 +1,4 @@
-import NewFantasyEventCell from 'src/components/AdminFantasyEvent/NewFantasyEventCell'
+import NewFantasyEventCell from 'src/components/Admin/FantasyEvent/NewFantasyEventCell'
 
 const NewFantasyEventPage = () => {
   return <NewFantasyEventCell />

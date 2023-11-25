@@ -1,4 +1,4 @@
-import FantasyTeamCell from 'src/components/FantasyTeam/FantasyTeamCell'
+import FantasyTeamCell from 'src/components/Admin/FantasyTeam/FantasyTeamCell'
 
 type FantasyTeamPageProps = {
   id: string
