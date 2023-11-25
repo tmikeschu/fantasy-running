@@ -34,7 +34,6 @@ model Event {
   updatedAt     DateTime       @updatedAt
   fantasyEvents FantasyEvent[]
   eventRunners  EventRunner[]
-  performances  Performance[]
 }
 
 model FantasyEvent {
@@ -53,7 +52,6 @@ model Runner {
   id             String        @id @default(cuid())
   name           String
   genderDivision String
-  performances   Performance[]
   events         EventRunner[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -73,17 +71,6 @@ model EventRunner {
   fantasyTeams FantasyTeamMember[]
 
   @@unique([eventId, runnerId])
-}
-
-model Performance {
-  id        String   @id @default(cuid())
-  time      Float
-  eventId   String
-  event     Event    @relation(fields: [eventId], references: [id])
-  runnerId  String
-  runner    Runner   @relation(fields: [runnerId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model FantasyTeam {

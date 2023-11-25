@@ -6,7 +6,7 @@ import { Link } from '@redwoodjs/router'
 export type AdminTableWrapperProps = {
   header: React.ReactNode
   children: React.ReactNode
-  newPath: string
+  newPath?: string
   resource: string
   isDisabled?: boolean
 }
@@ -15,7 +15,7 @@ type Context = Pick<
   'isDisabled' | 'resource' | 'newPath'
 >
 
-const AdminTableContext = React.createContext<Context>(undefined)
+const AdminTableContext = React.createContext<Context | undefined>(undefined)
 
 export const AdminTableProvider = ({
   children,
@@ -79,7 +79,7 @@ const AdminTableWrapper = ({
 export const AdminTableCreateResourceButton = () => {
   const { isDisabled, resource, newPath } = useAdminTableContext()
 
-  return (
+  return newPath ? (
     <IconButton
       icon={<BiPlus />}
       aria-label={`create ${resource}`}
@@ -89,7 +89,7 @@ export const AdminTableCreateResourceButton = () => {
       as={Link}
       to={newPath}
     />
-  )
+  ) : null
 }
 
 export const AdminTableHeader = ({

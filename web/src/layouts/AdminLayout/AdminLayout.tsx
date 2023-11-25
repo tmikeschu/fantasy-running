@@ -7,7 +7,6 @@ import {
   BiListCheck,
   BiLogOut,
   BiRun,
-  BiTestTube,
   BiUser,
 } from 'react-icons/bi'
 
@@ -50,12 +49,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   icon={<BiCalendar />}
                   label="Events"
                   to={routes.events()}
-                />
-
-                <NavItem
-                  icon={<BiTestTube />}
-                  label="Performances"
-                  to={routes.performances()}
                 />
               </NavGroup>
 

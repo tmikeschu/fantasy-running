@@ -79,9 +79,6 @@ const EventsList = ({ events }: FindEvents) => {
               <Td>{truncate(event.location)}</Td>
               <Td>
                 <AdminTableCrudAction.Wrapper id={event.id}>
-                  <AdminTableCrudAction.Show
-                    to={routes.event({ id: event.id })}
-                  />
                   <AdminTableCrudAction.Edit
                     to={routes.editEvent({ id: event.id })}
                   />

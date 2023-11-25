@@ -29,7 +29,7 @@ interface FantasyTeamRuleFormProps {
     data: UpdateFantasyTeamRuleInput,
     id?: FormFantasyTeamRule['id']
   ) => void
-  error: RWGqlError
+  error?: RWGqlError
   loading: boolean
 }
 

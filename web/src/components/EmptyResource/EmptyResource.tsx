@@ -4,7 +4,7 @@ import { BiMehBlank } from 'react-icons/bi'
 import { Link } from '@redwoodjs/router'
 
 export type EmptyResourceProps = {
-  newPath: string
+  newPath?: string
   children: string
 }
 
@@ -25,15 +25,17 @@ const EmptyResource: React.FC<EmptyResourceProps> = ({ newPath, children }) => {
               <BiMehBlank />
             </Text>
           </Stack>
-          <Stack
-            spacing="3"
-            direction={{ base: 'column', sm: 'row' }}
-            justify="center"
-          >
-            <Button as={Link} to={newPath} variant="solid" colorScheme="blue">
-              Create one
-            </Button>
-          </Stack>
+          {newPath ? (
+            <Stack
+              spacing="3"
+              direction={{ base: 'column', sm: 'row' }}
+              justify="center"
+            >
+              <Button as={Link} to={newPath} variant="solid" colorScheme="blue">
+                Create one
+              </Button>
+            </Stack>
+          ) : null}
         </Stack>
       </Container>
     </Box>

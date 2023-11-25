@@ -1,6 +1,5 @@
 import type { FindRunners } from 'types/graphql'
 
-import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import { AdminTableHeader } from 'src/components/AdminTableWrapper/AdminTableWrapper'
@@ -23,9 +22,7 @@ export const Loading = () => (
   <LoadingTable header={<AdminTableHeader>Runners</AdminTableHeader>} />
 )
 
-export const Empty = () => (
-  <EmptyResource newPath={routes.newRunner()}>runners</EmptyResource>
-)
+export const Empty = () => <EmptyResource>runners</EmptyResource>
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>

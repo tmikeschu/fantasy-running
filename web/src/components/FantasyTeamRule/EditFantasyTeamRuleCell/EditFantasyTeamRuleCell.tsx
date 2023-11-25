@@ -64,7 +64,7 @@ export const Success = ({
 
   const onSave = (
     input: UpdateFantasyTeamRuleInput,
-    id: EditFantasyTeamRuleById['fantasyTeamRule']['id']
+    id?: NonNullable<EditFantasyTeamRuleById['fantasyTeamRule']>['id']
   ) => {
     updateFantasyTeamRule({ variables: { id, input } })
   }
