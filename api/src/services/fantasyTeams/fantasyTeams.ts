@@ -16,6 +16,12 @@ export const fantasyTeam: QueryResolvers['fantasyTeam'] = ({ id }) => {
   })
 }
 
+export const myFantasyTeams: QueryResolvers['myFantasyTeams'] = ({
+  ownerId: userId,
+}) => {
+  return db.fantasyTeam.findMany({ where: { userId } })
+}
+
 export const createFantasyTeam: MutationResolvers['createFantasyTeam'] = ({
   input,
   members,

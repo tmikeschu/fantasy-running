@@ -15,6 +15,7 @@ export const schema = gql`
 
   type Query {
     fantasyTeams: [FantasyTeam!]! @requireAuth
+    myFantasyTeams(ownerId: String!): [FantasyTeam!]! @requireAuth
     fantasyTeam(id: String!): FantasyTeam @requireAuth
   }
 

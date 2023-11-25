@@ -35,9 +35,10 @@ describe('fantasyTeams', () => {
     const result = await createFantasyTeam({
       input: {
         userId: scenario.fantasyTeam.two.userId,
-        fantasyTeamWagerId: 'String',
-        updatedAt: '2023-11-04T20:57:05.889Z',
+        venmoHandle: 'String',
+        fantasyEventId: 'blah',
       },
+      members: [{ eventRunnerId: '1', seed: 10 }],
     })
 
     expect(result.userId).toEqual(scenario.fantasyTeam.two.userId)

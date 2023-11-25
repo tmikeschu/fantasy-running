@@ -24,7 +24,7 @@ export const Loading = () => <div>Loading...</div>
 export const Empty = () => <div>Event not found</div>
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <ErrorAlert message={error.message} />
+  <ErrorAlert message={error?.message} />
 )
 
 export const Success = ({ event }: CellSuccessProps<FindEventById>) => {

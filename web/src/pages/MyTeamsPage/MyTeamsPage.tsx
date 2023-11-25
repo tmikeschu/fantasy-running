@@ -1,13 +1,15 @@
 import { MetaTags } from '@redwoodjs/web'
 
+import { useAuth } from 'src/auth'
 import MyTeamsCell from 'src/components/MyTeamsCell'
 
 const MyTeamsPage = () => {
+  const { currentUser } = useAuth()
   return (
     <>
       <MetaTags title="MyTeams" description="MyTeams page" />
 
-      <MyTeamsCell />
+      {currentUser ? <MyTeamsCell ownerId={currentUser.id} /> : null}
     </>
   )
 }

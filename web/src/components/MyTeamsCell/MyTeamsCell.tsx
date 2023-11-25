@@ -23,8 +23,8 @@ import EmptyResource from '../EmptyResource/EmptyResource'
 import ErrorAlert from '../ErrorAlert/ErrorAlert'
 
 export const QUERY = gql`
-  query MyTeamsQuery {
-    fantasyTeams {
+  query MyTeamsQuery($ownerId: String!) {
+    fantasyTeams: myFantasyTeams(ownerId: $ownerId) {
       id
       wager {
         venmoHandle
