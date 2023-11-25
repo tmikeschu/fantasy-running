@@ -9,7 +9,6 @@ import {
   Stack,
   VStack,
 } from '@chakra-ui/react'
-import { Select } from 'chakra-react-select'
 import { match } from 'ts-pattern'
 import {
   CreateFantasyTeamInput,
@@ -21,6 +20,14 @@ import {
 import { Controller, Form, RWGqlError, useForm } from '@redwoodjs/forms'
 
 import { CurrentUser } from 'src/auth'
+
+import { pubsub } from './pubsub'
+import {
+  entryIsTeamPick,
+  SelectKey,
+  SelectOption,
+  TeamMemberSelect,
+} from './TeamMemberSelect'
 
 type NewFantasyTeamFormProps = {
   onSave: (data: {
@@ -34,7 +41,7 @@ type NewFantasyTeamFormProps = {
 }
 
 type FormFantasyTeam = (CreateFantasyTeamInput | UpdateFantasyTeamInput) &
-  Record<`pick-${number}-${string}`, { label: string; value: string }>
+  Record<SelectKey, SelectOption>
 
 const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
   const { fantasyEvent, currentUser } = props
@@ -58,13 +65,9 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
   const formMethods = useForm<FormFantasyTeam>()
 
   const onSubmit = (data: FormFantasyTeam) => {
-    // todo translate multi selects to single list
     const { venmoHandle, name, ...rest } = data
     const members: FantasyTeamMemberInput[] = Object.entries(rest)
-      .filter(
-        (set): set is [string, FormFantasyTeam[`pick-${number}-${string}`]] =>
-          set[0].startsWith('pick-')
-      )
+      .filter(entryIsTeamPick)
       .map(([key, value]) => ({
         eventRunnerId: value?.value,
         seed: Number(key.split('-')[1]),
@@ -81,8 +84,34 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
     })
   }
 
+  const { teamSize } = props.fantasyEvent
+
+  React.useEffect(() => {
+    return pubsub.subscribe((e) => {
+      const formValues = formMethods.getValues()
+      const blankSelections = Object.entries(formValues)
+        .filter(entryIsTeamPick)
+        .filter((set) => !set[1])
+        .map((set) => set[0])
+
+      match(e)
+        .with({ type: 'SELECTED' }, ({ fieldKey }) => {
+          const nextKey =
+            blankSelections[blankSelections.findIndex((k) => k !== fieldKey)]
+          if (!nextKey) {
+            if (!formValues.venmoHandle) venmoHandleRef.current?.focus()
+            return
+          }
+          pubsub.broadcast({ type: 'AUTO_FOCUS', fieldKey: nextKey })
+        })
+        .otherwise(() => {})
+    })
+  }, [formMethods])
+
+  const venmoHandleRef = React.useRef<HTMLInputElement>(null)
+
   return (
-    <Box maxW="3xl">
+    <Box maxW="3xl" pl="px">
       <Form<FormFantasyTeam> formMethods={formMethods} onSubmit={onSubmit}>
         <VStack alignItems="flex-start" spacing="8">
           <Stack
@@ -104,56 +133,36 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
                     .with('women', () => 'Women')
                     .otherwise(() => '...')}
                 </Heading>
-                {Array.from({ length: props.fantasyEvent.teamSize }, (_, i) => {
+                {Array.from({ length: teamSize }, (_, i) => {
                   const num = i + 1
                   const rule = fantasyEvent.rules.find(
                     (r) => num >= r.pickNumberFrom && num <= r.pickNumberTo
                   )
                   if (!rule) return null
 
+                  const name = `pick-${num}-${genderDivision}` as const
                   return (
                     <Controller<FormFantasyTeam, `pick-${number}-${string}`>
                       key={i}
-                      name={`pick-${num}-${genderDivision}`}
+                      name={name}
                       rules={{ required: true }}
                       render={({ field }) => (
-                        <FormControl w="full">
-                          <FormLabel>Pick {num}</FormLabel>
-
-                          <Select
-                            {...field}
-                            value={field.value}
-                            isOptionDisabled={(option) => {
-                              return Object.entries(formMethods.getValues())
-                                .filter(
-                                  (
-                                    set
-                                  ): set is [
-                                    string,
-                                    FormFantasyTeam[`pick-${number}-${string}`]
-                                  ] => set[0].startsWith('pick-')
-                                )
-                                .some(
-                                  ([_key, value]) =>
-                                    value?.value === option.value
-                                )
-                            }}
-                            options={runners
-                              .slice(
-                                rule?.rankMin - 1,
-                                rule?.rankMax ?? Infinity
-                              )
-                              .map((r) => ({
-                                value: r.id,
-                                label: r.runner.name,
-                              }))}
-                            onChange={(value) => {
-                              field.onChange({
-                                target: { value: value ?? undefined },
-                              })
-                            }}
-                          />
-                        </FormControl>
+                        <TeamMemberSelect
+                          value={field.value}
+                          fieldKey={name}
+                          pickNumber={num}
+                          runners={runners}
+                          rule={rule}
+                          onChange={(value) => {
+                            pubsub.broadcast({
+                              type: 'SELECTED',
+                              fieldKey: name,
+                            })
+                            field.onChange({
+                              target: { value: value ?? undefined },
+                            })
+                          }}
+                        />
                       )}
                     />
                   )
@@ -161,13 +170,18 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
               </VStack>
             ))}
           </Stack>
+
           <Controller<FormFantasyTeam, 'venmoHandle'>
             name="venmoHandle"
             render={({ field }) => (
               <FormControl maxW="sm">
                 <FormLabel>Venmo handle</FormLabel>
 
-                <Input {...field} value={field.value ?? ''} />
+                <Input
+                  {...field}
+                  ref={venmoHandleRef}
+                  value={field.value ?? ''}
+                />
               </FormControl>
             )}
           />

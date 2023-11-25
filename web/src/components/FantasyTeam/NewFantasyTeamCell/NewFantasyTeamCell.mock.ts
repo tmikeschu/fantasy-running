@@ -4,27 +4,36 @@ import { faker } from '@faker-js/faker'
 export const standard = (/* vars, { ctx, req } */) => ({
   fantasyEvent: {
     id: faker.string.uuid(),
-    teamSize: 7,
+    teamSize: 5,
     rules: [
       {
         pickNumberFrom: 1,
-        pickNumberTo: 3,
+        pickNumberTo: 1,
         rankMin: 1,
         rankMax: 20,
       },
+      {
+        pickNumberFrom: 2,
+        pickNumberTo: 2,
+        rankMin: 21,
+        rankMax: 45,
+      },
+      {
+        pickNumberFrom: 3,
+        pickNumberTo: 3,
+        rankMin: 46,
+      },
     ],
     event: {
-      eventRunners: [
-        {
-          id: faker.string.uuid(),
-          seed: 1,
+      eventRunners: Array.from({ length: 100 }, (_, i) => ({
+        id: faker.string.uuid(),
+        seed: i + 1,
 
-          runner: {
-            genderDivision: '',
-            name: faker.person.fullName(),
-          },
+        runner: {
+          genderDivision: i % 2 === 0 ? 'men' : 'women',
+          name: faker.person.fullName(),
         },
-      ],
+      })),
     },
   },
 })
