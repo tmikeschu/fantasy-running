@@ -1,8 +1,22 @@
-import { Button, Center, Text, VStack, Wrap, WrapItem } from '@chakra-ui/react'
+import {
+  Button,
+  Center,
+  Skeleton,
+  Text,
+  TextProps,
+  VStack,
+  Wrap,
+  WrapItem,
+  WrapItemProps,
+  forwardRef,
+} from '@chakra-ui/react'
 import type { FantasyEventsQuery } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+
+import EmptyResource from 'src/components/EmptyResource/EmptyResource'
+import ErrorAlert from 'src/components/ErrorAlert/ErrorAlert'
 
 export const QUERY = gql`
   query FantasyEventsQuery {
@@ -15,12 +29,27 @@ export const QUERY = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => (
+  <Wrap aria-label="loading">
+    {Array.from({ length: 3 }, (_, i) => (
+      <Card key={i}>
+        <VStack>
+          <Skeleton>
+            <CardText>Some loading event</CardText>
+          </Skeleton>
+          <Skeleton>
+            <Button>loading</Button>
+          </Skeleton>
+        </VStack>
+      </Card>
+    ))}
+  </Wrap>
+)
 
-export const Empty = () => <div>Empty</div>
+export const Empty = () => <EmptyResource>events</EmptyResource>
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div style={{ color: 'red' }}>Error: {error?.message}</div>
+  <ErrorAlert message={error?.message} />
 )
 
 export const Success = ({
@@ -30,26 +59,44 @@ export const Success = ({
     <Wrap>
       {fantasyEvents.map((item) => {
         return (
-          <WrapItem
-            borderRadius="base"
-            as={Center}
-            key={item.id}
-            boxShadow="base"
-            w="xs"
-            h="xs"
-            alignItems="center"
-          >
+          <Card key={item.id}>
             <VStack>
-              <Text fontSize="2xl" fontWeight="bold" color="gray.700">
-                {item.event.name}
-              </Text>
+              <CardText>{item.event.name}</CardText>
               <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
                 Make a team
               </Button>
             </VStack>
-          </WrapItem>
+          </Card>
         )
       })}
     </Wrap>
   )
 }
+
+const CardText = forwardRef<TextProps, 'p'>((props, ref) => (
+  <Text
+    {...{
+      ref,
+      as: 'h3',
+      fontSize: '2xl',
+      fontWeight: 'bold',
+      color: 'gray.700',
+      ...props,
+    }}
+  />
+))
+
+const Card = forwardRef<WrapItemProps, 'li'>((props, ref) => (
+  <Center
+    {...{
+      ref,
+      borderRadius: 'base',
+      as: WrapItem,
+      boxShadow: 'base',
+      w: 'xs',
+      h: 'xs',
+      alignItems: 'center',
+      ...props,
+    }}
+  />
+))
