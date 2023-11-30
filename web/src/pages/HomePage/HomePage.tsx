@@ -41,8 +41,8 @@ const HomePage = () => {
             >
               Fantasy Running
             </Heading>
-            <Text fontSize="xl" mt="4" maxW="xl" mx="auto">
-              Every second counts.
+            <Text fontSize="xl" mt="4" maxW="xl" mx="auto" fontWeight="medium">
+              Every second counts
             </Text>
           </Box>
 
