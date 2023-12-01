@@ -48,6 +48,9 @@ type Payload =
 export const handler = async (event: APIGatewayEvent) => {
   const clerkInfo = { webhook: 'clerk' }
   const webhookLogger = logger.child({ clerkInfo })
+  const body = event.isBase64Encoded
+    ? Buffer.from(event.body, 'base64').toString('utf-8')
+    : event.body
 
   webhookLogger.trace('Invoked clerkWebhook function')
 
@@ -75,11 +78,11 @@ export const handler = async (event: APIGatewayEvent) => {
     verifyEvent('base64Sha256Verifier', {
       event,
       secret: process.env.CLERK_WH_SECRET.slice(6),
-      payload: `${svix_id}.${svix_timestamp}.${event.body}`,
+      payload: `${svix_id}.${svix_timestamp}.${body}`,
       options,
     })
 
-    const payload = JSON.parse(event.body) as Payload
+    const payload = JSON.parse(body) as Payload
     webhookLogger.debug({ payload }, 'Payload')
     await match(payload)
       .with(
