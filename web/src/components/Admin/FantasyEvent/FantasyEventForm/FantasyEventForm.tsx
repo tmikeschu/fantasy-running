@@ -5,6 +5,8 @@ import {
   FormControl,
   FormHelperText,
   VStack,
+  Textarea,
+  Link,
 } from '@chakra-ui/react'
 import { Select } from 'chakra-react-select'
 import { Option } from 'space-monad'
@@ -151,9 +153,27 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
                 />
 
                 <FormErrorMessage />
+              </FormControl>
+            )}
+          />
+
+          <Controller
+            name="description"
+            defaultValue={props.fantasyEvent?.description}
+            render={({ field }) => (
+              <FormControl id="description">
+                <FormLabel>Description</FormLabel>
+
+                <Textarea placeholder="Choose your squad..." {...field} />
+
                 <FormHelperText>
-                  Select multiple rules by holding down the shift or
-                  cmd/meta/windows key
+                  Supports{' '}
+                  <Link
+                    href="https://www.markdownguide.org/basic-syntax/"
+                    isExternal
+                  >
+                    Markdown syntax
+                  </Link>
                 </FormHelperText>
               </FormControl>
             )}

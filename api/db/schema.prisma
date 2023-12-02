@@ -38,10 +38,11 @@ model Event {
 }
 
 model FantasyEvent {
-  id       String @id @default(cuid())
-  eventId  String
-  event    Event  @relation(fields: [eventId], references: [id])
-  teamSize Int
+  id          String  @id @default(cuid())
+  eventId     String
+  event       Event   @relation(fields: [eventId], references: [id])
+  teamSize    Int
+  description String?
 
   fantasyTeams FantasyTeam[]
   rules        FantasyTeamRule[]
