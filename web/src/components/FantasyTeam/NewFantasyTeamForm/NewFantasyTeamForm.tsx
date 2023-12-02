@@ -3,6 +3,7 @@ import {
   Button,
   ButtonGroup,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -182,6 +183,7 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
                   ref={venmoHandleRef}
                   value={field.value ?? ''}
                 />
+                <FormHelperText>(for potential payout)</FormHelperText>
               </FormControl>
             )}
           />
