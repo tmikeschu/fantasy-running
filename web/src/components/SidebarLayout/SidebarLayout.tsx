@@ -106,7 +106,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
               flexShrink="0"
               h="full"
               w="full"
-              pr="8"
+              pr={{ base: '8', md: '0' }}
             >
               {sidebar}
             </Box>
