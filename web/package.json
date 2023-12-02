@@ -26,6 +26,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.11.0",
+    "react-markdown": "^9.0.1",
     "space-monad": "^1.0.0",
     "usehooks-ts": "^2.9.1"
   },

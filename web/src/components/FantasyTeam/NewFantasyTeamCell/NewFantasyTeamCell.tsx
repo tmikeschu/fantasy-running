@@ -1,4 +1,5 @@
 import { Box } from '@chakra-ui/react'
+import Markdown from 'react-markdown'
 import type {
   CreateFantasyTeamInput,
   FindNewFantasyTeamQuery,
@@ -23,6 +24,7 @@ export const QUERY = gql`
     fantasyEvent: fantasyEvent(id: $id) {
       id
       teamSize
+      description
       rules {
         pickNumberFrom
         pickNumberTo
@@ -98,6 +100,20 @@ export const Success = ({
 
   return (
     <Box overflow="auto" h="full">
+      <Box
+        as={Markdown}
+        fontSize="sm"
+        color="gray.600"
+        mb="8"
+        sx={{
+          a: {
+            color: 'blue.500',
+            textDecor: 'underline',
+          },
+        }}
+      >
+        {fantasyEvent.description}
+      </Box>
       <NewFantasyTeamForm
         {...{
           currentUser,

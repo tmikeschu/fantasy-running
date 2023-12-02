@@ -10,7 +10,6 @@ type NewFantasyTeamPageProps = {
 const NewFantasyTeamPage = ({
   id: fantasyEventId,
 }: NewFantasyTeamPageProps) => {
-  console.log({ fantasyEventId })
   return (
     <>
       <MetaTags title="NewFantasyTeam" description="NewFantasyTeam page" />

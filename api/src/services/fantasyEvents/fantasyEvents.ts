@@ -18,7 +18,6 @@ export const fantasyEvent: QueryResolvers['fantasyEvent'] = ({ id }) => {
 
 export const createFantasyEvent: MutationResolvers['createFantasyEvent'] =
   async ({ input: { ruleIds, ...input } }) => {
-    console.log({ ruleIds, input })
     return db.fantasyEvent.create({
       data: {
         ...input,
