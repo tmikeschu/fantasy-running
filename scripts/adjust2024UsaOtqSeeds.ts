@@ -28,7 +28,7 @@ const halfSecondsToFullSeconds = (halfTime: string) => {
   // But we adjust to 1.075 based on Garret's estimation.
   const D1 = 13.1
   const D2 = 26.2
-  const T2 = halfTimeInSeconds * (D2 / D1) ** 1.1
+  const T2 = halfTimeInSeconds * (D2 / D1) * 1.1
   return T2
 }
 
