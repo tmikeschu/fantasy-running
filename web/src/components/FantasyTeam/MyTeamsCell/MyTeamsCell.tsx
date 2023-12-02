@@ -38,6 +38,8 @@ export const QUERY = gql`
         id
         pickNumber
         runner {
+          seed
+
           runner {
             name
             genderDivision
@@ -103,7 +105,10 @@ export const Success = ({ fantasyTeams }: CellSuccessProps<MyTeamsQuery>) => {
                             .map((pick) => (
                               <HStack as={ListItem} key={pick.id}>
                                 <Text>{pick?.pickNumber}.</Text>
-                                <Text>{pick?.runner.runner.name}</Text>
+                                <Text>
+                                  {pick?.runner.runner.name} (Seed:{' '}
+                                  {pick.runner.seed})
+                                </Text>
                               </HStack>
                             ))}
                         </List>
