@@ -2,6 +2,8 @@ import { Box, HStack, PropsOf } from '@chakra-ui/react'
 
 import { Link, useLocation } from '@redwoodjs/router'
 
+import { useSidebarLayoutContext } from '../SidebarLayout/useSidebarLayoutContext'
+
 interface NavItemProps extends Partial<PropsOf<typeof Link>> {
   label: string
   subtle?: boolean
@@ -9,12 +11,23 @@ interface NavItemProps extends Partial<PropsOf<typeof Link>> {
 }
 
 const NavItem = (props: NavItemProps) => {
-  const { subtle, icon, label, to, onClick } = props
+  const { subtle, icon, label, to, onClick: _onClick } = props
+  const onClick = _onClick as React.MouseEventHandler<HTMLElement>
+  const { disclosure } = useSidebarLayoutContext()
   const location = useLocation()
   const active = location.pathname === to
   return (
     <HStack<typeof Link>
-      {...(to ? { as: Link, to } : {})}
+      {...(to
+        ? {
+            as: Link,
+            to,
+            onClick: (e) => {
+              disclosure.onClose()
+              onClick?.(e)
+            },
+          }
+        : { onClick })}
       w="full"
       px="3"
       py="2"
@@ -25,7 +38,6 @@ const NavItem = (props: NavItemProps) => {
       bg={active ? 'gray.700' : undefined}
       _hover={{ bg: 'gray.700' }}
       _active={{ bg: 'gray.600' }}
-      onClick={onClick as React.MouseEventHandler<HTMLElement>}
     >
       <Box fontSize="lg" color={active ? 'currentcolor' : 'gray.400'}>
         {icon}
