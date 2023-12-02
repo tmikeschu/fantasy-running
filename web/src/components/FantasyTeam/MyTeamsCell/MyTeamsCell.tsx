@@ -1,14 +1,10 @@
 import {
   Heading,
-  List,
-  ListItem,
   VStack,
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
-  HStack,
-  Text,
   Skeleton,
   WrapItem,
   Wrap,
@@ -18,7 +14,8 @@ import type { MyTeamsQuery } from 'types/graphql'
 import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import { capitalize } from '../../../lib/formatters'
+import TeamMembers from 'src/components/TeamMembers/TeamMembers'
+
 import EmptyResource from '../../EmptyResource/EmptyResource'
 import ErrorAlert from '../../ErrorAlert/ErrorAlert'
 
@@ -92,27 +89,12 @@ export const Success = ({ fantasyTeams }: CellSuccessProps<MyTeamsQuery>) => {
                       acc[division].push(runner)
                       return acc
                     }, {} as Record<string, typeof item.teamMembers>)
-                  ).map(([genderDivision, picks]) => (
+                  ).map(([genderDivision, teamMembers]) => (
                     <WrapItem key={genderDivision}>
-                      <VStack alignItems="flex-start" spacing="4">
-                        <Heading fontSize="lg">
-                          {capitalize(genderDivision)}
-                        </Heading>
-                        <List>
-                          {picks
-                            .slice()
-                            .sort((a, b) => a.pickNumber - b.pickNumber)
-                            .map((pick) => (
-                              <HStack as={ListItem} key={pick.id}>
-                                <Text>{pick?.pickNumber}.</Text>
-                                <Text>
-                                  {pick?.runner.runner.name} (Seed:{' '}
-                                  {pick.runner.seed})
-                                </Text>
-                              </HStack>
-                            ))}
-                        </List>
-                      </VStack>
+                      <TeamMembers
+                        genderDivision={genderDivision}
+                        teamMembers={teamMembers}
+                      />
                     </WrapItem>
                   ))}
                 </Wrap>
