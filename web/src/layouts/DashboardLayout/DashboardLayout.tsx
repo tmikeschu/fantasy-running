@@ -1,11 +1,5 @@
 import { Box, Flex, Stack } from '@chakra-ui/react'
-import {
-  BiCalendarEvent,
-  BiGroup,
-  BiLogOut,
-  BiRun,
-  BiTable,
-} from 'react-icons/bi'
+import { BiCalendarEvent, BiGroup, BiLogOut, BiTable } from 'react-icons/bi'
 
 import { routes } from '@redwoodjs/router'
 
@@ -33,12 +27,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           {currentUser && <AccountHeader {...{ currentUser }} />}
           <Stack spacing="8" flex="1" overflow="auto" pt="8">
             <Stack spacing="1">
-              <NavItem icon={<BiRun />} label="Home" to={routes.dashboard()} />
               {isAdmin && (
                 <NavItem
                   icon={<BiTable />}
                   label="Admin"
-                  to={routes.adminHome()}
+                  to={routes.adminFantasyEvents()}
                 />
               )}
             </Stack>

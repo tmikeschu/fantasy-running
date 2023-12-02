@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   useColorModeValue as mode,
   Grid,
   GridItem,
@@ -8,6 +9,7 @@ import {
   GridItemProps,
   Show,
   useDisclosure,
+  Heading,
 } from '@chakra-ui/react'
 import { BiMenu, BiX } from 'react-icons/bi'
 import { match } from 'ts-pattern'
@@ -47,6 +49,20 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
         alignContent="stretch"
       >
         <Show below="md">
+          <Flex
+            position="absolute"
+            w="full"
+            bg="gray.50"
+            top="0"
+            left="0"
+            h="12"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Heading as="h2" fontSize="md">
+              Fantasy Running
+            </Heading>
+          </Flex>
           <Box
             zIndex={1}
             position="absolute"
@@ -97,7 +113,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           </GridItem>
         </DarkMode>
 
-        <GridItem gridArea="content">
+        <GridItem gridArea="content" pt={{ base: '12', md: 0 }}>
           <Box bg={mode('white', 'gray.800')} flex="1" p="6" overflow="hidden">
             <Box w="full" h="full" rounded="lg">
               {content}
@@ -110,11 +126,11 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
 }
 
 export const SidebarLayoutContent = (props: GridItemProps) => (
-  <GridItem gridArea="content" {...props} />
+  <GridItem gridArea="content" h="full" {...props} />
 )
 
 export const SidebarLayoutSidebar = (props: GridItemProps) => (
-  <GridItem gridArea="sidebar" {...props} />
+  <GridItem gridArea="sidebar" h="full" {...props} />
 )
 
 export default SidebarLayout

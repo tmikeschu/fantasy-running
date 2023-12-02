@@ -56,7 +56,7 @@ export const Success = ({
   fantasyEvents,
 }: CellSuccessProps<FantasyEventsQuery>) => {
   return (
-    <Wrap>
+    <Wrap w="full">
       {fantasyEvents.map((item) => {
         return (
           <Card key={item.id}>
@@ -93,7 +93,7 @@ const Card = forwardRef<WrapItemProps, 'li'>((props, ref) => (
       borderRadius: 'base',
       as: WrapItem,
       boxShadow: 'base',
-      w: 'xs',
+      w: { base: 'full', md: 'xs' },
       h: 'xs',
       alignItems: 'center',
       ...props,

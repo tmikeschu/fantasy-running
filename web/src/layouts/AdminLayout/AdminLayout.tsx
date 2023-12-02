@@ -34,12 +34,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           {currentUser && <AccountHeader {...{ currentUser }} />}
           <Stack spacing="8" flex="1" overflow="auto" pt="8">
             <Stack spacing="1">
-              <NavItem icon={<BiRun />} label="Home" to={routes.adminHome()} />
-
               <NavItem
                 icon={<BiUser />}
                 label="Dashboard"
-                to={routes.dashboard()}
+                to={routes.fantasyEvents()}
               />
             </Stack>
             <NavGroup label="Events">
