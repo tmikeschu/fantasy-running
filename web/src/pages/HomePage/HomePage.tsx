@@ -63,7 +63,7 @@ const HomePage = () => {
                   <>
                     <Button
                       as={Link}
-                      to={routes.dashboard()}
+                      to={routes.fantasyEvents()}
                       isLoading={loading}
                     >
                       Dashboard
