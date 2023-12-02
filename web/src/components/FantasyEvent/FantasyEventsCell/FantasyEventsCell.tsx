@@ -19,11 +19,17 @@ import EmptyResource from 'src/components/EmptyResource/EmptyResource'
 import ErrorAlert from 'src/components/ErrorAlert/ErrorAlert'
 
 export const QUERY = gql`
-  query FantasyEventsQuery {
+  query FantasyEventsQuery($ownerId: String!) {
     fantasyEvents {
       id
       event {
         name
+      }
+    }
+
+    myFantasyTeams(ownerId: $ownerId) {
+      fantasyEvent {
+        id
       }
     }
   }
@@ -54,17 +60,28 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   fantasyEvents,
+  myFantasyTeams,
 }: CellSuccessProps<FantasyEventsQuery>) => {
+  const eventTeamMap = new Map(
+    myFantasyTeams.map((t) => [t.fantasyEvent.id, t])
+  )
   return (
     <Wrap w="full">
       {fantasyEvents.map((item) => {
+        const hasTeam = eventTeamMap.has(item.id)
         return (
           <Card key={item.id}>
             <VStack>
               <CardText>{item.event.name}</CardText>
-              <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
-                Make a team
-              </Button>
+              {hasTeam ? (
+                <Button as={Link} to={routes.myTeams()}>
+                  View team
+                </Button>
+              ) : (
+                <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
+                  Make a team
+                </Button>
+              )}
             </VStack>
           </Card>
         )

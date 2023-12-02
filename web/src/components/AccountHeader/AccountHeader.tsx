@@ -18,8 +18,6 @@ const AccountHeader = ({ currentUser, ...props }: AccountHeaderProps) => {
       fontSize="sm"
       outline="0"
       transition="all 0.2s"
-      _active={{ bg: 'gray.600' }}
-      _focus={{ shadow: 'outline' }}
     >
       <HStack flex="1" spacing="3">
         <Img
