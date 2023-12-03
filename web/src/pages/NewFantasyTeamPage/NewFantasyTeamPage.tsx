@@ -14,7 +14,7 @@ const NewFantasyTeamPage = ({
     <>
       <MetaTags title="NewFantasyTeam" description="NewFantasyTeam page" />
 
-      <VStack alignItems="stretch" w="full" spacing="8">
+      <VStack alignItems="stretch" w="full" spacing="8" pb="8">
         <Heading as="h1">New Fantasy Team</Heading>
         <NewFantasyTeamCell id={fantasyEventId} />
       </VStack>

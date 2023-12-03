@@ -102,7 +102,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
             <Box
               bg="gray.900"
               color="white"
-              fontSize="sm"
+              fontSize={{ base: 'md', md: 'sm' }}
               flexShrink="0"
               h="full"
               w="full"
@@ -113,12 +113,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           </GridItem>
         </DarkMode>
 
-        <GridItem
-          gridArea="content"
-          pt={{ base: '12', md: 0 }}
-          h="100vh"
-          pb="8"
-        >
+        <GridItem gridArea="content" pt={{ base: '12', md: 0 }} h="100vh">
           <Box
             bg={mode('white', 'gray.800')}
             flex="1"

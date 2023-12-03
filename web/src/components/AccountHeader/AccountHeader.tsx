@@ -15,7 +15,7 @@ const AccountHeader = ({ currentUser, ...props }: AccountHeaderProps) => {
       bg="gray.700"
       px="3"
       py="2"
-      fontSize="sm"
+      fontSize={{ base: 'md', md: 'sm' }}
       outline="0"
       transition="all 0.2s"
     >

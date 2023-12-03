@@ -10,7 +10,7 @@ const NavGroup = (props: React.PropsWithChildren<NavGroupProps>) => {
     <Box>
       <Text
         px="3"
-        fontSize="xs"
+        fontSize={{ base: 'md', md: 'xs' }}
         fontWeight="semibold"
         textTransform="uppercase"
         letterSpacing="widest"

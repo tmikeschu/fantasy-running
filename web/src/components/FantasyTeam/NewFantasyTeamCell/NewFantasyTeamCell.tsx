@@ -102,7 +102,7 @@ export const Success = ({
     <Box overflow="auto" h="full">
       <Box
         as={Markdown}
-        fontSize="sm"
+        fontSize={{ base: 'md', md: 'sm' }}
         color="gray.600"
         mb="8"
         sx={{
