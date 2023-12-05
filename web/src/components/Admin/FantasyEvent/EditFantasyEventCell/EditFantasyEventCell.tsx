@@ -19,6 +19,7 @@ export const QUERY = gql`
       createdAt
       updatedAt
       description
+      status
       rules {
         id
       }
@@ -45,6 +46,7 @@ const UPDATE_FANTASY_EVENT_MUTATION = gql`
       id
       eventId
       teamSize
+      status
       createdAt
       updatedAt
     }

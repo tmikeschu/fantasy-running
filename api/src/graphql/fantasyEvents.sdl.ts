@@ -9,6 +9,13 @@ export const schema = gql`
     rules: [FantasyTeamRule!]!
     createdAt: DateTime!
     updatedAt: DateTime!
+    status: FantasyEventStatus!
+  }
+
+  enum FantasyEventStatus {
+    PENDING
+    LIVE
+    COMPLETE
   }
 
   type Query {
@@ -21,6 +28,7 @@ export const schema = gql`
     teamSize: Int!
     description: String
     ruleIds: [String!]!
+    status: FantasyEventStatus
   }
 
   input UpdateFantasyEventInput {
@@ -28,6 +36,7 @@ export const schema = gql`
     teamSize: Int!
     description: String
     ruleIds: [String!]!
+    status: FantasyEventStatus
   }
 
   type Mutation {

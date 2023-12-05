@@ -10,6 +10,7 @@ import {
   WrapItemProps,
   forwardRef,
 } from '@chakra-ui/react'
+import { match } from 'ts-pattern'
 import type { FantasyEventsQuery } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -22,6 +23,7 @@ export const QUERY = gql`
   query FantasyEventsQuery($ownerId: String!) {
     fantasyEvents {
       id
+      status
       event {
         name
       }
@@ -73,15 +75,20 @@ export const Success = ({
           <Card key={item.id}>
             <VStack>
               <CardText>{item.event.name}</CardText>
-              {hasTeam ? (
-                <Button as={Link} to={routes.myTeams()}>
-                  View team
-                </Button>
-              ) : (
-                <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
-                  Make a team
-                </Button>
-              )}
+              {match({ hasTeam, status: item.status })
+                .with({ hasTeam: true }, () => (
+                  <Button as={Link} to={routes.myTeams()}>
+                    View team
+                  </Button>
+                ))
+                .with({ status: 'LIVE' }, () => (
+                  <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
+                    Make a team
+                  </Button>
+                ))
+                .otherwise(() => (
+                  <Button isDisabled>Coming soon</Button>
+                ))}
             </VStack>
           </Card>
         )

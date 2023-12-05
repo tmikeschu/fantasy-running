@@ -38,16 +38,23 @@ model Event {
 }
 
 model FantasyEvent {
-  id          String  @id @default(cuid())
+  id          String             @id @default(cuid())
   eventId     String
-  event       Event   @relation(fields: [eventId], references: [id])
+  event       Event              @relation(fields: [eventId], references: [id])
   teamSize    Int
   description String?
+  status      FantasyEventStatus @default(PENDING)
 
   fantasyTeams FantasyTeam[]
   rules        FantasyTeamRule[]
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+}
+
+enum FantasyEventStatus {
+  PENDING
+  LIVE
+  COMPLETE
 }
 
 model Runner {

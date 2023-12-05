@@ -7,7 +7,9 @@ import type {
 import { db } from 'src/lib/db'
 
 export const fantasyEvents: QueryResolvers['fantasyEvents'] = () => {
-  return db.fantasyEvent.findMany()
+  return db.fantasyEvent.findMany({
+    where: { status: { not: 'COMPLETE' } },
+  })
 }
 
 export const fantasyEvent: QueryResolvers['fantasyEvent'] = ({ id }) => {
