@@ -41,7 +41,9 @@ model FantasyEvent {
   id          String             @id @default(cuid())
   eventId     String
   event       Event              @relation(fields: [eventId], references: [id])
+  name        String?
   teamSize    Int
+  teamCount   Int                @default(1)
   description String?
   status      FantasyEventStatus @default(PENDING)
 

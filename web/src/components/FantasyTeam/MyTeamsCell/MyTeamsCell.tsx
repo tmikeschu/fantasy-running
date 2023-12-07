@@ -48,7 +48,7 @@ export const QUERY = gql`
 `
 
 export const Loading = () => (
-  <Accordion allowToggle aria-label="loading">
+  <Accordion aria-label="loading">
     {Array.from({ length: 3 }, (_, i) => (
       <AccordionItem key={i}>
         <AccordionButton>
@@ -72,7 +72,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 export const Success = ({ fantasyTeams }: CellSuccessProps<MyTeamsQuery>) => {
   return (
     <VStack alignItems="stretch">
-      <Accordion allowToggle>
+      <Accordion defaultIndex={[0]} allowMultiple>
         {fantasyTeams.map((item) => {
           return (
             <AccordionItem key={item.id}>

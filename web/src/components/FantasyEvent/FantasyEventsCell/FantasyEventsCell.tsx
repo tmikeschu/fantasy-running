@@ -24,6 +24,7 @@ export const QUERY = gql`
     fantasyEvents {
       id
       status
+      teamCount
       event {
         name
       }
@@ -64,21 +65,26 @@ export const Success = ({
   fantasyEvents,
   myFantasyTeams,
 }: CellSuccessProps<FantasyEventsQuery>) => {
-  const eventTeamMap = new Map(
-    myFantasyTeams.map((t) => [t.fantasyEvent.id, t])
-  )
+  const eventTeamMap = myFantasyTeams.reduce((acc, t) => {
+    if (!acc[t.fantasyEvent.id]) {
+      acc[t.fantasyEvent.id] = []
+    }
+    acc[t.fantasyEvent.id].push(t)
+    return acc
+  }, {} as Record<string, typeof myFantasyTeams>)
   return (
     <Wrap w="full">
       {fantasyEvents.map((item) => {
-        const hasTeam = eventTeamMap.has(item.id)
+        const canMakeTeam =
+          (eventTeamMap[item.id]?.length ?? 0) < item.teamCount
         return (
           <Card key={item.id}>
             <VStack>
               <CardText>{item.event.name}</CardText>
-              {match({ hasTeam, status: item.status })
-                .with({ hasTeam: true }, () => (
+              {match({ canMakeTeam, status: item.status })
+                .with({ canMakeTeam: false }, () => (
                   <Button as={Link} to={routes.myTeams()}>
-                    View team
+                    {item.teamCount > 1 ? 'View teams' : 'View team'}
                   </Button>
                 ))
                 .with({ status: 'LIVE' }, () => (

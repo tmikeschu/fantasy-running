@@ -7,6 +7,7 @@ import {
   VStack,
   Textarea,
   Link,
+  Input,
 } from '@chakra-ui/react'
 import { Select } from 'chakra-react-select'
 import { Option } from 'space-monad'
@@ -14,11 +15,12 @@ import type {
   CreateFantasyEventInput,
   EditFantasyEventById,
   Event,
+  FantasyEventStatus,
   FantasyTeamRule,
   UpdateFantasyEventInput,
 } from 'types/graphql'
 
-import { Form, Submit, Controller, useForm } from '@redwoodjs/forms'
+import { Form, Submit, Controller, useForm, TextField } from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
 
 import AdminNumberField from 'src/components/Admin/AdminNumberField/AdminNumberField'
@@ -73,6 +75,19 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
 
   const formMethods = useForm<FormFantasyEvent>()
 
+  const defaultName =
+    props.fantasyEvent?.name ??
+    props.fantasyEvent?.event.name ??
+    props.events.find((e) => e.id === formMethods.getValues().eventId)?.name ??
+    ''
+
+  const statusOptions = (
+    ['PENDING', 'LIVE', 'COMPLETE'] as FantasyEventStatus[]
+  ).map((status) => ({ value: status, label: status }))
+  const statusOptionsMap = new Map(
+    statusOptions.map((option) => [option.value, option])
+  )
+
   return (
     <Box maxW="xl">
       <Form<FormFantasyEvent>
@@ -109,6 +124,51 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
             )}
           />
 
+          <FormControl
+            id="name"
+            isRequired
+            isInvalid={Boolean(formMethods.formState.errors.name)}
+          >
+            <FormLabel>Name</FormLabel>
+
+            <Input
+              as={TextField}
+              name="name"
+              defaultValue={defaultName}
+              validation={{ required: true }}
+            />
+
+            <FormErrorMessage />
+          </FormControl>
+
+          <Controller<FormFantasyEvent, 'status'>
+            name="status"
+            defaultValue={props.fantasyEvent?.status}
+            render={({ field }) => (
+              <FormControl id="status" isRequired>
+                <FormLabel>Status</FormLabel>
+
+                <Select
+                  {...field}
+                  onChange={(value) => {
+                    if (!value) return
+                    field.onChange({ target: { value: value.value } })
+                  }}
+                  name="status"
+                  value={
+                    Option(field.value)
+                      .map((status) => statusOptionsMap.get(status))
+                      .get() ?? null
+                  }
+                  placeholder="Select status"
+                  options={statusOptions}
+                />
+
+                <FormErrorMessage />
+              </FormControl>
+            )}
+          />
+
           <Controller
             name="teamSize"
             defaultValue={props.fantasyEvent?.teamSize}
@@ -118,6 +178,21 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
                 <FormLabel>Team size</FormLabel>
 
                 <AdminNumberField {...field} placeholder="e.g., 7" />
+
+                <FormErrorMessage />
+              </FormControl>
+            )}
+          />
+
+          <Controller
+            name="teamCount"
+            defaultValue={props.fantasyEvent?.teamCount ?? 1}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <FormControl id="teamSize" isRequired>
+                <FormLabel>Team count</FormLabel>
+
+                <AdminNumberField {...field} />
 
                 <FormErrorMessage />
               </FormControl>

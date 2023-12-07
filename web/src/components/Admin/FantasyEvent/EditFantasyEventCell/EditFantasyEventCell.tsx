@@ -18,10 +18,15 @@ export const QUERY = gql`
       teamSize
       createdAt
       updatedAt
+      teamCount
+      name
       description
       status
       rules {
         id
+      }
+      event {
+        name
       }
     }
     events {

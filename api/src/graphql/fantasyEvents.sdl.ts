@@ -3,7 +3,9 @@ export const schema = gql`
     id: String!
     eventId: String!
     event: Event!
+    name: String
     teamSize: Int!
+    teamCount: Int!
     description: String
     fantasyTeams: [FantasyTeam!]!
     rules: [FantasyTeamRule!]!
@@ -26,6 +28,8 @@ export const schema = gql`
   input CreateFantasyEventInput {
     eventId: String!
     teamSize: Int!
+    teamCount: Int!
+    name: String
     description: String
     ruleIds: [String!]!
     status: FantasyEventStatus
@@ -34,6 +38,8 @@ export const schema = gql`
   input UpdateFantasyEventInput {
     eventId: String!
     teamSize: Int!
+    teamCount: Int!
+    name: String
     description: String
     ruleIds: [String!]!
     status: FantasyEventStatus
