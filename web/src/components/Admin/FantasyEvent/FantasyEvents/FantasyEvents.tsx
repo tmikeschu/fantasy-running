@@ -69,7 +69,9 @@ const FantasyEventsList = ({ fantasyEvents }: FindFantasyEvents) => {
             <Tr key={fantasyEvent.id}>
               <Td>
                 <VStack alignItems="flex-start" spacing="0">
-                  <Text>{truncate(fantasyEvent.event.name)}</Text>
+                  <Text>
+                    {truncate(fantasyEvent.name ?? fantasyEvent.event.name)}
+                  </Text>
 
                   <Text fontSize="sm" color="gray.500">
                     {truncate(fantasyEvent.id)}

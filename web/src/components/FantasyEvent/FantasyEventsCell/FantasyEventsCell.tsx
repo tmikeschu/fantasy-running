@@ -24,6 +24,7 @@ export const QUERY = gql`
     fantasyEvents {
       id
       status
+      name
       teamCount
       event {
         name
@@ -80,7 +81,7 @@ export const Success = ({
         return (
           <Card key={item.id}>
             <VStack>
-              <CardText>{item.event.name}</CardText>
+              <CardText>{item.name ?? item.event.name}</CardText>
               {match({ canMakeTeam, status: item.status })
                 .with({ canMakeTeam: false }, () => (
                   <Button as={Link} to={routes.myTeams()}>
