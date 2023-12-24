@@ -25,6 +25,7 @@
   },
   "packageManager": "yarn@3.6.3",
   "dependencies": {
+    "@vercel/blob": "^0.16.1",
     "ts-pattern": "^5.0.5"
   }
 }

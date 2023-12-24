@@ -9363,6 +9363,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vercel/blob@npm:^0.16.1":
+  version: 0.16.1
+  resolution: "@vercel/blob@npm:0.16.1"
+  dependencies:
+    undici: 5.28.2
+  checksum: e0dd1f26f54d87076d9f8e0b7a14b97f348d8223cdc857ef132483d896aa8cd81f7250823d55dd924527a2b91a6fe91b59bac07dfeb1fa4edb69f7a9dcbf16fe
+  languageName: node
+  linkType: hard
+
 "@vitejs/plugin-react@npm:4.0.4":
   version: 4.0.4
   resolution: "@vitejs/plugin-react@npm:4.0.4"
@@ -23230,6 +23239,7 @@ __metadata:
     "@redwoodjs/auth-clerk-setup": 6.3.2
     "@redwoodjs/cli-storybook": 6.3.2
     "@redwoodjs/core": 6.3.2
+    "@vercel/blob": ^0.16.1
     ts-pattern: ^5.0.5
   languageName: unknown
   linkType: soft
@@ -25496,6 +25506,15 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
+  languageName: node
+  linkType: hard
+
+"undici@npm:5.28.2":
+  version: 5.28.2
+  resolution: "undici@npm:5.28.2"
+  dependencies:
+    "@fastify/busboy": ^2.0.0
+  checksum: 34385ad9b3ba85309972ee3c1b426dcd19b94a5a6aa9c54499b5f48436c0ecc13a9b1e756a7c6a953eaefa9f4263890625ece5f2719fd774b0852204f5e4d5f9
   languageName: node
   linkType: hard
 

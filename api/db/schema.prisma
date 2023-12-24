@@ -38,19 +38,40 @@ model Event {
 }
 
 model FantasyEvent {
-  id          String             @id @default(cuid())
+  id          String              @id @default(cuid())
   eventId     String
-  event       Event              @relation(fields: [eventId], references: [id])
+  event       Event               @relation(fields: [eventId], references: [id])
   name        String?
   teamSize    Int
-  teamCount   Int                @default(1)
+  teamCount   Int                 @default(1)
   description String?
-  status      FantasyEventStatus @default(PENDING)
+  status      FantasyEventStatus  @default(PENDING)
+  prizes      FantasyEventPrize[]
 
   fantasyTeams FantasyTeam[]
   rules        FantasyTeamRule[]
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+}
+
+model FantasyEventPrize {
+  id          String @id @default(cuid())
+  name        String
+  description String
+
+  fantasyEventId String
+  fantasyEvent   FantasyEvent @relation(fields: [fantasyEventId], references: [id])
+
+  blobs FantasyEventPrizeBlob[]
+}
+
+model FantasyEventPrizeBlob {
+  id   String @id @default(cuid())
+  url  String
+  name String
+
+  fantasyEventPrizeId String
+  fantasyEventPrize   FantasyEventPrize? @relation(fields: [fantasyEventPrizeId], references: [id])
 }
 
 enum FantasyEventStatus {

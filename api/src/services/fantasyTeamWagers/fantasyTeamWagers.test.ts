@@ -42,7 +42,6 @@ describe('fantasyTeamWagers', () => {
     const result = await createFantasyTeamWager({
       input: {
         wager: 8919023.156473016,
-        updatedAt: '2023-11-24T09:31:42.145Z',
       },
     })
 
