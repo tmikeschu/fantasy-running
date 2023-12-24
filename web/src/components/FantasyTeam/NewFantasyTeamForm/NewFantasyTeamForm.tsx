@@ -2,11 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Heading,
-  Input,
   Stack,
   VStack,
 } from '@chakra-ui/react'
@@ -66,7 +62,7 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
   const formMethods = useForm<FormFantasyTeam>()
 
   const onSubmit = (data: FormFantasyTeam) => {
-    const { venmoHandle, name, ...rest } = data
+    const { name, ...rest } = data
     const members: FantasyTeamMemberInput[] = Object.entries(rest)
       .filter(entryIsTeamPick)
       .map(([key, value]) => ({
@@ -78,7 +74,6 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
       input: {
         fantasyEventId: fantasyEvent.id,
         userId: currentUser.id,
-        venmoHandle,
         name,
       },
       members,
@@ -100,7 +95,6 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
           const nextKey =
             blankSelections[blankSelections.findIndex((k) => k !== fieldKey)]
           if (!nextKey) {
-            if (!formValues.venmoHandle) venmoHandleRef.current?.focus()
             return
           }
           pubsub.broadcast({ type: 'AUTO_FOCUS', fieldKey: nextKey })
@@ -108,8 +102,6 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
         .otherwise(() => {})
     })
   }, [formMethods])
-
-  const venmoHandleRef = React.useRef<HTMLInputElement>(null)
 
   return (
     <Box maxW="3xl" pl="px">
@@ -172,21 +164,6 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
             ))}
           </Stack>
 
-          <Controller<FormFantasyTeam, 'venmoHandle'>
-            name="venmoHandle"
-            render={({ field }) => (
-              <FormControl maxW="sm">
-                <FormLabel>Venmo handle</FormLabel>
-
-                <Input
-                  {...field}
-                  ref={venmoHandleRef}
-                  value={field.value ?? ''}
-                />
-                <FormHelperText>(for potential payout)</FormHelperText>
-              </FormControl>
-            )}
-          />
           <ButtonGroup>
             <Button type="submit" colorScheme="blue" isLoading={props.loading}>
               Save

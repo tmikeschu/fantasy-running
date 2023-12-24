@@ -5,7 +5,6 @@ export const schema = gql`
     fantasyTeam: FantasyTeam
     createdAt: DateTime!
     updatedAt: DateTime!
-    venmoHandle: String!
   }
 
   type Query {
@@ -15,12 +14,10 @@ export const schema = gql`
 
   input CreateFantasyTeamWagerInput {
     wager: Float!
-    venmoHandle: String!
   }
 
   input UpdateFantasyTeamWagerInput {
     wager: Float
-    venmoHandle: String
   }
 
   type Mutation {

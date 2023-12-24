@@ -15,9 +15,6 @@ export const standard = (): MyTeamsQuery => {
           },
         },
       })),
-      wager: {
-        venmoHandle: 'glee',
-      },
 
       fantasyEvent: {
         event: {

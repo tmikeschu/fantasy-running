@@ -9,11 +9,15 @@ export const QUERY = gql`
     fantasyTeams {
       id
       name
-      userId
-      fantasyEventId
-      fantasyTeamWagerId
-      createdAt
-      updatedAt
+      owner {
+        name
+        email
+      }
+      fantasyEvent {
+        event {
+          name
+        }
+      }
     }
   }
 `

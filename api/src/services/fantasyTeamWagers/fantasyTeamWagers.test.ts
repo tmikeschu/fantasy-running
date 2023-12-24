@@ -43,13 +43,11 @@ describe('fantasyTeamWagers', () => {
       input: {
         wager: 8919023.156473016,
         updatedAt: '2023-11-24T09:31:42.145Z',
-        venmoHandle: 'String',
       },
     })
 
     expect(result.wager).toEqual(8919023.156473016)
     expect(result.updatedAt).toEqual(new Date('2023-11-24T09:31:42.145Z'))
-    expect(result.venmoHandle).toEqual('String')
   })
 
   scenario('updates a fantasyTeamWager', async (scenario: StandardScenario) => {

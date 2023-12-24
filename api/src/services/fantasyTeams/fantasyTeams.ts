@@ -26,13 +26,13 @@ export const createFantasyTeam: MutationResolvers['createFantasyTeam'] = ({
   input,
   members,
 }) => {
-  const { userId, fantasyEventId, venmoHandle, name } = input
+  const { userId, fantasyEventId, name } = input
   return db.fantasyTeam.create({
     data: {
       name,
       fantasyEvent: { connect: { id: fantasyEventId } },
       owner: { connect: { id: userId } },
-      wager: { create: { venmoHandle, wager: 0 } },
+      wager: { create: { wager: 0 } },
       teamMembers: {
         createMany: {
           data: members.map((member) => ({

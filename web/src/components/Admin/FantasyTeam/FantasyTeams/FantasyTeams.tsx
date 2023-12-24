@@ -1,37 +1,43 @@
+import { Table, Thead, Th, Tr, Tbody, Td } from '@chakra-ui/react'
 import type { FindFantasyTeams } from 'types/graphql'
 
-import { timeTag, truncate } from 'src/lib/formatters'
+import { truncate } from 'src/lib/formatters'
+
+import AdminTableWrapper, {
+  AdminTableHeader,
+} from '../../AdminTableWrapper/AdminTableWrapper'
 
 const AdminFantasyTeamsList = ({ fantasyTeams }: FindFantasyTeams) => {
   return (
-    <div className="rw-segment rw-table-wrapper-responsive">
-      <table className="rw-table">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>User id</th>
-            <th>Fantasy event id</th>
-            <th>Fantasy team wager id</th>
-            <th>Created at</th>
-            <th>Updated at</th>
-          </tr>
-        </thead>
-        <tbody>
+    <AdminTableWrapper
+      resource="fantasy teams"
+      header={
+        <>
+          <AdminTableHeader>Fantasy Teams</AdminTableHeader>
+        </>
+      }
+    >
+      <Table className="rw-table">
+        <Thead>
+          <Tr>
+            <Th>Owner</Th>
+            <Th>Fantasy event</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {fantasyTeams.map((fantasyTeam) => (
-            <tr key={fantasyTeam.id}>
-              <td>{truncate(fantasyTeam.id)}</td>
-              <td>{truncate(fantasyTeam.name ?? '(unknown)')}</td>
-              <td>{truncate(fantasyTeam.userId)}</td>
-              <td>{truncate(fantasyTeam.fantasyEventId)}</td>
-              <td>{truncate(fantasyTeam.fantasyTeamWagerId)}</td>
-              <td>{timeTag(fantasyTeam.createdAt)}</td>
-              <td>{timeTag(fantasyTeam.updatedAt)}</td>
-            </tr>
+            <Tr key={fantasyTeam.id}>
+              <Td>
+                {truncate(
+                  fantasyTeam.owner.name ?? fantasyTeam.owner.email ?? 'unknown'
+                )}
+              </Td>
+              <Td>{truncate(fantasyTeam.fantasyEvent.event.name)}</Td>
+            </Tr>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </Tbody>
+      </Table>
+    </AdminTableWrapper>
   )
 }
 

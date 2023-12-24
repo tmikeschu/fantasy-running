@@ -23,9 +23,6 @@ export const QUERY = gql`
   query MyTeamsQuery($ownerId: String!) {
     fantasyTeams: myFantasyTeams(ownerId: $ownerId) {
       id
-      wager {
-        venmoHandle
-      }
       fantasyEvent {
         event {
           name

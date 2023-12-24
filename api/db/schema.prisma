@@ -104,7 +104,6 @@ model FantasyTeamWager {
   fantasyTeam FantasyTeam?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-  venmoHandle String
 }
 
 model FantasyTeamRule {

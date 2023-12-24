@@ -35,7 +35,6 @@ describe('fantasyTeams', () => {
     const result = await createFantasyTeam({
       input: {
         userId: scenario.fantasyTeam.two.userId,
-        venmoHandle: 'String',
         fantasyEventId: 'blah',
       },
       members: [{ eventRunnerId: '1', seed: 10 }],

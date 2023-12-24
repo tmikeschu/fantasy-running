@@ -5,7 +5,6 @@ export const schema = gql`
     name: String
     fantasyTeams: [FantasyTeam!]!
     roles: [Role!]!
-    venmoHandle: String
     createdAt: DateTime!
     updatedAt: DateTime!
     avatarUrl: String
@@ -25,14 +24,12 @@ export const schema = gql`
     email: String!
     name: String
     role: Role!
-    venmoHandle: String
   }
 
   input UpdateUserInput {
     email: String
     name: String
     role: Role
-    venmoHandle: String
   }
 
   type Mutation {

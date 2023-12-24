@@ -8,14 +8,12 @@ export const standard = defineScenario<Prisma.FantasyTeamWagerCreateArgs>({
       data: {
         wager: 6975558.069876528,
         updatedAt: '2023-11-24T09:31:42.187Z',
-        venmoHandle: 'String',
       },
     },
     two: {
       data: {
         wager: 3575228.9272817792,
         updatedAt: '2023-11-24T09:31:42.187Z',
-        venmoHandle: 'String',
       },
     },
   },
