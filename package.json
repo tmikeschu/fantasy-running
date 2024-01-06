@@ -8,9 +8,9 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
-    "@redwoodjs/auth-clerk-setup": "6.3.2",
-    "@redwoodjs/cli-storybook": "6.3.2",
-    "@redwoodjs/core": "6.3.2"
+    "@redwoodjs/auth-clerk-setup": "6.6.2",
+    "@redwoodjs/cli-storybook": "6.6.2",
+    "@redwoodjs/core": "6.6.2"
   },
   "eslintConfig": {
     "extends": "@redwoodjs/eslint-config",
@@ -23,9 +23,9 @@
   "prisma": {
     "seed": "yarn rw exec seed"
   },
-  "packageManager": "yarn@3.6.3",
+  "packageManager": "yarn@4.0.2",
   "dependencies": {
     "@vercel/blob": "^0.16.1",
-    "ts-pattern": "^5.0.5"
+    "ts-pattern": "^5.0.6"
   }
 }
