@@ -28,6 +28,19 @@ export const QUERY = gql`
       event {
         name
       }
+
+      prizes {
+        id
+        name
+        description
+        rank
+
+        blobs {
+          id
+          name
+          url
+        }
+      }
     }
     events {
       id
@@ -49,11 +62,6 @@ const UPDATE_FANTASY_EVENT_MUTATION = gql`
   ) {
     updateFantasyEvent(id: $id, input: $input) {
       id
-      eventId
-      teamSize
-      status
-      createdAt
-      updatedAt
     }
   }
 `

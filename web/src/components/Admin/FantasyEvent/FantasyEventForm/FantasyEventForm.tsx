@@ -8,26 +8,59 @@ import {
   Textarea,
   Link,
   Input,
+  List,
+  ListItem,
+  Card,
+  CardBody,
+  Icon,
+  Center,
+  Text,
+  Modal,
+  ModalHeader,
+  ModalContent,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Image,
+  IconButton,
 } from '@chakra-ui/react'
+import { upload } from '@vercel/blob/client'
 import { Select } from 'chakra-react-select'
+import { BiGift, BiX } from 'react-icons/bi'
 import { Option } from 'space-monad'
-import type {
-  CreateFantasyEventInput,
-  EditFantasyEventById,
-  Event,
-  FantasyEventStatus,
-  FantasyTeamRule,
-  UpdateFantasyEventInput,
+import { P, match } from 'ts-pattern'
+import {
+  PrizeBlobInput,
+  type CreateFantasyEventInput,
+  type EditFantasyEventById,
+  type Event,
+  type FantasyEventStatus,
+  type FantasyPrizeInput,
+  type FantasyTeamRule,
+  type UpdateFantasyEventInput,
 } from 'types/graphql'
 
-import { Form, Submit, Controller, useForm, TextField } from '@redwoodjs/forms'
+import {
+  Form,
+  Submit,
+  Controller,
+  useForm,
+  TextField,
+  FileField,
+  TextAreaField,
+} from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
 
 import AdminNumberField from 'src/components/Admin/AdminNumberField/AdminNumberField'
 import FormErrorMessage from 'src/components/forms/FormErrorMessage/FormErrorMessage'
 import FormLabel from 'src/components/forms/FormLabel/FormLabel'
 
-type FormFantasyEvent = CreateFantasyEventInput & { id?: string }
+type FormFantasyEvent = Omit<CreateFantasyEventInput, 'prizes'> & {
+  id?: string
+  prizeFiles: Record<string, FileList>
+  prizesMap: Record<string, FantasyPrizeInput>
+}
 
 interface FantasyEventFormProps {
   fantasyEvent?: EditFantasyEventById['fantasyEvent']
@@ -45,8 +78,33 @@ interface FantasyEventFormProps {
 }
 
 const FantasyEventForm = (props: FantasyEventFormProps) => {
-  const onSubmit = (data: FormFantasyEvent) => {
-    props.onSave(data, props.fantasyEvent?.id)
+  const onSubmit = async ({
+    prizesMap,
+    prizeFiles,
+    ...data
+  }: FormFantasyEvent) => {
+    const prizesWithBlobs = await Promise.all(
+      Object.values(prizesMap).flatMap(async (prize) => {
+        // TODO prevent duplicate saves
+        const files = prizeFiles[prize.id ?? ''] ?? []
+        const blobs = await Promise.all(
+          Array.from(files).map(async (file) => {
+            const blob = await upload(file.name, file, {
+              access: 'public',
+              handleUploadUrl: '/api/fantasyEventPrizeBlobUpload',
+            })
+
+            return {
+              url: blob.url,
+              name: blob.pathname,
+            } satisfies PrizeBlobInput
+          })
+        )
+        return { ...prize, blobs } satisfies FantasyPrizeInput
+      })
+    )
+    console.log({ prizesWithBlobs, prizeFiles })
+    props.onSave({ ...data, prizes: prizesWithBlobs }, props.fantasyEvent?.id)
   }
 
   const eventOptions = React.useMemo(() => {
@@ -73,7 +131,17 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
     return new Map(ruleOptions.map((option) => [option.value, option]))
   }, [ruleOptions])
 
-  const formMethods = useForm<FormFantasyEvent>()
+  const formMethods = useForm<FormFantasyEvent>({
+    defaultValues: {
+      prizesMap: Object.fromEntries(
+        props.fantasyEvent?.prizes.map(({ __typename: _, ...prize }) => [
+          prize.id,
+          prize,
+        ]) ?? []
+      ),
+      prizeFiles: {},
+    },
+  })
 
   const defaultName =
     props.fantasyEvent?.name ??
@@ -87,6 +155,14 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
   const statusOptionsMap = new Map(
     statusOptions.map((option) => [option.value, option])
   )
+
+  const [selectedPrizeId, setSelectedPrizeId] = React.useState<
+    string | undefined
+  >()
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  const prizesMap = formMethods.watch('prizesMap')
+  const prizeFiles = formMethods.watch('prizeFiles')
 
   return (
     <Box maxW="xl">
@@ -234,7 +310,7 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
 
           <Controller
             name="description"
-            defaultValue={props.fantasyEvent?.description}
+            defaultValue={props.fantasyEvent?.description ?? ''}
             render={({ field }) => (
               <FormControl id="description">
                 <FormLabel>Description</FormLabel>
@@ -254,6 +330,97 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
             )}
           />
 
+          <List display="flex" gap="4" w="full" overflowX="auto" py="2" pr="2">
+            {Object.values(prizesMap)
+              .sort((a, b) => Number(a.rank ?? 0) - Number(b.rank ?? 0))
+              .map((prize) => (
+                <Card
+                  minW="0"
+                  flexShrink={0}
+                  key={prize.id}
+                  w="2xs"
+                  h="2xs"
+                  role="button"
+                  _hover={{ cursor: 'pointer', boxShadow: 'lg' }}
+                  onClick={() => {
+                    setSelectedPrizeId(prize.id ?? 'unknown')
+                    setIsOpen(true)
+                  }}
+                >
+                  <IconButton
+                    position="absolute"
+                    variant="ghost"
+                    top="1"
+                    right="1"
+                    icon={<BiX />}
+                    aria-label="delete"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      const { [prize.id ?? '']: _, ...newValue } = prizesMap
+                      formMethods.setValue('prizesMap', newValue)
+                    }}
+                  />
+                  <CardBody>
+                    <Text fontWeight="bold">{prize.name}</Text>
+                    <Text>Prize #{prize.rank}</Text>
+                    {(
+                      Array.from(prizeFiles[prize.id ?? ''] ?? []) as Array<
+                        string | File
+                      >
+                    )
+                      .concat(prize.blobs.map((b) => b.url))
+                      .filter(Boolean)
+                      .slice(0, 1)
+                      .map((file) => {
+                        const { key, url } = match(file)
+                          .with(P.string, (url) => ({ key: url, url }))
+                          .otherwise((file) => {
+                            const blob = new Blob([file], {
+                              type: 'image/jpeg',
+                            })
+                            const blobUrl = URL.createObjectURL(blob)
+                            return { key: file.name, url: blobUrl }
+                          })
+                        return <Image w="32" key={key} src={url} />
+                      })}
+                  </CardBody>
+                </Card>
+              ))}
+
+            <ListItem>
+              <Card
+                minW="0"
+                flexShrink={0}
+                w="2xs"
+                h="2xs"
+                role="button"
+                onClick={() => {
+                  const current = { ...prizesMap }
+                  const prizesLength = Object.keys(current).length
+                  const id = `NEW${prizesLength}`
+                  const newValue = {
+                    ...current,
+                    [id]: {
+                      id,
+                      blobs: [],
+                      name: '',
+                      rank: prizesLength + 1,
+                    },
+                  }
+                  formMethods.setValue('prizesMap', newValue)
+                  setSelectedPrizeId(id)
+                  setIsOpen(true)
+                }}
+                _hover={{ cursor: 'pointer', boxShadow: 'lg' }}
+              >
+                <CardBody as={Center} flexDir="column" color="gray.600" gap="4">
+                  <Text fontWeight="medium">Add prize</Text>
+                  <Icon fontSize="xl" as={BiGift} />
+                </CardBody>
+              </Card>
+            </ListItem>
+          </List>
+
           <ButtonGroup w="full" justifyContent="flex-end">
             <Button
               as={Submit}
@@ -265,6 +432,62 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
             </Button>
           </ButtonGroup>
         </VStack>
+
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>New prize</ModalHeader>
+            <ModalCloseButton />
+            {selectedPrizeId ? (
+              <ModalBody>
+                <FormControl id={`prizesMap.${selectedPrizeId}.name`}>
+                  <FormLabel>Name</FormLabel>
+
+                  <Input
+                    as={TextField}
+                    name={`prizesMap.${selectedPrizeId}.name`}
+                    defaultValue={prizesMap[selectedPrizeId]?.name ?? ''}
+                  />
+                </FormControl>
+
+                <FormControl id={`prizesMap.${selectedPrizeId}.rank`}>
+                  <FormLabel>Rank</FormLabel>
+
+                  <Input
+                    as={TextField}
+                    defaultValue={prizesMap[selectedPrizeId]?.rank ?? 0}
+                    name={`prizesMap.${selectedPrizeId}.rank`}
+                    validation={{ valueAsNumber: true }}
+                  />
+                </FormControl>
+
+                <FormControl id={`prizesMap.${selectedPrizeId}.description`}>
+                  <FormLabel>Description</FormLabel>
+
+                  <Textarea
+                    as={TextAreaField}
+                    placeholder="This prize is sweet"
+                    defaultValue={prizesMap[selectedPrizeId]?.description ?? ''}
+                    name={`prizesMap.${selectedPrizeId}.description`}
+                  />
+                </FormControl>
+
+                <FileField name={`prizeFiles.${selectedPrizeId}`} multiple />
+                {Array.from(prizeFiles[selectedPrizeId] ?? []).map((file) => {
+                  const blob = new Blob([file], { type: 'image/jpeg' })
+                  const blobURL = URL.createObjectURL(blob)
+                  return <Image key={file.name} src={blobURL} />
+                })}
+              </ModalBody>
+            ) : null}
+
+            <ModalFooter>
+              <ButtonGroup>
+                <Button onClick={() => setIsOpen(false)}>Done</Button>
+              </ButtonGroup>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Form>
     </Box>
   )

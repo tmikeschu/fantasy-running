@@ -1,5 +1,7 @@
+import type { APIGatewayEvent, Context } from 'aws-lambda'
 import { User } from 'types/graphql'
 
+import { clerkAuthDecoder as authDecoder } from '@redwoodjs/auth-clerk-api'
 import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
 
 import { logger } from 'src/lib/logger'
@@ -31,10 +33,29 @@ export const getCurrentUser = async (
   }
 
   const { id } = decoded
+
   const user = await db.user.findUnique({ where: { externalId: id } })
 
   // Be careful to only return information that should be accessible on the web side.
   return user
+}
+
+export const getUserFromCookie = async (
+  event: APIGatewayEvent,
+  context: Context
+) => {
+  const cookies = Object.fromEntries(
+    event.headers.cookie
+      .split('; ')
+      .map((x) => x.split('=').map((x) => x.trim()))
+  )
+  const token = cookies.__session
+  const decoded = await authDecoder(token, 'clerk', {
+    event,
+    context,
+  })
+
+  return getCurrentUser(decoded, { token, type: 'clerk' }, { context, event })
 }
 
 /**

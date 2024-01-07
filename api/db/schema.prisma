@@ -58,6 +58,7 @@ model FantasyEventPrize {
   id          String @id @default(cuid())
   name        String
   description String
+  rank        Int
 
   fantasyEventId String
   fantasyEvent   FantasyEvent @relation(fields: [fantasyEventId], references: [id])

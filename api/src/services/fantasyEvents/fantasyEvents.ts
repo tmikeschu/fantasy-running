@@ -19,8 +19,8 @@ export const fantasyEvent: QueryResolvers['fantasyEvent'] = ({ id }) => {
 }
 
 export const createFantasyEvent: MutationResolvers['createFantasyEvent'] =
-  async ({ input: { ruleIds, ...input } }) => {
-    return db.fantasyEvent.create({
+  async ({ input: { ruleIds, prizes, ...input } }) => {
+    const fantasyEvent = await db.fantasyEvent.create({
       data: {
         ...input,
         rules: {
@@ -28,14 +28,94 @@ export const createFantasyEvent: MutationResolvers['createFantasyEvent'] =
         },
       },
     })
+
+    await Promise.all(
+      prizes.map((prize) =>
+        db.fantasyEventPrize.create({
+          data: {
+            fantasyEventId: fantasyEvent.id,
+            name: prize.name,
+            blobs: {
+              createMany: {
+                data: prize.blobs.map((blob) => ({
+                  url: blob.url,
+                  name: blob.name,
+                })),
+              },
+            },
+            rank: prize.rank,
+            description: prize.description,
+          },
+        })
+      )
+    )
+
+    return fantasyEvent
   }
 
 export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] =
-  async ({ id, input: { ruleIds, ...input } }) => {
+  async ({ id, input: { ruleIds, prizes, ...input } }) => {
     const current = await db.fantasyEvent.findUnique({
       where: { id },
-      select: { rules: { select: { id: true } } },
+      select: {
+        rules: { select: { id: true } },
+        prizes: { select: { id: true } },
+      },
     })
+
+    const currentPrizesMap = new Map(
+      current.prizes.map((prize) => [prize.id, prize])
+    )
+    const prizesMap = new Map(prizes.map((prize) => [prize.id, prize]))
+    const deletedPrizes = current.prizes.filter(
+      (prize) => !prizesMap.has(prize.id)
+    )
+
+    const updatedPrizes = prizes.filter((prize) =>
+      currentPrizesMap.has(prize.id)
+    )
+    const newPrizes = prizes.filter((prize) => !currentPrizesMap.has(prize.id))
+
+    await Promise.all(
+      updatedPrizes
+        .flatMap((prize) => prize.blobs)
+        .map((blob) =>
+          db.fantasyEventPrizeBlob.update({
+            where: { id: blob.id },
+            data: blob,
+          })
+        )
+    )
+    await Promise.all(
+      updatedPrizes.map(({ blobs: _, ...prize }) =>
+        db.fantasyEventPrize.update({
+          where: { id: prize.id },
+          data: prize,
+        })
+      )
+    )
+
+    await Promise.all(
+      newPrizes.map((prize) =>
+        db.fantasyEventPrize.create({
+          data: {
+            fantasyEventId: id,
+            name: prize.name,
+            blobs: {
+              createMany: {
+                data: prize.blobs.map((blob) => ({
+                  url: blob.url,
+                  name: blob.name,
+                })),
+              },
+            },
+            rank: prize.rank,
+            description: prize.description,
+          },
+        })
+      )
+    )
+
     return db.fantasyEvent.update({
       where: { id },
       data: {
@@ -43,6 +123,9 @@ export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] =
         rules: {
           disconnect: current.rules.map((rule) => ({ id: rule.id })),
           connect: ruleIds.map((id) => ({ id })),
+        },
+        prizes: {
+          deleteMany: deletedPrizes.map((prize) => ({ id: prize.id })),
         },
       },
     })
@@ -67,5 +150,8 @@ export const FantasyEvent: FantasyEventRelationResolvers = {
   },
   rules: (_obj, { root }) => {
     return db.fantasyEvent.findUnique({ where: { id: root?.id } }).rules()
+  },
+  prizes: (_obj, { root }) => {
+    return db.fantasyEvent.findUnique({ where: { id: root?.id } }).prizes()
   },
 }

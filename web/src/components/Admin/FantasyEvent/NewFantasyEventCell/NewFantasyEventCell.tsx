@@ -51,9 +51,7 @@ export const Success = ({
 }: CellSuccessProps<GetNewFantasyEventRelations>) => {
   const [createFantasyEvent, { loading, error }] = useMutation<
     unknown,
-    {
-      input: CreateFantasyEventInput
-    }
+    { input: CreateFantasyEventInput }
   >(CREATE_FANTASY_EVENT_MUTATION, {
     onCompleted: () => {
       toast.success('FantasyEvent created')

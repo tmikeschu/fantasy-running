@@ -12,6 +12,7 @@ export const schema = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
     status: FantasyEventStatus!
+    prizes: [FantasyEventPrize!]!
   }
 
   enum FantasyEventStatus {
@@ -33,6 +34,7 @@ export const schema = gql`
     description: String
     ruleIds: [String!]!
     status: FantasyEventStatus
+    prizes: [FantasyPrizeInput!]!
   }
 
   input UpdateFantasyEventInput {
@@ -43,6 +45,21 @@ export const schema = gql`
     description: String
     ruleIds: [String!]!
     status: FantasyEventStatus
+    prizes: [FantasyPrizeInput!]!
+  }
+
+  input FantasyPrizeInput {
+    id: String
+    name: String!
+    description: String
+    rank: Int!
+    blobs: [PrizeBlobInput!]!
+  }
+
+  input PrizeBlobInput {
+    id: String
+    name: String!
+    url: String!
   }
 
   type Mutation {
