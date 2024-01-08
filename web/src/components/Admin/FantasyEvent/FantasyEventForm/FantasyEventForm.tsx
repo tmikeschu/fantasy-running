@@ -114,7 +114,6 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
     ).finally(() => {
       setIsUploading(false)
     })
-    console.log({ prizesWithBlobs, prizeFiles })
     props.onSave({ ...data, prizes: prizesWithBlobs }, props.fantasyEvent?.id)
   }
 
