@@ -6,9 +6,8 @@ import { getUserFromCookie } from 'src/lib/auth'
 import { logger } from 'src/lib/logger'
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
+  const uploadLogger = logger.child({ module: 'prize-blob' })
   try {
-    const uploadLogger = logger.child({ module: 'prize-blob' })
-
     const user = await getUserFromCookie(event, context)
     if (!user) {
       return Response.json({}, { status: 401 })
