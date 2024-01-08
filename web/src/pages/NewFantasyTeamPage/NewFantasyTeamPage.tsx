@@ -14,7 +14,7 @@ const NewFantasyTeamPage = ({
     <>
       <MetaTags title="NewFantasyTeam" description="NewFantasyTeam page" />
 
-      <Container px={{ base: '8', md: undefined }}>
+      <Container px={{ base: '8', md: undefined }} mx="0">
         <VStack alignItems="stretch" w="full" spacing="8" pb="8">
           <NewFantasyTeamCell id={fantasyEventId} />
         </VStack>

@@ -88,16 +88,13 @@ export const Success = ({
             <VStack>
               <CardText>{item.name ?? item.event.name}</CardText>
               {match({ canMakeTeam, status: item.status, isAdmin })
-                .with({ canMakeTeam: false }, () => (
-                  <Button as={Link} to={routes.myTeams()}>
-                    {item.teamCount > 1 ? 'View teams' : 'View team'}
-                  </Button>
-                ))
                 .with({ isAdmin: true }, () => (
                   <HStack>
-                    <Button as={Link} to={routes.myTeams()}>
-                      {item.teamCount > 1 ? 'View teams' : 'View team'}
-                    </Button>
+                    {eventTeamMap[item.id]?.length > 0 && (
+                      <Button as={Link} to={routes.myTeams()}>
+                        {item.teamCount > 1 ? 'View teams' : 'View team'}
+                      </Button>
+                    )}
                     <Button
                       as={Link}
                       to={routes.newFantasyTeam({ id: item.id })}
@@ -105,6 +102,11 @@ export const Success = ({
                       Make a team
                     </Button>
                   </HStack>
+                ))
+                .with({ canMakeTeam: false }, () => (
+                  <Button as={Link} to={routes.myTeams()}>
+                    {item.teamCount > 1 ? 'View teams' : 'View team'}
+                  </Button>
                 ))
                 .with({ status: 'LIVE' }, () => (
                   <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
