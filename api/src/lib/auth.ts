@@ -34,18 +34,22 @@ export const getCurrentUser = async (
 
   const { id } = decoded
 
-  const user = await db.user.findUnique({ where: { externalId: id } })
+  try {
+    const user = await db.user.findUnique({ where: { externalId: id } })
+    logger.warn({ user }, 'User found')
 
-  // Be careful to only return information that should be accessible on the web side.
-  return user
+    // Be careful to only return information that should be accessible on the web side.
+    return user
+  } catch (error) {
+    logger.error({ error }, 'User not found')
+    return null
+  }
 }
 
 export const getUserFromCookie = async (
   event: APIGatewayEvent,
   context: Context
 ) => {
-  const cookieLogger = logger.child({ module: 'getUserFromCookie' })
-  cookieLogger.error(event, 'NOT ERROR: getUserFromCookie')
   const cookies = Object.fromEntries(
     event.headers.cookie
       .split('; ')
@@ -56,7 +60,6 @@ export const getUserFromCookie = async (
     event,
     context,
   })
-  cookieLogger.error(decoded, 'NOT ERROR: getUserFromCookie decoded')
 
   return getCurrentUser(decoded, { token, type: 'clerk' }, { context, event })
 }

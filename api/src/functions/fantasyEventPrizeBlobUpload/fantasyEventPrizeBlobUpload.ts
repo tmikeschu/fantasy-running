@@ -6,17 +6,16 @@ import { getUserFromCookie } from 'src/lib/auth'
 import { logger } from 'src/lib/logger'
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
-  const uploadLogger = logger.child({ uploadBlob: { handler: 'prize-blob' } })
+  const uploadLogger = logger.child({ module: 'prize-blob' })
   uploadLogger.error(event, 'NOT ERROR: Upload blob handler')
 
   const user = await getUserFromCookie(event, context)
+  uploadLogger.warn(user, 'User')
   if (!user) {
-    uploadLogger.error('No user')
     return { statusCode: 401 }
   }
 
   if (!user.roles.includes('ADMIN')) {
-    uploadLogger.error('Not admin')
     return { statusCode: 401 }
   }
 
@@ -31,7 +30,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       const request = new Request(`${location.origin}/${event.path}`, {
         headers: new Headers(event.headers),
       })
-      uploadLogger.info('Uploading blob...')
+      uploadLogger.warn('Uploading blob...')
 
       return handleUpload({
         body,
@@ -45,7 +44,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
           }
         },
         onUploadCompleted: async () => {
-          uploadLogger.info('Blob uploaded')
+          uploadLogger.error('Blob uploaded')
         },
       })
         .then((body) => ({ statusCode: 201, body }))
