@@ -1,3 +1,4 @@
+import { del } from '@vercel/blob'
 import type {
   QueryResolvers,
   MutationResolvers,
@@ -59,7 +60,7 @@ export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] =
       where: { id },
       select: {
         rules: { select: { id: true } },
-        prizes: { select: { id: true } },
+        prizes: { select: { id: true, blobs: true } },
       },
     })
 
@@ -116,6 +117,10 @@ export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] =
       )
     )
 
+    await Promise.all(
+      deletedPrizes.flatMap((prize) => prize.blobs).map((blob) => del(blob.url))
+    )
+
     return db.fantasyEvent.update({
       where: { id },
       data: {
@@ -125,7 +130,6 @@ export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] =
           connect: ruleIds.map((id) => ({ id })),
         },
         prizes: {
-          // TODO delete vercel blobs
           deleteMany: deletedPrizes.map((prize) => ({ id: prize.id })),
         },
       },
