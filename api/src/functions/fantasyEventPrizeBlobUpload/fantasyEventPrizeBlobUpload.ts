@@ -12,7 +12,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     const user = await getUserFromCookie(event, context)
     if (!user || !user.roles.includes('ADMIN')) {
       if (!user) uploadLogger.error({ event, context }, 'No user')
-      if (!user?.roles.includes('ADMIN'))
+      if (user && !user?.roles.includes('ADMIN'))
         uploadLogger.error({ event, context }, 'Not admin')
 
       return {
