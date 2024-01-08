@@ -7,10 +7,8 @@ import { logger } from 'src/lib/logger'
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
   const uploadLogger = logger.child({ module: 'prize-blob' })
-  uploadLogger.error(event, 'NOT ERROR: Upload blob handler')
 
   const user = await getUserFromCookie(event, context)
-  uploadLogger.warn(user, 'User')
   if (!user) {
     return { statusCode: 401 }
   }
@@ -30,7 +28,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       const request = new Request(`${location.origin}/${event.path}`, {
         headers: new Headers(event.headers),
       })
-      uploadLogger.warn('Uploading blob...')
+      uploadLogger.warn({ body, request }, 'body')
 
       return handleUpload({
         body,
@@ -39,6 +37,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
           _pathname: string,
           _clientPayload?: string
         ) => {
+          uploadLogger.warn('.............before generate token...............')
           return {
             allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif'],
           }
