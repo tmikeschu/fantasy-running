@@ -30,6 +30,7 @@ import { Select } from 'chakra-react-select'
 import { BiGift, BiX } from 'react-icons/bi'
 import { Option } from 'space-monad'
 import { P, match } from 'ts-pattern'
+import { set } from 'ts-pattern/dist/patterns'
 import {
   PrizeBlobInput,
   type CreateFantasyEventInput,
@@ -79,6 +80,8 @@ interface FantasyEventFormProps {
 }
 
 const FantasyEventForm = (props: FantasyEventFormProps) => {
+  const [isUploading, setIsUploading] = React.useState(false)
+
   const onSubmit = async ({
     prizesMap,
     prizeFiles,
@@ -88,6 +91,7 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
       Object.values(prizesMap).flatMap(async (prize) => {
         // TODO prevent duplicate saves
         const files = prizeFiles[prize.id ?? ''] ?? []
+        setIsUploading(true)
         const newBlobs = await Promise.all(
           Array.from(files).map(async (file) => {
             const blob = await upload(file.name, file, {
@@ -432,7 +436,7 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
             <Button
               as={Submit}
               type="submit"
-              isLoading={props.loading}
+              isLoading={props.loading || isUploading}
               colorScheme="blue"
             >
               Save
