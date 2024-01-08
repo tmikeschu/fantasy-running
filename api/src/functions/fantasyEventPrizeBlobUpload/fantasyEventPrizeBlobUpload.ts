@@ -43,10 +43,11 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
             )
             return {
               allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif'],
+              tokenPayload: JSON.stringify({}),
             }
           },
-          onUploadCompleted: async () => {
-            uploadLogger.error('Blob uploaded')
+          onUploadCompleted: async ({ blob, tokenPayload }) => {
+            uploadLogger.error({ blob, tokenPayload }, 'Blob uploaded')
           },
         })
           .then((body) => ({ statusCode: 201, body }))
