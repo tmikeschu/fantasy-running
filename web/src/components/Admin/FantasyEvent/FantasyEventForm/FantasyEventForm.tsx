@@ -97,7 +97,9 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
 
             return {
               url: blob.url,
-              name: blob.pathname,
+              name: `${process.env.NODE_ENV ?? 'default'}/prize-blobs/${
+                blob.pathname
+              }`,
             } satisfies PrizeBlobInput
           })
         )
