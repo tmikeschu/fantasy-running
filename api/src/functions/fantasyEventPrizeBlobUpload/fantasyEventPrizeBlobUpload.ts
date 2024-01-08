@@ -28,9 +28,9 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       const request = new Request(`${location.origin}/${event.path}`, {
         headers: new Headers(event.headers),
       })
-      uploadLogger.warn({ body, request }, 'body')
 
       return handleUpload({
+        token: process.env.BLOB_READ_WRITE_TOKEN,
         body,
         request,
         onBeforeGenerateToken: async (

@@ -34,16 +34,10 @@ export const getCurrentUser = async (
 
   const { id } = decoded
 
-  try {
-    const user = await db.user.findUnique({ where: { externalId: id } })
-    logger.warn({ user }, 'User found')
+  const user = await db.user.findUnique({ where: { externalId: id } })
 
-    // Be careful to only return information that should be accessible on the web side.
-    return user
-  } catch (error) {
-    logger.error({ error }, 'User not found')
-    return null
-  }
+  // Be careful to only return information that should be accessible on the web side.
+  return user
 }
 
 export const getUserFromCookie = async (
