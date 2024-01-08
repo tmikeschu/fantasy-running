@@ -44,6 +44,8 @@ export const getUserFromCookie = async (
   event: APIGatewayEvent,
   context: Context
 ) => {
+  const cookieLogger = logger.child({ module: 'getUserFromCookie' })
+  cookieLogger.error(event, 'NOT ERROR: getUserFromCookie')
   const cookies = Object.fromEntries(
     event.headers.cookie
       .split('; ')
@@ -54,6 +56,7 @@ export const getUserFromCookie = async (
     event,
     context,
   })
+  cookieLogger.error(decoded, 'NOT ERROR: getUserFromCookie decoded')
 
   return getCurrentUser(decoded, { token, type: 'clerk' }, { context, event })
 }

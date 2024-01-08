@@ -7,7 +7,7 @@ import { logger } from 'src/lib/logger'
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
   const uploadLogger = logger.child({ uploadBlob: { handler: 'prize-blob' } })
-  uploadLogger.info(event, 'Upload blob handler')
+  uploadLogger.error(event, 'NOT ERROR: Upload blob handler')
 
   const user = await getUserFromCookie(event, context)
   if (!user) {
