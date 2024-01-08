@@ -10,12 +10,11 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
 
   try {
     const user = await getUserFromCookie(event, context)
-    if (!user) {
-      return { statusCode: 401, body: 'Unauthorized' }
-    }
-
-    if (!user.roles.includes('ADMIN')) {
-      return { statusCode: 401, body: 'Unauthorized' }
+    if (!user || !user.roles.includes('ADMIN')) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ message: 'Unauthorized' }),
+      }
     }
 
     return match(event)
@@ -42,27 +41,26 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
               tokenPayload: JSON.stringify({}),
             }
           },
-          onUploadCompleted: async ({ blob, tokenPayload }) => {
-            uploadLogger.error({ blob, tokenPayload }, 'Blob uploaded')
-          },
+          onUploadCompleted: async () => {},
         })
           .then((body) => ({ status: 201, ...body }))
           .catch((error) => {
             uploadLogger.error({ message: error.message }, 'Blob upload failed')
-            return { status: 400, error: (error as Error).message }
+            return {
+              status: 400,
+              body: JSON.stringify({ error: (error as Error).message }),
+            }
           })
         return { statusCode: status, body: JSON.stringify(json) }
       })
       .otherwise(() => {
         uploadLogger.error('Other failure')
-        return { statusCode: 404, body: { other: 'error' } }
+        return { statusCode: 404 }
       })
   } catch (e) {
-    uploadLogger.error(e, 'ERROR')
-    uploadLogger.error(e.message, 'ERROR MESSAGE')
     return {
       statusCode: 500,
-      body: { other: 'catch error', message: e.message },
+      body: JSON.stringify({ other: 'catch error', message: e.message }),
     }
   }
 }
