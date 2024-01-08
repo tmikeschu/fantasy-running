@@ -30,17 +30,13 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
           headers: new Headers(event.headers),
         })
 
-        return handleUpload({
+        const { status, ...json } = await handleUpload({
           body,
           request,
           onBeforeGenerateToken: async (
             _pathname: string,
             _clientPayload?: string
           ) => {
-            uploadLogger.warn(
-              { _pathname, _clientPayload },
-              '.............before generate token...............'
-            )
             return {
               allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif'],
               tokenPayload: JSON.stringify({}),
@@ -50,14 +46,12 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
             uploadLogger.error({ blob, tokenPayload }, 'Blob uploaded')
           },
         })
-          .then((body) => Response.json(body, { status: 201 }))
+          .then((body) => ({ status: 201, ...body }))
           .catch((error) => {
             uploadLogger.error({ message: error.message }, 'Blob upload failed')
-            return Response.json(
-              { error: (error as Error).message },
-              { status: 400 }
-            )
+            return { status: 400, error: (error as Error).message }
           })
+        return Response.json(json, { status })
       })
       .otherwise(() => {
         uploadLogger.error('Other failure')
