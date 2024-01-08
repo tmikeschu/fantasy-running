@@ -6,18 +6,18 @@ import { getUserFromCookie } from 'src/lib/auth'
 import { logger } from 'src/lib/logger'
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
-  const uploadLogger = logger.child({ module: 'prize-blob' })
-
-  const user = await getUserFromCookie(event, context)
-  if (!user) {
-    return Response.json({}, { status: 401 })
-  }
-
-  if (!user.roles.includes('ADMIN')) {
-    return Response.json({}, { status: 401 })
-  }
-
   try {
+    const uploadLogger = logger.child({ module: 'prize-blob' })
+
+    const user = await getUserFromCookie(event, context)
+    if (!user) {
+      return Response.json({}, { status: 401 })
+    }
+
+    if (!user.roles.includes('ADMIN')) {
+      return Response.json({}, { status: 401 })
+    }
+
     return match(event)
       .with({ httpMethod: 'POST' }, async () => {
         const rawBody = event.isBase64Encoded
