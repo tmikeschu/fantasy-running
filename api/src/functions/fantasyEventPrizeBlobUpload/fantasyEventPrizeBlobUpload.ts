@@ -10,11 +10,11 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
 
   const user = await getUserFromCookie(event, context)
   if (!user) {
-    return { statusCode: 401 }
+    return Response.json({}, { status: 401 })
   }
 
   if (!user.roles.includes('ADMIN')) {
-    return { statusCode: 401 }
+    return Response.json({}, { status: 401 })
   }
 
   try {
@@ -55,7 +55,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       })
       .otherwise(() => {
         uploadLogger.error('Other failure')
-        return { statusCode: 404 }
+        return Response.json({ other: 'error' }, { status: 404 })
       })
   } catch (e) {
     uploadLogger.error(e, 'ERROR')
