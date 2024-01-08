@@ -94,16 +94,18 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
         setIsUploading(true)
         const newBlobs = await Promise.all(
           Array.from(files).map(async (file) => {
-            const blob = await upload(file.name, file, {
-              access: 'public',
-              handleUploadUrl: '/api/fantasyEventPrizeBlobUpload',
-            })
+            const blob = await upload(
+              `${process.env.NODE_ENV ?? 'default'}/prize-blobs/${file.name}`,
+              file,
+              {
+                access: 'public',
+                handleUploadUrl: '/api/fantasyEventPrizeBlobUpload',
+              }
+            )
 
             return {
               url: blob.url,
-              name: `${process.env.NODE_ENV ?? 'default'}/prize-blobs/${
-                blob.pathname
-              }`,
+              name: blob.pathname,
             } satisfies PrizeBlobInput
           })
         )
