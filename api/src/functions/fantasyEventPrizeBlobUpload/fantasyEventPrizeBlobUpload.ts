@@ -17,19 +17,19 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     return { statusCode: 401 }
   }
 
-  try {
-    return match(event)
-      .with({ httpMethod: 'POST' }, async () => {
-        const rawBody = event.isBase64Encoded
-          ? Buffer.from(event.body, 'base64').toString('utf-8')
-          : event.body
-        const body = JSON.parse(rawBody) as HandleUploadBody
-        const location = new URL(event.headers.referer)
-        // A request object is required for handleUpload, mainly to extract headers
-        const request = new Request(`${location.origin}/${event.path}`, {
-          headers: new Headers(event.headers),
-        })
+  return match(event)
+    .with({ httpMethod: 'POST' }, async () => {
+      const rawBody = event.isBase64Encoded
+        ? Buffer.from(event.body, 'base64').toString('utf-8')
+        : event.body
+      const body = JSON.parse(rawBody) as HandleUploadBody
+      const location = new URL(event.headers.referer)
+      // A request object is required for handleUpload, mainly to extract headers
+      const request = new Request(`${location.origin}/${event.path}`, {
+        headers: new Headers(event.headers),
+      })
 
+      try {
         return handleUpload({
           body,
           request,
@@ -58,12 +58,13 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
               body: { error: (error as Error).message },
             }
           })
-      })
-      .otherwise(() => {
-        uploadLogger.error('Other failure')
-        return { statusCode: 404 }
-      })
-  } catch (e) {
-    uploadLogger.error(e.message, 'ERROR')
-  }
+      } catch (e) {
+        uploadLogger.error(e, 'ERROR')
+        uploadLogger.error(e.message, 'ERROR MESSAGE')
+      }
+    })
+    .otherwise(() => {
+      uploadLogger.error('Other failure')
+      return { statusCode: 404 }
+    })
 }
