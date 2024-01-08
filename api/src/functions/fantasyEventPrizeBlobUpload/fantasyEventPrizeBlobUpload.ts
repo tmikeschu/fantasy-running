@@ -38,7 +38,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
             _clientPayload?: string
           ) => {
             uploadLogger.warn(
-              event,
+              body,
               '.............before generate token...............'
             )
             return {
