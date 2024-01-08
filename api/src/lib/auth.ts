@@ -46,10 +46,11 @@ export const getUserFromCookie = async (
 ) => {
   const cookies = Object.fromEntries(
     event.headers.cookie
-      .split('; ')
-      .map((x) => x.split('=').map((x) => x.trim()))
+      ?.split('; ')
+      .map((x) => x.split('=').map((x) => x.trim())) ?? []
   )
   const token = cookies.__session
+  if (!token) return
   const decoded = await authDecoder(token, 'clerk', {
     event,
     context,
