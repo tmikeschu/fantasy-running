@@ -104,7 +104,7 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
   }, [formMethods])
 
   return (
-    <Box maxW="3xl" pl="px">
+    <Box maxW="3xl" pl="px" w="full">
       <Form<FormFantasyTeam> formMethods={formMethods} onSubmit={onSubmit}>
         <VStack alignItems="flex-start" spacing="8">
           <Stack

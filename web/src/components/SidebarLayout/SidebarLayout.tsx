@@ -113,7 +113,12 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           </GridItem>
         </DarkMode>
 
-        <GridItem gridArea="content" pt={{ base: '12', md: 0 }} h="100vh">
+        <GridItem
+          gridArea="content"
+          pt={{ base: '12', md: 0 }}
+          h="100vh"
+          w={{ base: '100vw', md: 'auto' }}
+        >
           <Box
             bg={mode('white', 'gray.800')}
             flex="1"

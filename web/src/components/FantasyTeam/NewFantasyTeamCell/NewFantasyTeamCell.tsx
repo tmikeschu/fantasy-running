@@ -1,4 +1,12 @@
-import { Box } from '@chakra-ui/react'
+import {
+  Box,
+  Center,
+  Heading,
+  Image,
+  List,
+  ListItem,
+  VStack,
+} from '@chakra-ui/react'
 import Markdown from 'react-markdown'
 import type {
   CreateFantasyTeamInput,
@@ -25,12 +33,26 @@ export const QUERY = gql`
       id
       teamSize
       description
+      name
+
       rules {
         pickNumberFrom
         pickNumberTo
         rankMin
         rankMax
       }
+
+      prizes {
+        id
+        name
+        description
+        blobs {
+          id
+          name
+          url
+        }
+      }
+
       event {
         eventRunners {
           id
@@ -99,30 +121,58 @@ export const Success = ({
   }
 
   return (
-    <Box overflow="auto" h="full">
-      <Box
-        as={Markdown}
-        fontSize={{ base: 'md', md: 'sm' }}
-        color="gray.600"
-        mb="8"
-        sx={{
-          a: {
-            color: 'blue.500',
-            textDecor: 'underline',
-          },
-        }}
-      >
-        {fantasyEvent.description}
-      </Box>
-      <NewFantasyTeamForm
-        {...{
-          currentUser,
-          fantasyEvent,
-          onSave,
-          error,
-          loading,
-        }}
-      />
-    </Box>
+    <>
+      <Heading as="h1">{fantasyEvent.name}</Heading>
+      <VStack alignItems="flex-start" overflow="auto" h="full">
+        <List
+          spacing="4"
+          w="full"
+          overflowX="auto"
+          display="flex"
+          gap="4"
+          py="1"
+          px="1"
+        >
+          {fantasyEvent.prizes.map((prize) => (
+            <ListItem
+              key={prize.id}
+              mt="0!important"
+              boxShadow="base"
+              w="48"
+              p="2"
+            >
+              <Center h="full">
+                <Image src={prize.blobs[0].url} />
+              </Center>
+            </ListItem>
+          ))}
+        </List>
+
+        <Box
+          as={Markdown}
+          fontSize={{ base: 'md', md: 'sm' }}
+          color="gray.600"
+          mb="8"
+          sx={{
+            a: {
+              color: 'blue.500',
+              textDecor: 'underline',
+            },
+          }}
+        >
+          {fantasyEvent.description}
+        </Box>
+
+        <NewFantasyTeamForm
+          {...{
+            currentUser,
+            fantasyEvent,
+            onSave,
+            error,
+            loading,
+          }}
+        />
+      </VStack>
+    </>
   )
 }

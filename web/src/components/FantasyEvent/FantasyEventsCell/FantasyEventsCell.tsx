@@ -1,6 +1,7 @@
 import {
   Button,
   Center,
+  HStack,
   Skeleton,
   Text,
   TextProps,
@@ -16,6 +17,7 @@ import type { FantasyEventsQuery } from 'types/graphql'
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import { useAuth } from 'src/auth'
 import EmptyResource from 'src/components/EmptyResource/EmptyResource'
 import ErrorAlert from 'src/components/ErrorAlert/ErrorAlert'
 
@@ -73,6 +75,9 @@ export const Success = ({
     acc[t.fantasyEvent.id].push(t)
     return acc
   }, {} as Record<string, typeof myFantasyTeams>)
+
+  const { hasRole } = useAuth()
+  const isAdmin = hasRole('ADMIN')
   return (
     <Wrap w="full">
       {fantasyEvents.map((item) => {
@@ -82,11 +87,24 @@ export const Success = ({
           <Card key={item.id}>
             <VStack>
               <CardText>{item.name ?? item.event.name}</CardText>
-              {match({ canMakeTeam, status: item.status })
+              {match({ canMakeTeam, status: item.status, isAdmin })
                 .with({ canMakeTeam: false }, () => (
                   <Button as={Link} to={routes.myTeams()}>
                     {item.teamCount > 1 ? 'View teams' : 'View team'}
                   </Button>
+                ))
+                .with({ isAdmin: true }, () => (
+                  <HStack>
+                    <Button as={Link} to={routes.myTeams()}>
+                      {item.teamCount > 1 ? 'View teams' : 'View team'}
+                    </Button>
+                    <Button
+                      as={Link}
+                      to={routes.newFantasyTeam({ id: item.id })}
+                    >
+                      Make a team
+                    </Button>
+                  </HStack>
                 ))
                 .with({ status: 'LIVE' }, () => (
                   <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
