@@ -50,13 +50,13 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
             uploadLogger.error({ blob, tokenPayload }, 'Blob uploaded')
           },
         })
-          .then((body) => ({ statusCode: 201, body }))
+          .then((body) => Response.json(body, { status: 201 }))
           .catch((error) => {
             uploadLogger.error({ message: error.message }, 'Blob upload failed')
-            return {
-              statusCode: 400,
-              body: { error: (error as Error).message },
-            }
+            return Response.json(
+              { error: (error as Error).message },
+              { status: 400 }
+            )
           })
       })
       .otherwise(() => {
@@ -66,5 +66,6 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
   } catch (e) {
     uploadLogger.error(e, 'ERROR')
     uploadLogger.error(e.message, 'ERROR MESSAGE')
+    return Response.json({ statusCode: 500, body: { error: e.message } })
   }
 }
