@@ -31,7 +31,6 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
         })
 
         return handleUpload({
-          token: process.env.BLOB_READ_WRITE_TOKEN,
           body,
           request,
           onBeforeGenerateToken: async (
