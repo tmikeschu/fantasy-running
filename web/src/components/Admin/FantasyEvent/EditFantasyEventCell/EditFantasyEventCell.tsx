@@ -80,6 +80,7 @@ export const Success = ({
   const [updateFantasyEvent, { loading, error }] = useMutation(
     UPDATE_FANTASY_EVENT_MUTATION,
     {
+      refetchQueries: [{ query: QUERY, variables: { id: fantasyEvent?.id } }],
       onCompleted: () => {
         toast.success('FantasyEvent updated')
         navigate(routes.adminFantasyEvents())

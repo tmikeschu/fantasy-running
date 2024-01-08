@@ -51,6 +51,7 @@ import {
   TextAreaField,
 } from '@redwoodjs/forms'
 import type { RWGqlError } from '@redwoodjs/forms'
+import { back } from '@redwoodjs/router'
 
 import AdminNumberField from 'src/components/Admin/AdminNumberField/AdminNumberField'
 import FormErrorMessage from 'src/components/forms/FormErrorMessage/FormErrorMessage'
@@ -87,7 +88,7 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
       Object.values(prizesMap).flatMap(async (prize) => {
         // TODO prevent duplicate saves
         const files = prizeFiles[prize.id ?? ''] ?? []
-        const blobs = await Promise.all(
+        const newBlobs = await Promise.all(
           Array.from(files).map(async (file) => {
             const blob = await upload(file.name, file, {
               access: 'public',
@@ -100,6 +101,7 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
             } satisfies PrizeBlobInput
           })
         )
+        const blobs = [...prize.blobs, ...newBlobs]
         return { ...prize, blobs } satisfies FantasyPrizeInput
       })
     )
@@ -134,9 +136,9 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
   const formMethods = useForm<FormFantasyEvent>({
     defaultValues: {
       prizesMap: Object.fromEntries(
-        props.fantasyEvent?.prizes.map(({ __typename: _, ...prize }) => [
+        props.fantasyEvent?.prizes.map(({ __typename: _, blobs, ...prize }) => [
           prize.id,
-          prize,
+          { ...prize, blobs: blobs.map(({ __typename: _, ...blob }) => blob) },
         ]) ?? []
       ),
       prizeFiles: {},
@@ -360,9 +362,11 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
                       formMethods.setValue('prizesMap', newValue)
                     }}
                   />
-                  <CardBody>
-                    <Text fontWeight="bold">{prize.name}</Text>
-                    <Text>Prize #{prize.rank}</Text>
+                  <CardBody display="flex" flexDir="column" gap="4">
+                    <VStack alignItems="flex-start" gap="1">
+                      <Text fontWeight="bold">{prize.name}</Text>
+                      <Text>Prize #{prize.rank}</Text>
+                    </VStack>
                     {(
                       Array.from(prizeFiles[prize.id ?? ''] ?? []) as Array<
                         string | File
@@ -422,6 +426,7 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
           </List>
 
           <ButtonGroup w="full" justifyContent="flex-end">
+            <Button onClick={back}>Cancel</Button>
             <Button
               as={Submit}
               type="submit"
@@ -472,12 +477,49 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
                   />
                 </FormControl>
 
-                <FileField name={`prizeFiles.${selectedPrizeId}`} multiple />
-                {Array.from(prizeFiles[selectedPrizeId] ?? []).map((file) => {
-                  const blob = new Blob([file], { type: 'image/jpeg' })
-                  const blobURL = URL.createObjectURL(blob)
-                  return <Image key={file.name} src={blobURL} />
-                })}
+                {prizesMap[selectedPrizeId]?.blobs.length ? (
+                  <List
+                    display="flex"
+                    gap="4"
+                    w="full"
+                    overflowX="auto"
+                    py="2"
+                    pr="2"
+                  >
+                    {prizesMap[selectedPrizeId].blobs.map((blob) => (
+                      <ListItem key={blob.id ?? ''}>
+                        <Image w="32" src={blob.url} />
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <>
+                    <FileField
+                      name={`prizeFiles.${selectedPrizeId}`}
+                      multiple
+                    />
+                    <List
+                      display="flex"
+                      gap="4"
+                      w="full"
+                      overflowX="auto"
+                      py="2"
+                      pr="2"
+                    >
+                      {Array.from(prizeFiles[selectedPrizeId] ?? []).map(
+                        (file) => {
+                          const blob = new Blob([file], { type: 'image/jpeg' })
+                          const blobURL = URL.createObjectURL(blob)
+                          return (
+                            <ListItem key={file.name}>
+                              <Image w="32" src={blobURL} />
+                            </ListItem>
+                          )
+                        }
+                      )}
+                    </List>
+                  </>
+                )}
               </ModalBody>
             ) : null}
 

@@ -72,7 +72,7 @@ model FantasyEventPrizeBlob {
   name String
 
   fantasyEventPrizeId String
-  fantasyEventPrize   FantasyEventPrize? @relation(fields: [fantasyEventPrizeId], references: [id])
+  fantasyEventPrize   FantasyEventPrize? @relation(fields: [fantasyEventPrizeId], references: [id], onDelete: Cascade)
 }
 
 enum FantasyEventStatus {
