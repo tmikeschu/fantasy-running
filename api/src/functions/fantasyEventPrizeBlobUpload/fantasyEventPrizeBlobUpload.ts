@@ -8,15 +8,15 @@ import { logger } from 'src/lib/logger'
 export const handler = async (event: APIGatewayEvent, context: Context) => {
   const uploadLogger = logger.child({ module: 'prize-blob' })
   uploadLogger.error({ event, context }, 'EVENT')
-  return { statusCode: 200, earlyReturn: 'true' }
+
   try {
     const user = await getUserFromCookie(event, context)
     if (!user) {
-      return Response.json({}, { status: 401 })
+      return { statusCode: 401, body: 'Unauthorized' }
     }
 
     if (!user.roles.includes('ADMIN')) {
-      return Response.json({}, { status: 401 })
+      return { statusCode: 401, body: 'Unauthorized' }
     }
 
     return match(event)
@@ -52,15 +52,18 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
             uploadLogger.error({ message: error.message }, 'Blob upload failed')
             return { status: 400, error: (error as Error).message }
           })
-        return Response.json(json, { status })
+        return { statusCode: status, body: JSON.stringify(json) }
       })
       .otherwise(() => {
         uploadLogger.error('Other failure')
-        return Response.json({ other: 'error' }, { status: 404 })
+        return { statusCode: 404, body: { other: 'error' } }
       })
   } catch (e) {
     uploadLogger.error(e, 'ERROR')
     uploadLogger.error(e.message, 'ERROR MESSAGE')
-    return Response.json({ statusCode: 500, body: { error: e.message } })
+    return {
+      statusCode: 500,
+      body: { other: 'catch error', message: e.message },
+    }
   }
 }
