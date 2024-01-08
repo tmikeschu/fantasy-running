@@ -30,7 +30,6 @@ import { Select } from 'chakra-react-select'
 import { BiGift, BiX } from 'react-icons/bi'
 import { Option } from 'space-monad'
 import { P, match } from 'ts-pattern'
-import { set } from 'ts-pattern/dist/patterns'
 import {
   PrizeBlobInput,
   type CreateFantasyEventInput,
@@ -112,7 +111,9 @@ const FantasyEventForm = (props: FantasyEventFormProps) => {
         const blobs = [...prize.blobs, ...newBlobs]
         return { ...prize, blobs } satisfies FantasyPrizeInput
       })
-    )
+    ).finally(() => {
+      setIsUploading(false)
+    })
     console.log({ prizesWithBlobs, prizeFiles })
     props.onSave({ ...data, prizes: prizesWithBlobs }, props.fantasyEvent?.id)
   }

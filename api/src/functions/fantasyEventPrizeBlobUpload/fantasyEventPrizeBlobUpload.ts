@@ -3,10 +3,22 @@ import type { APIGatewayEvent, Context } from 'aws-lambda'
 import { match } from 'ts-pattern'
 
 import { getUserFromCookie } from 'src/lib/auth'
+import { logger } from 'src/lib/logger'
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
+  const uploadLogger = logger.child({ uploadBlob: { handler: 'prize-blob' } })
+  uploadLogger.trace(event, 'Upload blob handler')
+
   const user = await getUserFromCookie(event, context)
-  if (!user || !user.roles.includes('ADMIN')) return { statusCode: 401 }
+  if (!user) {
+    uploadLogger.trace('No user')
+    return { statusCode: 401 }
+  }
+
+  if (!user.roles.includes('ADMIN')) {
+    uploadLogger.trace('Not admin')
+    return { statusCode: 401 }
+  }
 
   return match(event)
     .with({ httpMethod: 'POST' }, async () => {
@@ -19,6 +31,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       const request = new Request(`${location.origin}/${event.path}`, {
         headers: new Headers(event.headers),
       })
+      uploadLogger.trace('Uploading blob...')
 
       return handleUpload({
         body,
@@ -31,13 +44,21 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
             allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif'],
           }
         },
-        onUploadCompleted: async () => {},
+        onUploadCompleted: async () => {
+          uploadLogger.trace('Blob uploaded')
+        },
       })
         .then((body) => ({ statusCode: 201, body }))
-        .catch((error) => ({
-          statusCode: 400,
-          body: { error: (error as Error).message },
-        }))
+        .catch((error) => {
+          uploadLogger.trace({ message: error.message }, 'Blob upload failed')
+          return {
+            statusCode: 400,
+            body: { error: (error as Error).message },
+          }
+        })
     })
-    .otherwise(() => ({ statusCode: 404 }))
+    .otherwise(() => {
+      uploadLogger.trace('Other failure')
+      return { statusCode: 404 }
+    })
 }
