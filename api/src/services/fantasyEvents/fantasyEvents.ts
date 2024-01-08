@@ -125,6 +125,7 @@ export const updateFantasyEvent: MutationResolvers['updateFantasyEvent'] =
           connect: ruleIds.map((id) => ({ id })),
         },
         prizes: {
+          // TODO delete vercel blobs
           deleteMany: deletedPrizes.map((prize) => ({ id: prize.id })),
         },
       },
