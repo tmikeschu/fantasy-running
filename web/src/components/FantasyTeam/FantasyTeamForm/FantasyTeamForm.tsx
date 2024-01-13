@@ -2,19 +2,29 @@ import {
   Box,
   Button,
   ButtonGroup,
+  FormControl,
+  FormLabel,
   Heading,
+  Input,
   Stack,
   VStack,
 } from '@chakra-ui/react'
 import { match } from 'ts-pattern'
 import {
   CreateFantasyTeamInput,
+  EditFantasyTeamQuery,
   FantasyTeamMemberInput,
   FindNewFantasyTeamQuery,
   UpdateFantasyTeamInput,
 } from 'types/graphql'
 
-import { Controller, Form, RWGqlError, useForm } from '@redwoodjs/forms'
+import {
+  Controller,
+  Form,
+  RWGqlError,
+  TextField,
+  useForm,
+} from '@redwoodjs/forms'
 
 import { CurrentUser } from 'src/auth'
 
@@ -26,9 +36,11 @@ import {
   TeamMemberSelect,
 } from './TeamMemberSelect'
 
-type NewFantasyTeamFormProps = {
+type FantasyTeamFormProps = {
+  fantasyTeam?: EditFantasyTeamQuery['fantasyTeam']
   onSave: (data: {
-    input: CreateFantasyTeamInput
+    id?: string
+    input: CreateFantasyTeamInput | UpdateFantasyTeamInput
     members: FantasyTeamMemberInput[]
   }) => void
   fantasyEvent: NonNullable<FindNewFantasyTeamQuery['fantasyEvent']>
@@ -40,8 +52,8 @@ type NewFantasyTeamFormProps = {
 type FormFantasyTeam = (CreateFantasyTeamInput | UpdateFantasyTeamInput) &
   Record<SelectKey, SelectOption>
 
-const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
-  const { fantasyEvent, currentUser } = props
+const FantasyTeamForm = <P extends FantasyTeamFormProps>(props: P) => {
+  const { fantasyTeam, fantasyEvent, currentUser } = props
   const { eventRunners } = fantasyEvent.event
   const byGenderDivision = Object.entries(
     eventRunners.reduce((acc, er) => {
@@ -59,7 +71,22 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
     )
     .sort(([a], [_b]) => (a === 'women' ? -1 : 1))
 
-  const formMethods = useForm<FormFantasyTeam>()
+  const formMethods = useForm<FormFantasyTeam>({
+    defaultValues: {
+      fantasyEventId: fantasyTeam?.fantasyEvent.id,
+      name: fantasyTeam?.name,
+      userId: currentUser.id,
+      ...Object.fromEntries(
+        fantasyTeam?.teamMembers.map(
+          (tm) =>
+            [
+              `pick-${tm.pickNumber}-${tm.runner.runner.genderDivision}`,
+              { label: tm.runner.runner.name, value: tm.runner.id },
+            ] as [SelectKey, SelectOption]
+        ) ?? []
+      ),
+    },
+  })
 
   const onSubmit = (data: FormFantasyTeam) => {
     const { name, ...rest } = data
@@ -71,11 +98,14 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
       }))
 
     props.onSave({
-      input: {
-        fantasyEventId: fantasyEvent.id,
-        userId: currentUser.id,
-        name,
-      },
+      id: fantasyTeam?.id,
+      input: (fantasyTeam
+        ? { name }
+        : {
+            fantasyEventId: fantasyEvent.id,
+            userId: currentUser.id,
+            name,
+          }) as CreateFantasyTeamInput | UpdateFantasyTeamInput,
       members,
     })
   }
@@ -107,6 +137,11 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
     <Box maxW="3xl" pl="px" w="full">
       <Form<FormFantasyTeam> formMethods={formMethods} onSubmit={onSubmit}>
         <VStack alignItems="flex-start" spacing="8">
+          <FormControl id="name">
+            <FormLabel>Team Name</FormLabel>
+            <Input as={TextField} name="name" />
+          </FormControl>
+
           <Stack
             w="full"
             spacing="8"
@@ -175,4 +210,4 @@ const NewFantasyTeamForm = <P extends NewFantasyTeamFormProps>(props: P) => {
   )
 }
 
-export default NewFantasyTeamForm
+export default FantasyTeamForm

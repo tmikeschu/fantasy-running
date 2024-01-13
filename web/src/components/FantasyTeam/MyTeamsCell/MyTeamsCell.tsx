@@ -8,10 +8,13 @@ import {
   Skeleton,
   WrapItem,
   Wrap,
+  Center,
+  Button,
 } from '@chakra-ui/react'
+import { BiPencil } from 'react-icons/bi'
 import type { MyTeamsQuery } from 'types/graphql'
 
-import { routes } from '@redwoodjs/router'
+import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import TeamMembers from 'src/components/TeamMembers/TeamMembers'
@@ -23,6 +26,7 @@ export const QUERY = gql`
   query MyTeamsQuery($ownerId: String!) {
     fantasyTeams: myFantasyTeams(ownerId: $ownerId) {
       id
+      name
       fantasyEvent {
         event {
           name
@@ -70,22 +74,25 @@ export const Success = ({ fantasyTeams }: CellSuccessProps<MyTeamsQuery>) => {
   return (
     <VStack alignItems="stretch">
       <Accordion defaultIndex={[0]} allowMultiple>
-        {fantasyTeams.map((item) => {
+        {fantasyTeams.map((fantasyTeam) => {
           return (
-            <AccordionItem key={item.id}>
+            <AccordionItem key={fantasyTeam.id}>
               <AccordionButton>
-                <Heading fontSize="lg">{item.fantasyEvent?.event.name}</Heading>
+                <Heading fontSize="lg">
+                  {fantasyTeam.fantasyEvent?.event.name}:{' '}
+                  {fantasyTeam.name ?? '(unnamed)'}
+                </Heading>
               </AccordionButton>
               <AccordionPanel boxShadow="sm">
                 <Wrap spacingX="8" spacingY="4">
                   {Object.entries(
-                    item.teamMembers.reduce((acc, runner) => {
+                    fantasyTeam.teamMembers.reduce((acc, runner) => {
                       const division =
                         runner?.runner.runner.genderDivision ?? 'other'
                       if (!acc[division]) acc[division] = []
                       acc[division].push(runner)
                       return acc
-                    }, {} as Record<string, typeof item.teamMembers>)
+                    }, {} as Record<string, typeof fantasyTeam.teamMembers>)
                   ).map(([genderDivision, teamMembers]) => (
                     <WrapItem key={genderDivision}>
                       <TeamMembers
@@ -94,6 +101,17 @@ export const Success = ({ fantasyTeams }: CellSuccessProps<MyTeamsQuery>) => {
                       />
                     </WrapItem>
                   ))}
+                  <WrapItem>
+                    <Center h="full">
+                      <Button
+                        as={Link}
+                        leftIcon={<BiPencil />}
+                        to={routes.editFantasyTeam({ id: fantasyTeam.id })}
+                      >
+                        Edit
+                      </Button>
+                    </Center>
+                  </WrapItem>
                 </Wrap>
               </AccordionPanel>
             </AccordionItem>

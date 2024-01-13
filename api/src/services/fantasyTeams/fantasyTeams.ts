@@ -45,15 +45,26 @@ export const createFantasyTeam: MutationResolvers['createFantasyTeam'] = ({
   })
 }
 
-export const updateFantasyTeam: MutationResolvers['updateFantasyTeam'] = ({
-  id,
-  input,
-}) => {
-  return db.fantasyTeam.update({
-    data: input,
-    where: { id },
-  })
-}
+export const updateFantasyTeam: MutationResolvers['updateFantasyTeam'] =
+  async ({ id, input: { name }, members }) => {
+    await db.fantasyTeamMember.deleteMany({
+      where: { fantasyTeamId: id },
+    })
+    return db.fantasyTeam.update({
+      where: { id },
+      data: {
+        name,
+        teamMembers: {
+          createMany: {
+            data: members.map((member) => ({
+              eventRunnerId: member.eventRunnerId,
+              pickNumber: member.seed,
+            })),
+          },
+        },
+      },
+    })
+  }
 
 export const deleteFantasyTeam: MutationResolvers['deleteFantasyTeam'] = ({
   id,

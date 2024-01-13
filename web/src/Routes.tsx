@@ -25,6 +25,7 @@ const Routes = () => {
         <Route path="/fantasy-events" page={FantasyEventsPage} name="fantasyEvents" />
 
         <Route path="/fantasy-events/{id}/new-fantasy-team" page={NewFantasyTeamPage} name="newFantasyTeam" />
+        <Route path="/edit-fantasy-team/{id}" page={EditFantasyTeamPage} name="editFantasyTeam" />
         <Route path="/my-teams" page={MyTeamsPage} name="myTeams" />
       </Set>
 

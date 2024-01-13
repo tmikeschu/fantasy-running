@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import NewFantasyTeamForm from './NewFantasyTeamForm'
+import NewFantasyTeamPage from './EditFantasyTeamPage'
 
 //   Improve this test with help from the Redwood Testing Doc:
-//    https://redwoodjs.com/docs/testing#testing-components
+//   https://redwoodjs.com/docs/testing#testing-pages-layouts
 
-describe('NewFantasyTeamForm', () => {
+describe('NewFantasyTeamPage', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<NewFantasyTeamForm />)
+      render(<NewFantasyTeamPage />)
     }).not.toThrow()
   })
 })

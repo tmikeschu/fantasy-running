@@ -9,10 +9,10 @@ import {
 } from '@chakra-ui/react'
 import Markdown from 'react-markdown'
 import type {
-  CreateFantasyTeamInput,
-  FindNewFantasyTeamQuery,
-  FindNewFantasyTeamQueryVariables,
+  EditFantasyTeamQuery,
+  EditFantasyTeamQueryVariables,
   FantasyTeamMemberInput,
+  UpdateFantasyTeamInput,
 } from 'types/graphql'
 
 import { navigate, routes } from '@redwoodjs/router'
@@ -25,42 +25,67 @@ import { toast } from '@redwoodjs/web/toast'
 
 import { useAuth } from 'src/auth'
 
-import NewFantasyTeamForm from '../FantasyTeamForm/FantasyTeamForm'
+import FantasyTeamForm from '../FantasyTeamForm/FantasyTeamForm'
 
 export const QUERY = gql`
-  query FindNewFantasyTeamQuery($id: String!) {
-    fantasyEvent: fantasyEvent(id: $id) {
+  query EditFantasyTeamQuery($id: String!) {
+    fantasyTeam: fantasyTeam(id: $id) {
       id
-      teamSize
-      description
+      userId
       name
 
-      rules {
-        pickNumberFrom
-        pickNumberTo
-        rankMin
-        rankMax
-      }
-
-      prizes {
+      teamMembers {
         id
-        name
-        description
-        blobs {
-          id
-          name
-          url
-        }
-      }
-
-      event {
-        eventRunners {
+        pickNumber
+        runner {
           id
           seed
 
           runner {
-            genderDivision
+            id
             name
+            genderDivision
+          }
+        }
+      }
+
+      fantasyEvent {
+        id
+        teamSize
+        description
+        name
+
+        event {
+          name
+        }
+
+        rules {
+          pickNumberFrom
+          pickNumberTo
+          rankMin
+          rankMax
+        }
+
+        prizes {
+          id
+          name
+          description
+          blobs {
+            id
+            name
+            url
+          }
+        }
+
+        event {
+          eventRunners {
+            id
+            seed
+
+            runner {
+              genderDivision
+              name
+            }
           }
         }
       }
@@ -68,12 +93,13 @@ export const QUERY = gql`
   }
 `
 
-const CREATE_FANTASY_TEAM_MUTATION = gql`
-  mutation CreateFantasyTeamMutation(
-    $input: CreateFantasyTeamInput!
+const UPDATE_FANTASY_TEAM_MUTATION = gql`
+  mutation UpdateFantasyTeamMutation(
+    $id: String!
+    $input: UpdateFantasyTeamInput!
     $members: [FantasyTeamMemberInput!]!
   ) {
-    createFantasyTeam(input: $input, members: $members) {
+    updateFantasyTeam(id: $id, input: $input, members: $members) {
       id
     }
   }
@@ -85,18 +111,15 @@ export const Empty = () => <div>Empty</div>
 
 export const Failure = ({
   error,
-}: CellFailureProps<FindNewFantasyTeamQueryVariables>) => (
+}: CellFailureProps<EditFantasyTeamQueryVariables>) => (
   <div style={{ color: 'red' }}>Error: {error?.message}</div>
 )
 
 export const Success = ({
-  fantasyEvent,
-}: CellSuccessProps<
-  FindNewFantasyTeamQuery,
-  FindNewFantasyTeamQueryVariables
->) => {
-  const [createFantasyTeam, { loading, error }] = useMutation(
-    CREATE_FANTASY_TEAM_MUTATION,
+  fantasyTeam,
+}: CellSuccessProps<EditFantasyTeamQuery, EditFantasyTeamQueryVariables>) => {
+  const [updateFantasyTeam, { loading, error }] = useMutation(
+    UPDATE_FANTASY_TEAM_MUTATION,
     {
       onCompleted: () => {
         toast.success('EventRunner updated')
@@ -109,20 +132,27 @@ export const Success = ({
   )
 
   const { currentUser } = useAuth<{ assertUser: true }>()
+  if (currentUser.id !== fantasyTeam.userId) {
+    navigate(routes.myTeams())
+  }
 
   const onSave = ({
+    id,
     input,
     members,
   }: {
-    input: CreateFantasyTeamInput
+    id?: string
+    input: UpdateFantasyTeamInput
     members: FantasyTeamMemberInput[]
   }) => {
-    createFantasyTeam({ variables: { input, members } })
+    updateFantasyTeam({ variables: { id, input, members } })
   }
+
+  const { fantasyEvent } = fantasyTeam
 
   return (
     <>
-      <Heading as="h1">{fantasyEvent.name}</Heading>
+      <Heading as="h1">{fantasyEvent.name || fantasyEvent.event.name}</Heading>
       <VStack alignItems="flex-start" overflow="auto" h="full">
         <List
           spacing="4"
@@ -163,8 +193,9 @@ export const Success = ({
           {fantasyEvent.description}
         </Box>
 
-        <NewFantasyTeamForm
+        <FantasyTeamForm
           {...{
+            fantasyTeam,
             currentUser,
             fantasyEvent,
             onSave,
