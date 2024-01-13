@@ -1,8 +1,8 @@
 import { db } from 'api/src/lib/db'
 
 const apifyDatasetIds = {
-  men: ['rtuJFUse1BDbvE1s1', 'oGmBkxjFOhJ1yYo5i'],
-  women: ['8RxmjxDnFajiV4n3E', 'kiQp692ZrTNHv6hZq'],
+  men: ['6v2m0knz4TvaJPP19', '6yeTIR2HkulibS0ci'],
+  women: ['saSutD0KoTHhGtaSL', 'o5tTIYQGdpaNpkBAq'],
 }
 
 type ApifyRunner = {

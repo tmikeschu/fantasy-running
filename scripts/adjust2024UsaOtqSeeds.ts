@@ -1,10 +1,10 @@
 import { db } from 'api/src/lib/db'
 
 const apifyDatasets = [
-  { id: 'rtuJFUse1BDbvE1s1', genderDivision: 'men', event: 'half' },
-  { id: 'oGmBkxjFOhJ1yYo5i', genderDivision: 'men', event: 'full' },
-  { id: '8RxmjxDnFajiV4n3E', genderDivision: 'women', event: 'half' },
-  { id: 'kiQp692ZrTNHv6hZq', genderDivision: 'women', event: 'full' },
+  { id: '6yeTIR2HkulibS0ci', genderDivision: 'men', event: 'half' },
+  { id: '6v2m0knz4TvaJPP19', genderDivision: 'men', event: 'full' },
+  { id: 'o5tTIYQGdpaNpkBAq', genderDivision: 'women', event: 'half' },
+  { id: 'saSutD0KoTHhGtaSL', genderDivision: 'women', event: 'full' },
 ] as const
 
 type ApifyRunner = {
