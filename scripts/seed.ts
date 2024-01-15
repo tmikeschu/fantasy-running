@@ -64,7 +64,7 @@ export default async () => {
         .filter((r) => picks.includes(r.seed))
         .map((r, i) => ({
           eventRunnerId: r.id,
-          pickNumber: i + 1,
+          pickNumber: (i % picks.length) + 1,
         }))
     )
     await Promise.all(

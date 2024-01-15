@@ -54,6 +54,60 @@ const getMostFrequentlyPickedRunnerSql = async ({
   }
 }
 
+const getTeamByFrequency = async ({
+  id,
+  genderDivision,
+}: {
+  id: string
+  genderDivision: string
+}): Promise<FrequentlyPickedRunner[]> => {
+  const runnersMap = Object.fromEntries(
+    (
+      await db.eventRunner.findMany({
+        select: {
+          id: true,
+          runner: { select: { genderDivision: true, name: true } },
+        },
+      })
+    ).map((runner) => [runner.id, runner])
+  )
+
+  return await db.fantasyTeamMember
+    .groupBy({
+      by: ['pickNumber', 'eventRunnerId'],
+      _count: true,
+      orderBy: [{ pickNumber: 'asc' }, { _count: { eventRunnerId: 'desc' } }],
+      where: {
+        fantasyTeam: { fantasyEventId: id },
+        runner: { runner: { genderDivision } },
+      },
+    })
+    .then((res) => {
+      return res.reduce((acc, el) => {
+        if (!acc[el.pickNumber]) {
+          acc[el.pickNumber] = []
+        }
+        if (
+          !acc[el.pickNumber][0] ||
+          acc[el.pickNumber][0]._count === el._count
+        ) {
+          acc[el.pickNumber].push(el)
+        }
+        return acc
+      }, {} as Record<number, typeof res>)
+    })
+    .then((map) =>
+      Object.entries(map).map(([_, results]) => {
+        return {
+          runnerName: results
+            .map((result) => runnersMap[result.eventRunnerId].runner.name)
+            .join(', '),
+          teamCount: results[0]._count,
+        }
+      })
+    )
+}
+
 export const getFantasyEventStats: QueryResolvers['getFantasyEventStats'] =
   async ({ id }) => {
     const mostFrequentlyPickedMensRunner =
@@ -66,10 +120,26 @@ export const getFantasyEventStats: QueryResolvers['getFantasyEventStats'] =
       where: { fantasyEventId: id },
     })
 
+    const topMensTeamByFrequency = await getTeamByFrequency({
+      genderDivision: 'men',
+      id,
+    })
+
+    const topWomensTeamByFrequency = await getTeamByFrequency({
+      genderDivision: 'women',
+      id,
+    })
+    const event = await db.fantasyEvent.findUnique({ where: { id } }).event()
+
+    const timeUntilEventStart = new Date(event.date).getTime() - Date.now()
+
     return {
       mostFrequentlyPickedMensRunner,
       mostFrequentlyPickedWomensRunner,
       teamCount,
+      topMensTeamByFrequency,
+      topWomensTeamByFrequency,
+      timeUntilEventStart,
     }
   }
 

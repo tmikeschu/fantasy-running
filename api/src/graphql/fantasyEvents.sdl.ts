@@ -30,8 +30,9 @@ export const schema = gql`
     mostFrequentlyPickedMensRunner: FrequentlyPickedRunner!
     mostFrequentlyPickedWomensRunner: FrequentlyPickedRunner!
     teamCount: Int!
-    # topMensTeamByFrequency: [Runner!]!
-    # topWomensTeamByFrequency: [Runner!]!
+    topMensTeamByFrequency: [FrequentlyPickedRunner!]!
+    topWomensTeamByFrequency: [FrequentlyPickedRunner!]!
+    timeUntilEventStart: Int!
   }
 
   type Query {
