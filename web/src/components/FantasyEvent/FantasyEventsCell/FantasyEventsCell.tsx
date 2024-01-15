@@ -80,42 +80,57 @@ export const Success = ({
   const isAdmin = hasRole('ADMIN')
   return (
     <Wrap w="full">
-      {fantasyEvents.map((item) => {
+      {fantasyEvents.map((fantasyEvent) => {
         const canMakeTeam =
-          (eventTeamMap[item.id]?.length ?? 0) < item.teamCount
+          (eventTeamMap[fantasyEvent.id]?.length ?? 0) < fantasyEvent.teamCount
         return (
-          <Card key={item.id}>
+          <Card key={fantasyEvent.id}>
             <VStack>
-              <CardText>{item.name ?? item.event.name}</CardText>
-              {match({ canMakeTeam, status: item.status, isAdmin })
-                .with({ isAdmin: true }, () => (
-                  <HStack>
-                    {eventTeamMap[item.id]?.length > 0 && (
-                      <Button as={Link} to={routes.myTeams()}>
-                        {item.teamCount > 1 ? 'View teams' : 'View team'}
+              <CardText>
+                {fantasyEvent.name ?? fantasyEvent.event.name}
+              </CardText>
+              <HStack flexWrap="wrap">
+                <Button
+                  as={Link}
+                  to={routes.fantasyEvent({ id: fantasyEvent.id })}
+                >
+                  View Event
+                </Button>
+                {match({ canMakeTeam, status: fantasyEvent.status, isAdmin })
+                  .with({ isAdmin: true }, () => (
+                    <>
+                      {eventTeamMap[fantasyEvent.id]?.length > 0 && (
+                        <Button as={Link} to={routes.myTeams()}>
+                          {fantasyEvent.teamCount > 1
+                            ? 'View teams'
+                            : 'View team'}
+                        </Button>
+                      )}
+                      <Button
+                        as={Link}
+                        to={routes.newFantasyTeam({ id: fantasyEvent.id })}
+                      >
+                        Make a team
                       </Button>
-                    )}
+                    </>
+                  ))
+                  .with({ canMakeTeam: false }, () => (
+                    <Button as={Link} to={routes.myTeams()}>
+                      {fantasyEvent.teamCount > 1 ? 'View teams' : 'View team'}
+                    </Button>
+                  ))
+                  .with({ status: 'LIVE' }, () => (
                     <Button
                       as={Link}
-                      to={routes.newFantasyTeam({ id: item.id })}
+                      to={routes.newFantasyTeam({ id: fantasyEvent.id })}
                     >
                       Make a team
                     </Button>
-                  </HStack>
-                ))
-                .with({ canMakeTeam: false }, () => (
-                  <Button as={Link} to={routes.myTeams()}>
-                    {item.teamCount > 1 ? 'View teams' : 'View team'}
-                  </Button>
-                ))
-                .with({ status: 'LIVE' }, () => (
-                  <Button as={Link} to={routes.newFantasyTeam({ id: item.id })}>
-                    Make a team
-                  </Button>
-                ))
-                .otherwise(() => (
-                  <Button isDisabled>Coming soon</Button>
-                ))}
+                  ))
+                  .otherwise(() => (
+                    <Button isDisabled>Coming soon</Button>
+                  ))}
+              </HStack>
             </VStack>
           </Card>
         )
@@ -147,6 +162,7 @@ const Card = forwardRef<WrapItemProps, 'li'>((props, ref) => (
       w: { base: 'full', md: 'xs' },
       h: 'xs',
       alignItems: 'center',
+      p: '4',
       ...props,
     }}
   />

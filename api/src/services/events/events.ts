@@ -42,7 +42,7 @@ export const Event: EventRelationResolvers = {
   eventRunners: (_obj, { root }) => {
     return db.event.findUnique({ where: { id: root?.id } }).eventRunners()
   },
-  fantasyEvent: (_obj, { root }) => {
-    return db.event.findUnique({ where: { id: root?.id } }).fantasyEvent()
+  fantasyEvents: (_obj, { root }) => {
+    return db.event.findUnique({ where: { id: root?.id } }).fantasyEvents()
   },
 }

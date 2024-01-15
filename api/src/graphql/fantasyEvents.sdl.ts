@@ -21,9 +21,23 @@ export const schema = gql`
     COMPLETE
   }
 
+  type FrequentlyPickedRunner {
+    runnerName: String!
+    teamCount: Int!
+  }
+
+  type FantasyEventStats {
+    mostFrequentlyPickedMensRunner: FrequentlyPickedRunner!
+    mostFrequentlyPickedWomensRunner: FrequentlyPickedRunner!
+    teamCount: Int!
+    # topMensTeamByFrequency: [Runner!]!
+    # topWomensTeamByFrequency: [Runner!]!
+  }
+
   type Query {
     fantasyEvents: [FantasyEvent!]! @requireAuth
     fantasyEvent(id: String!): FantasyEvent @requireAuth
+    getFantasyEventStats(id: String!): FantasyEventStats! @requireAuth
   }
 
   input CreateFantasyEventInput {

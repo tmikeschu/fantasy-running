@@ -3,6 +3,7 @@ import type {
   QueryResolvers,
   MutationResolvers,
   FantasyEventRelationResolvers,
+  FrequentlyPickedRunner,
 } from 'types/graphql'
 
 import { db } from 'src/lib/db'
@@ -12,6 +13,65 @@ export const fantasyEvents: QueryResolvers['fantasyEvents'] = () => {
     where: { status: { not: 'COMPLETE' } },
   })
 }
+
+const getMostFrequentlyPickedRunnerSql = async ({
+  id,
+  genderDivision,
+}: {
+  id: string
+  genderDivision: string
+}): Promise<FrequentlyPickedRunner> => {
+  const results = await db.fantasyTeamMember.groupBy({
+    by: ['eventRunnerId'],
+    where: {
+      fantasyTeam: { fantasyEventId: id },
+      AND: { runner: { runner: { genderDivision } } },
+    },
+    _count: {
+      eventRunnerId: true,
+    },
+    orderBy: {
+      _count: {
+        eventRunnerId: 'desc',
+      },
+    },
+  })
+  const top = results.filter(
+    (result) => result._count.eventRunnerId === results[0]._count.eventRunnerId
+  )
+  const runnerName = (
+    await db.eventRunner.findMany({
+      where: { id: { in: top.map((result) => result.eventRunnerId) } },
+      select: { runner: { select: { name: true } } },
+    })
+  )
+    .map((x) => x.runner.name)
+    .join(', ')
+
+  return {
+    runnerName,
+    teamCount: results[0]._count.eventRunnerId,
+  }
+}
+
+export const getFantasyEventStats: QueryResolvers['getFantasyEventStats'] =
+  async ({ id }) => {
+    const mostFrequentlyPickedMensRunner =
+      await getMostFrequentlyPickedRunnerSql({ id, genderDivision: 'men' })
+
+    const mostFrequentlyPickedWomensRunner =
+      await getMostFrequentlyPickedRunnerSql({ id, genderDivision: 'women' })
+
+    const teamCount = await db.fantasyTeam.count({
+      where: { fantasyEventId: id },
+    })
+
+    return {
+      mostFrequentlyPickedMensRunner,
+      mostFrequentlyPickedWomensRunner,
+      teamCount,
+    }
+  }
 
 export const fantasyEvent: QueryResolvers['fantasyEvent'] = ({ id }) => {
   return db.fantasyEvent.findUnique({

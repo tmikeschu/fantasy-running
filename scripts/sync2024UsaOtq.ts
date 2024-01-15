@@ -30,15 +30,21 @@ export default async () => {
     genderDivision: string
   })[]
 
-  const event = await db.event.upsert({
+  const existingEvent = await db.event.findFirst({
     where: { name: '2024 USA OTQ' },
-    update: {},
-    create: {
-      name: '2024 USA OTQ',
-      date: new Date('2024-02-03'),
-      location: 'Orlando, FL',
-    },
   })
+
+  const newEvent = existingEvent
+    ? null
+    : await db.event.create({
+        data: {
+          name: '2024 USA OTQ',
+          date: new Date('2024-02-03'),
+          location: 'Orlando, FL',
+        },
+      })
+
+  const event = newEvent ?? existingEvent
 
   for (const runner of runners) {
     const existing = await db.runner.findFirst({ where: { name: runner.Name } })

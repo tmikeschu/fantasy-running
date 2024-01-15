@@ -5,7 +5,7 @@ export const schema = gql`
     date: DateTime!
     location: String!
     eventRunners: [EventRunner!]!
-    fantasyEvent: [FantasyEvent!]!
+    fantasyEvents: [FantasyEvent!]!
     createdAt: DateTime!
     updatedAt: DateTime!
   }

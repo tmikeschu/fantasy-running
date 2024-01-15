@@ -55,10 +55,6 @@ export const QUERY = gql`
         description
         name
 
-        event {
-          name
-        }
-
         rules {
           pickNumberFrom
           pickNumberTo
@@ -78,6 +74,8 @@ export const QUERY = gql`
         }
 
         event {
+          id
+          name
           eventRunners {
             id
             seed

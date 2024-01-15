@@ -54,6 +54,8 @@ export const QUERY = gql`
       }
 
       event {
+        id
+        name
         eventRunners {
           id
           seed
@@ -114,6 +116,7 @@ export const Success = ({
     input,
     members,
   }: {
+    id?: string
     input: CreateFantasyTeamInput
     members: FantasyTeamMemberInput[]
   }) => {
@@ -122,7 +125,7 @@ export const Success = ({
 
   return (
     <>
-      <Heading as="h1">{fantasyEvent.name}</Heading>
+      <Heading as="h1">{fantasyEvent.name ?? fantasyEvent.event.name}</Heading>
       <VStack alignItems="flex-start" overflow="auto" h="full">
         <List
           spacing="4"
