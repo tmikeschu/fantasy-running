@@ -13,7 +13,9 @@ import {
   Text,
   HStack,
   OrderedList,
+  Tooltip,
 } from '@chakra-ui/react'
+import pluralize from 'pluralize'
 import type { FantasyEventQuery } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -83,7 +85,7 @@ export const Success = ({
               <Stat>
                 <StatLabel>Countdown ⏳</StatLabel>
                 <StatNumber>{daysUntilEvent}</StatNumber>
-                <StatHelpText>days</StatHelpText>
+                <StatHelpText>{pluralize('day', daysUntilEvent)}</StatHelpText>
               </Stat>
             </CardBody>
           </Card>
@@ -116,22 +118,24 @@ export const Success = ({
                 <Stat>
                   <StatLabel>{possesiveGender} most picked</StatLabel>
                   <StatNumber>{stat.runnerName}</StatNumber>
-                  <StatHelpText>on {stat.teamCount} teams</StatHelpText>
+                  <StatHelpText>
+                    on {pluralize('team', stat.teamCount, true)}
+                  </StatHelpText>
                 </Stat>
               </CardBody>
             </Card>
           </WrapItem>
         ))}
       </Wrap>
-      <Wrap>
+      <Wrap w="full">
         {(
           [
             [`Women's ${WOMEN_RUNNER_EMOJI}`, stats.topWomensTeamByFrequency],
             [`Men's ${MEN_RUNNER_EMOJI}`, stats.topMensTeamByFrequency],
           ] as [string, typeof stats.topMensTeamByFrequency][]
         ).map(([possesiveGender, stat]) => (
-          <WrapItem key={possesiveGender}>
-            <Card>
+          <WrapItem key={possesiveGender} w={{ base: 'full', lg: '49%' }}>
+            <Card w="full">
               <CardBody>
                 <Text fontSize="lg" fontWeight="bold" mb="4">
                   {possesiveGender} team picks
@@ -140,11 +144,18 @@ export const Success = ({
                   {stat.map((x, i) => (
                     <ListItem key={i}>
                       <HStack>
-                        <Text fontWeight="bold" color="gray.700">
-                          {x.runnerName}
-                        </Text>
+                        <Tooltip label={x.runnerName} openDelay={500} hasArrow>
+                          <Text
+                            fontWeight="bold"
+                            color="gray.700"
+                            noOfLines={1}
+                            maxW="full"
+                          >
+                            {x.runnerName}
+                          </Text>
+                        </Tooltip>
                         <Text fontSize="xs" color="gray.500">
-                          (on {x.teamCount} teams)
+                          (on {pluralize('team', x.teamCount, true)})
                         </Text>
                       </HStack>
                     </ListItem>
