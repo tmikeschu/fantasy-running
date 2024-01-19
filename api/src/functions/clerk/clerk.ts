@@ -15,7 +15,7 @@ type EmailAddressConfig = {
   id: string
 }
 
-type Payload =
+export type ClerkPayload =
   | {
       object: string
       type: `user.${'updated' | 'created' | 'deleted'}`
@@ -38,9 +38,9 @@ type Payload =
       data: {
         id: string
         role: 'admin' | 'basic_member'
-        created_at: 1699202663855
+        created_at: number
         public_user_data: {
-          user_id: 'user_2XlTMUXfjjoEmIjlyy3e6ApYDJk'
+          user_id: string
         }
       }
     }
@@ -82,8 +82,8 @@ export const handler = async (event: APIGatewayEvent) => {
       options,
     })
 
-    const payload = JSON.parse(body) as Payload
-    webhookLogger.debug({ payload }, 'Payload')
+    const payload = JSON.parse(body) as ClerkPayload
+
     await match(payload)
       .with(
         {
@@ -132,9 +132,7 @@ export const handler = async (event: APIGatewayEvent) => {
     if (error instanceof WebhookVerificationError) {
       webhookLogger.warn('Unauthorized')
 
-      return {
-        statusCode: 401,
-      }
+      return { statusCode: 401 }
     } else {
       webhookLogger.error({ error }, error.message)
 
