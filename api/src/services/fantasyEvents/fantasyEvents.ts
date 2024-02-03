@@ -9,9 +9,7 @@ import type {
 import { db } from 'src/lib/db'
 
 export const fantasyEvents: QueryResolvers['fantasyEvents'] = () => {
-  return db.fantasyEvent.findMany({
-    where: { status: { not: 'COMPLETE' } },
-  })
+  return db.fantasyEvent.findMany()
 }
 
 const getMostFrequentlyPickedRunnerSql = async ({

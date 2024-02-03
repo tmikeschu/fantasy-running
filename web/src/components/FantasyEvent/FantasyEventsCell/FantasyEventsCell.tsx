@@ -114,7 +114,7 @@ export const Success = ({
                       </Button>
                     </>
                   ))
-                  .with({ canMakeTeam: false }, () => (
+                  .with({ canMakeTeam: false }, { status: 'COMPLETE' }, () => (
                     <Button as={Link} to={routes.myTeams()}>
                       {fantasyEvent.teamCount > 1 ? 'View teams' : 'View team'}
                     </Button>
