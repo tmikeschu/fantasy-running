@@ -34,6 +34,7 @@ export const QUERY = gql`
       teamSize
       description
       name
+      status
 
       rules {
         pickNumberFrom
@@ -97,6 +98,10 @@ export const Success = ({
   FindNewFantasyTeamQuery,
   FindNewFantasyTeamQueryVariables
 >) => {
+  if (fantasyEvent.status === 'COMPLETE') {
+    navigate(routes.myTeams())
+  }
+
   const [createFantasyTeam, { loading, error }] = useMutation(
     CREATE_FANTASY_TEAM_MUTATION,
     {

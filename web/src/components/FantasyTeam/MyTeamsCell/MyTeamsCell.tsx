@@ -28,6 +28,8 @@ export const QUERY = gql`
       id
       name
       fantasyEvent {
+        status
+
         event {
           name
         }
@@ -101,17 +103,19 @@ export const Success = ({ fantasyTeams }: CellSuccessProps<MyTeamsQuery>) => {
                       />
                     </WrapItem>
                   ))}
-                  <WrapItem>
-                    <Center h="full">
-                      <Button
-                        as={Link}
-                        leftIcon={<BiPencil />}
-                        to={routes.editFantasyTeam({ id: fantasyTeam.id })}
-                      >
-                        Edit
-                      </Button>
-                    </Center>
-                  </WrapItem>
+                  {fantasyTeam.fantasyEvent.status === 'LIVE' ? (
+                    <WrapItem>
+                      <Center h="full">
+                        <Button
+                          as={Link}
+                          leftIcon={<BiPencil />}
+                          to={routes.editFantasyTeam({ id: fantasyTeam.id })}
+                        >
+                          Edit
+                        </Button>
+                      </Center>
+                    </WrapItem>
+                  ) : null}
                 </Wrap>
               </AccordionPanel>
             </AccordionItem>
