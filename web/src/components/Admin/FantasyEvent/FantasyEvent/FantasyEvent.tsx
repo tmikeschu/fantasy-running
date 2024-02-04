@@ -1,3 +1,5 @@
+import React from 'react'
+
 import {
   Text,
   Accordion,
@@ -11,6 +13,8 @@ import {
   VStack,
   Card,
   CardHeader,
+  FormControl,
+  Checkbox,
 } from '@chakra-ui/react'
 import pluralize from 'pluralize'
 import type { FindFantasyEvent } from 'types/graphql'
@@ -22,18 +26,49 @@ const DNF_POINTS_MEN = 226
 const DNF_POINTS_WOMEN = 174
 
 const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
-  console.log({ teamsReport })
-  const shownTeams = teamsReport.slice().sort((a, b) => {
-    if (a.totalPoints < b.totalPoints) return -1
-    if (a.totalPoints > b.totalPoints) return 1
-    if (a.dnfCount < b.dnfCount) return -1
-    if (a.dnfCount > b.dnfCount) return 1
-    return 0
-  })
+  const [showNoDNFsByGender, setShowNoDNFsByGender] = React.useState(false)
+
+  const shownTeams = teamsReport
+    .slice()
+    .filter((report) => {
+      if (!showNoDNFsByGender) return true
+
+      const { men, women } = report.teamMembers.reduce(
+        (acc, el) => {
+          if (!el.genderDivision) return acc
+          acc[el.genderDivision].push(el)
+          return acc
+        },
+        { men: [], women: [] } as Record<string, typeof report.teamMembers>
+      )
+
+      return (
+        men.every((x) => x.points !== DNF_POINTS_MEN) ||
+        women.every((x) => x.points !== DNF_POINTS_WOMEN)
+      )
+    })
+    .sort((a, b) => {
+      if (a.totalPoints < b.totalPoints) return -1
+      if (a.totalPoints > b.totalPoints) return 1
+      if (a.dnfCount < b.dnfCount) return -1
+      if (a.dnfCount > b.dnfCount) return 1
+      return 0
+    })
 
   return (
     <VStack alignItems="flex-start" spacing="8">
       <Heading>{fantasyEvent?.name || fantasyEvent?.event.name}</Heading>
+
+      <HStack>
+        <FormControl>
+          <Checkbox
+            checked={showNoDNFsByGender}
+            onChange={(e) => setShowNoDNFsByGender(e.target.checked)}
+          >
+            Show no DNFs by gender
+          </Checkbox>
+        </FormControl>
+      </HStack>
 
       {shownTeams.length === 0 ? (
         <Card w="auto">
