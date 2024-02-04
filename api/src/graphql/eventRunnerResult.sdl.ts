@@ -9,6 +9,7 @@ export const schema = gql`
   }
 
   type Query {
-    eventRunnerResults(eventId: String!): [EventRunnerResult!]! @requireAuth
+    eventRunnerResults(fantasyEventId: String!): [EventRunnerResult!]!
+      @requireAuth
   }
 `
