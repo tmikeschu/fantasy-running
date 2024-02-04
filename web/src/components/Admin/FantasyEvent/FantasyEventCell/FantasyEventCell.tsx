@@ -30,6 +30,7 @@ export const QUERY = gql`
       teamMembers {
         name
         points
+        genderDivision
       }
     }
   }

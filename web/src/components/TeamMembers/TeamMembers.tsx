@@ -10,6 +10,11 @@ type TeamMembersProps = {
   eventStatus: FantasyEventStatus
 }
 
+// TODO move to fantasy event config
+const DNF_POINTS_MEN = 226
+const DNF_POINTS_WOMEN = 174
+const MAX_SCORING_PICK = 5
+
 const TeamMembers = ({
   teamMembers,
   genderDivision,
@@ -35,14 +40,41 @@ const TeamMembers = ({
                     <Text color="green.500" fontWeight="bold">
                       {tm.runner.result.time}
                     </Text>
-                    <Text fontSize="sm" color="gray.700" fontWeight="bold">
+                    <Text
+                      fontSize="sm"
+                      color={
+                        tm.pickNumber > MAX_SCORING_PICK
+                          ? 'gray.400'
+                          : 'gray.700'
+                      }
+                      fontWeight="bold"
+                    >
                       {pluralize('point', tm.runner.result.points, true)}
                     </Text>
                   </>
                 ) : (
-                  <Text color="red.500" fontWeight="bold">
-                    DNF
-                  </Text>
+                  <>
+                    <Text fontSize="sm" color="red.500" fontWeight="bold">
+                      DNF
+                    </Text>
+                    <Text
+                      fontSize="sm"
+                      color={
+                        tm.pickNumber > MAX_SCORING_PICK
+                          ? 'gray.400'
+                          : 'gray.700'
+                      }
+                      fontWeight="bold"
+                    >
+                      {pluralize(
+                        'point',
+                        tm.runner.runner.genderDivision === 'men'
+                          ? DNF_POINTS_MEN
+                          : DNF_POINTS_WOMEN,
+                        true
+                      )}
+                    </Text>
+                  </>
                 )
               ) : null}
             </HStack>

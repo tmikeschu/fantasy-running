@@ -141,6 +141,11 @@ export const getFantasyEventStats: QueryResolvers['getFantasyEventStats'] =
     }
   }
 
+// TODO move to fantasy event config
+const DNF_POINTS_MEN = 226
+const DNF_POINTS_WOMEN = 174
+const MAX_PICK = 5
+
 export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsReport'] =
   async ({ id }) => {
     const fantasyEvent = await db.fantasyEvent.findUnique({
@@ -203,7 +208,10 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
       select: {
         eventRunnerId: true,
         fantasyTeamId: true,
-        runner: { select: { runner: { select: { name: true } } } },
+        pickNumber: true,
+        runner: {
+          select: { runner: { select: { name: true, genderDivision: true } } },
+        },
       },
     })
 
@@ -216,10 +224,24 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
     }, {} as Record<string, typeof members>)
 
     return fantasyTeams.map((team) => {
-      const teamMembers = membersByTeam[team.id].map((m) => ({
-        name: m.runner.runner.name,
-        points: eventRunnerPointsById[m.eventRunnerId],
-      }))
+      const teamMembers = membersByTeam[team.id].map((m) => {
+        const points = (() => {
+          console.log(m.pickNumber, MAX_PICK)
+          if (m.pickNumber > MAX_PICK) return 0
+          if (eventRunnerPointsById[m.eventRunnerId])
+            return eventRunnerPointsById[m.eventRunnerId]
+
+          return m.runner.runner.genderDivision === 'men'
+            ? DNF_POINTS_MEN
+            : DNF_POINTS_WOMEN
+        })()
+
+        return {
+          name: m.runner.runner.name,
+          points,
+          genderDivision: m.runner.runner.genderDivision,
+        }
+      })
 
       const totalPoints = teamMembers.reduce(
         (acc, m) => acc + (m.points ?? 0),

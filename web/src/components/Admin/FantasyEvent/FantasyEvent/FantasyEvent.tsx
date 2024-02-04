@@ -9,41 +9,31 @@ import {
   List,
   Heading,
   VStack,
-  FormControl,
-  Checkbox,
   Card,
   CardHeader,
 } from '@chakra-ui/react'
 import pluralize from 'pluralize'
 import type { FindFantasyEvent } from 'types/graphql'
 
-const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
-  const [showDqed, setShowDqed] = React.useState(false)
+import { capitalize } from 'src/lib/formatters'
 
-  const shownTeams = teamsReport
-    .filter((team) => showDqed || !team.dqed)
-    .sort((a, b) => {
-      if (a.totalPoints < b.totalPoints) return -1
-      if (a.totalPoints > b.totalPoints) return 1
-      if (a.dnfCount < b.dnfCount) return -1
-      if (a.dnfCount > b.dnfCount) return 1
-      return 0
-    })
+// TODO move to fantasy event config
+const DNF_POINTS_MEN = 226
+const DNF_POINTS_WOMEN = 174
+
+const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
+  console.log({ teamsReport })
+  const shownTeams = teamsReport.slice().sort((a, b) => {
+    if (a.totalPoints < b.totalPoints) return -1
+    if (a.totalPoints > b.totalPoints) return 1
+    if (a.dnfCount < b.dnfCount) return -1
+    if (a.dnfCount > b.dnfCount) return 1
+    return 0
+  })
 
   return (
     <VStack alignItems="flex-start" spacing="8">
       <Heading>{fantasyEvent?.name || fantasyEvent?.event.name}</Heading>
-
-      <HStack>
-        <FormControl display="flex">
-          <Checkbox
-            checked={showDqed}
-            onChange={(e) => setShowDqed(e.target.checked)}
-          >
-            Show DQed
-          </Checkbox>
-        </FormControl>
-      </HStack>
 
       {shownTeams.length === 0 ? (
         <Card w="auto">
@@ -65,82 +55,83 @@ const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
                     <Text fontWeight="medium" color="gray.600">
                       {team.owner}
                     </Text>
-                    <Text
-                      variant="sm"
-                      fontWeight="bold"
-                      color={team.dqed ? 'red.500' : 'green.500'}
-                    >
-                      {team.totalPoints}{' '}
-                      {team.dqed
-                        ? ` (${pluralize('DNF', team.dnfCount, true)})`
-                        : ''}
+                    <Text fontWeight="bold" color="blue.500">
+                      {team.totalPoints}
                     </Text>
-                    {team.dqed ? (
-                      <Text
-                        fontSize="xs"
-                        fontWeight="bold"
-                        as="span"
-                        color="red.500"
-                        ml="1"
-                        textTransform="uppercase"
-                      >
-                        DQed
+                    {team.dnfCount ? (
+                      <Text fontSize="sm" fontWeight="bold" color="red.500">
+                        {pluralize('DNF', team.dnfCount, true)}
                       </Text>
                     ) : null}
                   </HStack>
                 </AccordionButton>
                 <AccordionPanel boxShadow="sm">
-                  <List>
-                    {team.teamMembers.map((teamMember) => (
-                      <ListItem key={teamMember.name}>
-                        <HStack>
-                          <Text
-                            fontWeight="bold"
-                            color="gray.700"
-                            noOfLines={1}
-                            maxW="full"
-                          >
-                            {teamMember.name}
-                          </Text>
-                          <Text fontSize="sm" color="gray.500">
-                            {teamMember.points ? `${teamMember.points}` : 'DNF'}
-                          </Text>
-                        </HStack>
-                      </ListItem>
-                    ))}
+                  <HStack fontSize="lg" color="blue.500">
+                    <Text fontWeight="bold" noOfLines={1} maxW="full">
+                      Total
+                    </Text>
+                    <Text fontWeight="bold">{team.totalPoints}</Text>
+                  </HStack>
+                  {Object.entries(
+                    team.teamMembers.reduce(
+                      (acc, el) => {
+                        if (!el.genderDivision) return acc
+                        acc[el.genderDivision].push(el)
+                        return acc
+                      },
+                      { women: [], men: [] } as Record<
+                        string,
+                        typeof team.teamMembers
+                      >
+                    )
+                  ).map(([division, teamMembers]) => (
+                    <VStack key={division} alignItems="flex-start" mt="4">
+                      <Heading as="h4" fontSize="lg">
+                        {capitalize(division)}
+                      </Heading>
 
-                    <ListItem>
-                      <HStack>
-                        <Text
-                          fontWeight="bold"
-                          color={team.dqed ? 'red.500' : 'green.500'}
-                          noOfLines={1}
-                          maxW="full"
-                        >
-                          Total
-                        </Text>
-                        <Text
-                          fontSize="sm"
-                          fontWeight="bold"
-                          color={team.dqed ? 'red.500' : 'green.500'}
-                        >
-                          {team.totalPoints}
-                        </Text>
-                        {team.dqed ? (
-                          <Text
-                            fontWeight="medium"
-                            fontSize="xs"
-                            as="span"
-                            color="red.500"
-                            ml="1"
-                            textTransform="uppercase"
-                          >
-                            DQed
-                          </Text>
-                        ) : null}
-                      </HStack>
-                    </ListItem>
-                  </List>
+                      <List>
+                        {teamMembers.map((teamMember) => (
+                          <ListItem key={teamMember.name}>
+                            <HStack>
+                              <Text
+                                fontWeight="bold"
+                                color="gray.700"
+                                noOfLines={1}
+                                maxW="full"
+                              >
+                                {teamMember.name}
+                              </Text>
+                              <Text fontSize="sm" color="gray.500">
+                                {teamMember.points
+                                  ? `${teamMember.points}`
+                                  : `DNF (${pluralize(
+                                      'point',
+                                      division === 'men'
+                                        ? DNF_POINTS_MEN
+                                        : DNF_POINTS_WOMEN,
+                                      true
+                                    )})`}
+                              </Text>
+                            </HStack>
+                          </ListItem>
+                        ))}
+
+                        <ListItem>
+                          <HStack color="blue.500" fontSize="sm">
+                            <Text fontWeight="bold" noOfLines={1} maxW="full">
+                              Total
+                            </Text>
+                            <Text fontSize="sm" fontWeight="bold">
+                              {teamMembers
+                                .map((tm) => tm.points)
+                                .reduce((a, b) => (a ?? 0) + (b ?? 0), 0)}
+                            </Text>
+                          </HStack>
+                        </ListItem>
+                      </List>
+                    </VStack>
+                  ))}
                 </AccordionPanel>
               </AccordionItem>
             ))}

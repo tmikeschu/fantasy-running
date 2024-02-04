@@ -38,6 +38,7 @@ export const schema = gql`
   type FantasyEventTeamsReportTeamMember {
     name: String
     points: Int
+    genderDivision: String
   }
 
   type FantasyEventTeamsReport {

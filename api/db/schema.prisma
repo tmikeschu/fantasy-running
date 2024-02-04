@@ -47,11 +47,24 @@ model FantasyEvent {
   description String?
   status      FantasyEventStatus  @default(PENDING)
   prizes      FantasyEventPrize[]
+  config      FantasyEventConfig?
 
   fantasyTeams FantasyTeam[]
   rules        FantasyTeamRule[]
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+}
+
+model FantasyEventConfig {
+  id             String       @id @default(cuid())
+  teamCount      Int?
+  teamSize       Int?
+  dnfPoints      Int?
+  topNPoints     Int?
+  fantasyEventId String       @unique
+  fantasyEvent   FantasyEvent @relation(fields: [fantasyEventId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model FantasyEventPrize {
