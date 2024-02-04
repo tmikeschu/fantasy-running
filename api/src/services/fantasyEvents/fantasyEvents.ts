@@ -170,29 +170,10 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
       orderBy: { time: 'asc' },
     })
 
-    const mensPoints = results
-      .filter((r) => r.eventRunner.runner.genderDivision === 'men')
-      .map((r) => ({
-        id: r.eventRunnerId,
-        name: r.eventRunner.runner.name,
-        points: r.points,
-      }))
-
-    const womensPoints = results
-      .filter((r) => r.eventRunner.runner.genderDivision === 'women')
-      .map((r) => ({
-        id: r.eventRunnerId,
-        name: r.eventRunner.runner.name,
-        points: r.points,
-      }))
-
-    const eventRunnerPointsById = [...mensPoints, ...womensPoints].reduce(
-      (acc, r) => {
-        acc[r.id] = r.points
-        return acc
-      },
-      {} as Record<string, number>
-    )
+    const pointsByEventRunnerId = results.reduce((acc, r) => {
+      acc[r.eventRunnerId] = r.points
+      return acc
+    }, {} as Record<string, number>)
 
     const fantasyTeams = await db.fantasyTeam.findMany({
       where: { fantasyEvent: { eventId } },
@@ -226,10 +207,8 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
     return fantasyTeams.map((team) => {
       const teamMembers = membersByTeam[team.id].map((m) => {
         const points = (() => {
-          console.log(m.pickNumber, MAX_PICK)
-          if (m.pickNumber > MAX_PICK) return 0
-          if (eventRunnerPointsById[m.eventRunnerId])
-            return eventRunnerPointsById[m.eventRunnerId]
+          if (pointsByEventRunnerId[m.eventRunnerId])
+            return pointsByEventRunnerId[m.eventRunnerId]
 
           return m.runner.runner.genderDivision === 'men'
             ? DNF_POINTS_MEN
@@ -240,14 +219,19 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
           name: m.runner.runner.name,
           points,
           genderDivision: m.runner.runner.genderDivision,
+          pickNumber: m.pickNumber,
         }
       })
 
-      const totalPoints = teamMembers.reduce(
-        (acc, m) => acc + (m.points ?? 0),
-        0
+      const totalPoints = teamMembers
+        .filter((m) => m.pickNumber <= MAX_PICK)
+        .reduce((acc, m) => acc + m.points, 0)
+
+      const dqed = teamMembers.some((m) =>
+        m.genderDivision === 'men'
+          ? m.points === DNF_POINTS_MEN
+          : m.points === DNF_POINTS_WOMEN
       )
-      const dqed = teamMembers.some((m) => !m.points)
 
       return {
         teamMembers,
