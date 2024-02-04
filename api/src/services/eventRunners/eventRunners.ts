@@ -49,4 +49,9 @@ export const EventRunner: EventRunnerRelationResolvers = {
   runner: (_obj, { root }) => {
     return db.eventRunner.findUnique({ where: { id: root?.id } }).runner()
   },
+  result: (_obj, { root }) => {
+    return db.eventRunnerResult.findUnique({
+      where: { eventRunnerId: root?.id },
+    })
+  },
 }

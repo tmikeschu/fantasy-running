@@ -37,8 +37,13 @@ export const QUERY = gql`
       teamMembers {
         id
         pickNumber
+
         runner {
           seed
+
+          result {
+            time
+          }
 
           runner {
             name
@@ -100,6 +105,7 @@ export const Success = ({ fantasyTeams }: CellSuccessProps<MyTeamsQuery>) => {
                       <TeamMembers
                         genderDivision={genderDivision}
                         teamMembers={teamMembers}
+                        eventStatus={fantasyTeam.fantasyEvent.status}
                       />
                     </WrapItem>
                   ))}

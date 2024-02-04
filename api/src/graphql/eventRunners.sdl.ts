@@ -10,6 +10,7 @@ export const schema = gql`
     updatedAt: DateTime!
     seedNotes: String
     fantasyTeams: [FantasyTeamMember!]!
+    result: EventRunnerResult
   }
 
   type Query {
