@@ -17,6 +17,7 @@ import {
   Checkbox,
 } from '@chakra-ui/react'
 import pluralize from 'pluralize'
+import { match } from 'ts-pattern'
 import type { FindFantasyEvent } from 'types/graphql'
 
 import { capitalize } from 'src/lib/formatters'
@@ -138,16 +139,25 @@ const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
                                 {teamMember.name}
                               </Text>
                               <Text fontSize="sm" color="gray.500">
-                                {teamMember.points
-                                  ? `${teamMember.points}`
-                                  : `DNF (${pluralize(
-                                      'point',
-                                      division === 'men'
-                                        ? DNF_POINTS_MEN
-                                        : DNF_POINTS_WOMEN,
-                                      true
-                                    )})`}
+                                {teamMember.points}
                               </Text>
+                              {match(teamMember)
+                                .with(
+                                  {
+                                    genderDivision: 'women',
+                                    points: DNF_POINTS_WOMEN,
+                                  },
+                                  {
+                                    genderDivision: 'men',
+                                    points: DNF_POINTS_MEN,
+                                  },
+                                  () => (
+                                    <Text fontSize="xs" color="red.400">
+                                      DNF
+                                    </Text>
+                                  )
+                                )
+                                .otherwise(() => null)}
                             </HStack>
                           </ListItem>
                         ))}
