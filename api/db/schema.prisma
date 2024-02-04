@@ -156,7 +156,7 @@ model EventRunnerResult {
   eventRunnerId String      @unique
   eventRunner   EventRunner @relation(fields: [eventRunnerId], references: [id])
   time          String
-  points        Int?
+  points        Int
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

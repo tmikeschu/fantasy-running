@@ -167,18 +167,18 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
 
     const mensPoints = results
       .filter((r) => r.eventRunner.runner.genderDivision === 'men')
-      .map((r, i) => ({
+      .map((r) => ({
         id: r.eventRunnerId,
         name: r.eventRunner.runner.name,
-        points: r.points ?? i + 1,
+        points: r.points,
       }))
 
     const womensPoints = results
       .filter((r) => r.eventRunner.runner.genderDivision === 'women')
-      .map((r, i) => ({
+      .map((r) => ({
         id: r.eventRunnerId,
         name: r.eventRunner.runner.name,
-        points: r.points ?? i + 1,
+        points: r.points,
       }))
 
     const eventRunnerPointsById = [...mensPoints, ...womensPoints].reduce(
