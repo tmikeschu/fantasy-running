@@ -35,10 +35,26 @@ export const schema = gql`
     timeUntilEventStart: Int!
   }
 
+  type FantasyEventTeamsReportTeamMember {
+    name: String
+    points: Int
+  }
+
+  type FantasyEventTeamsReport {
+    id: String!
+    owner: String!
+    name: String
+    teamMembers: [FantasyEventTeamsReportTeamMember!]!
+    totalPoints: Int!
+    dqed: Boolean!
+  }
+
   type Query {
     fantasyEvents: [FantasyEvent!]! @requireAuth
     fantasyEvent(id: String!): FantasyEvent @requireAuth
     getFantasyEventStats(id: String!): FantasyEventStats! @requireAuth
+    getFantasyEventTeamsReport(id: String!): [FantasyEventTeamsReport!]!
+      @requireAuth
   }
 
   input CreateFantasyEventInput {

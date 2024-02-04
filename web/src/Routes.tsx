@@ -40,6 +40,7 @@ const Routes = () => {
         <Route path="/admin/fantasy-events" page={AdminFantasyEventFantasyEventsPage} name="adminFantasyEvents" />
         <Route path="/admin/fantasy-events/new" page={AdminFantasyEventNewFantasyEventPage} name="newFantasyEvent" />
         <Route path="/admin/fantasy-events/{id}/edit" page={AdminFantasyEventEditFantasyEventPage} name="editFantasyEvent" />
+        <Route path="/admin/fantasy-events/{id}" page={AdminFantasyEventFantasyEventPage} name="adminFantasyEvent" />
 
         <Route path="/admin/fantasy-team-rules" page={AdminFantasyTeamRuleFantasyTeamRulesPage} name="fantasyTeamRules" />
         <Route path="/admin/fantasy-team-rules/new" page={AdminFantasyTeamRuleNewFantasyTeamRulePage} name="newFantasyTeamRule" />

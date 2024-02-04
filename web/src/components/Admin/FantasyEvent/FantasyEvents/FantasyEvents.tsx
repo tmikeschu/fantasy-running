@@ -84,6 +84,9 @@ const FantasyEventsList = ({ fantasyEvents }: FindFantasyEvents) => {
                   <AdminTableCrudAction.Edit
                     to={routes.editFantasyEvent({ id: fantasyEvent.id })}
                   />
+                  <AdminTableCrudAction.Show
+                    to={routes.adminFantasyEvent({ id: fantasyEvent.id })}
+                  />
                   <AdminTableCrudAction.Delete
                     onClick={() => onDeleteClick(fantasyEvent.id)}
                   />

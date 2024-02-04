@@ -141,6 +141,102 @@ export const getFantasyEventStats: QueryResolvers['getFantasyEventStats'] =
     }
   }
 
+export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsReport'] =
+  async ({ id }) => {
+    const fantasyEvent = await db.fantasyEvent.findUnique({
+      where: { id },
+      select: {
+        event: { select: { id: true } },
+      },
+    })
+    const eventId = fantasyEvent.event.id
+
+    const results = await db.eventRunnerResult.findMany({
+      where: { eventRunner: { eventId } },
+      select: {
+        eventRunnerId: true,
+        eventRunner: {
+          select: {
+            runner: { select: { name: true, genderDivision: true } },
+          },
+        },
+      },
+      orderBy: { time: 'asc' },
+    })
+
+    const mensPoints = results
+      .filter((r) => r.eventRunner.runner.genderDivision === 'men')
+      .map((r, i) => ({
+        id: r.eventRunnerId,
+        name: r.eventRunner.runner.name,
+        points: i + 1,
+      }))
+
+    const womensPoints = results
+      .filter((r) => r.eventRunner.runner.genderDivision === 'women')
+      .map((r, i) => ({
+        id: r.eventRunnerId,
+        name: r.eventRunner.runner.name,
+        points: i + 1,
+      }))
+
+    const eventRunnerPointsById = [...mensPoints, ...womensPoints].reduce(
+      (acc, r) => {
+        acc[r.id] = r.points
+        return acc
+      },
+      {} as Record<string, number>
+    )
+
+    const fantasyTeams = await db.fantasyTeam.findMany({
+      where: { fantasyEvent: { eventId } },
+      select: {
+        id: true,
+        name: true,
+        owner: { select: { email: true } },
+      },
+    })
+
+    const members = await db.fantasyTeamMember.findMany({
+      where: { fantasyTeam: { fantasyEvent: { eventId } } },
+      select: {
+        eventRunnerId: true,
+        fantasyTeamId: true,
+        runner: { select: { runner: { select: { name: true } } } },
+      },
+    })
+
+    const membersByTeam = members.reduce((acc, member) => {
+      if (!acc[member.fantasyTeamId]) {
+        acc[member.fantasyTeamId] = []
+      }
+      acc[member.fantasyTeamId].push(member)
+      return acc
+    }, {} as Record<string, typeof members>)
+
+    return fantasyTeams.map((team) => {
+      const teamMembers = membersByTeam[team.id].map((m) => ({
+        name: m.runner.runner.name,
+        points: eventRunnerPointsById[m.eventRunnerId],
+      }))
+
+      const totalPoints = teamMembers.reduce(
+        (acc, m) => acc + (m.points ?? 0),
+        0
+      )
+      const dqed = teamMembers.some((m) => !m.points)
+
+      return {
+        teamMembers,
+        id: team.id,
+        owner: team.owner.email,
+        name: team.name,
+        dqed,
+        totalPoints,
+      }
+    })
+  }
+
 export const fantasyEvent: QueryResolvers['fantasyEvent'] = ({ id }) => {
   return db.fantasyEvent.findUnique({
     where: { id },
