@@ -42,6 +42,7 @@ export const QUERY = gql`
           seed
 
           result {
+            points
             time
           }
 

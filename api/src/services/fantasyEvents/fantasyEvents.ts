@@ -155,6 +155,7 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
       where: { eventRunner: { eventId } },
       select: {
         eventRunnerId: true,
+        points: true,
         eventRunner: {
           select: {
             runner: { select: { name: true, genderDivision: true } },
@@ -169,7 +170,7 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
       .map((r, i) => ({
         id: r.eventRunnerId,
         name: r.eventRunner.runner.name,
-        points: i + 1,
+        points: r.points ?? i + 1,
       }))
 
     const womensPoints = results
@@ -177,7 +178,7 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
       .map((r, i) => ({
         id: r.eventRunnerId,
         name: r.eventRunner.runner.name,
-        points: i + 1,
+        points: r.points ?? i + 1,
       }))
 
     const eventRunnerPointsById = [...mensPoints, ...womensPoints].reduce(

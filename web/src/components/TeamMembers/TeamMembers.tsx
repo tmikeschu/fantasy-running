@@ -1,4 +1,5 @@
 import { HStack, Heading, List, ListItem, VStack, Text } from '@chakra-ui/react'
+import pluralize from 'pluralize'
 import { FantasyEventStatus, MyTeamsQuery } from 'types/graphql'
 
 import { capitalize } from 'src/lib/formatters'
@@ -30,9 +31,14 @@ const TeamMembers = ({
               </Text>
               {eventStatus === 'COMPLETE' ? (
                 tm.runner.result ? (
-                  <Text color="green.500" fontWeight="bold">
-                    {tm.runner.result.time}
-                  </Text>
+                  <>
+                    <Text color="green.500" fontWeight="bold">
+                      {tm.runner.result.time}
+                    </Text>
+                    <Text fontSize="sm" color="gray.700" fontWeight="bold">
+                      {pluralize('point', tm.runner.result.points, true)}
+                    </Text>
+                  </>
                 ) : (
                   <Text color="red.500" fontWeight="bold">
                     DNF

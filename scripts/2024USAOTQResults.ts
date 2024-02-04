@@ -270,7 +270,7 @@ export const results = {
     ['Kevin Colon', '02:45:10'],
     ['Matt Rand', '02:50:35'],
   ],
-} as const
+}
 
 // const missing = [
 //   'Caroline Rotich', // <- couldn't find qualifying (not in original roster)

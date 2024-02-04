@@ -3,6 +3,7 @@ export const schema = gql`
     id: String!
     eventRunnerId: String!
     time: String!
+    points: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
     eventRunner: EventRunner!
