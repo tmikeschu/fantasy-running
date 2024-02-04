@@ -11,7 +11,6 @@ import {
   VStack,
   FormControl,
   Checkbox,
-  FormLabel,
   Card,
   CardHeader,
 } from '@chakra-ui/react'
