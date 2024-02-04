@@ -123,6 +123,10 @@ export const Success = ({
           <CardBody>
             <Stat>
               <StatNumber>🏁 That&apos;s a wrap! 🏁</StatNumber>
+              <StatHelpText>
+                We are figuring out the scores and will notify winners via
+                email.
+              </StatHelpText>
             </Stat>
           </CardBody>
         </Card>
