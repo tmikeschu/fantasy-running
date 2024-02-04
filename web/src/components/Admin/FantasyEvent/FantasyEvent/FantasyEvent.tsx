@@ -22,7 +22,13 @@ const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
 
   const shownTeams = teamsReport
     .filter((team) => showDqed || !team.dqed)
-    .sort((a, b) => a.totalPoints - b.totalPoints)
+    .sort((a, b) => {
+      if (a.totalPoints < b.totalPoints) return -1
+      if (a.totalPoints > b.totalPoints) return 1
+      if (a.dnfCount < b.dnfCount) return -1
+      if (a.dnfCount > b.dnfCount) return 1
+      return 0
+    })
 
   return (
     <VStack alignItems="flex-start" spacing="8">
@@ -64,7 +70,10 @@ const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
                       fontWeight="bold"
                       color={team.dqed ? 'red.500' : 'green.500'}
                     >
-                      {team.totalPoints}
+                      {team.totalPoints}{' '}
+                      {team.dqed
+                        ? ` (${pluralize('DNF', team.dnfCount, true)})`
+                        : ''}
                     </Text>
                     {team.dqed ? (
                       <Text

@@ -25,6 +25,7 @@ export const QUERY = gql`
       owner
       dqed
       totalPoints
+      dnfCount
 
       teamMembers {
         name

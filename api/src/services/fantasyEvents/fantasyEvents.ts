@@ -233,6 +233,7 @@ export const getFantasyEventTeamsReport: QueryResolvers['getFantasyEventTeamsRep
         name: team.name,
         dqed,
         totalPoints,
+        dnfCount: teamMembers.filter((m) => !m.points).length,
       }
     })
   }

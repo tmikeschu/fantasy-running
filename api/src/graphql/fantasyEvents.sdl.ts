@@ -47,6 +47,7 @@ export const schema = gql`
     teamMembers: [FantasyEventTeamsReportTeamMember!]!
     totalPoints: Int!
     dqed: Boolean!
+    dnfCount: Int!
   }
 
   type Query {
