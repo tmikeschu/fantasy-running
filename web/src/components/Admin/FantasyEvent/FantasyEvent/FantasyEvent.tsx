@@ -12,6 +12,8 @@ import {
   FormControl,
   Checkbox,
   FormLabel,
+  Card,
+  CardHeader,
 } from '@chakra-ui/react'
 import type { FindFantasyEvent } from 'types/graphql'
 
@@ -20,35 +22,50 @@ const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
 
   const shownTeams = teamsReport
     .filter((team) => showDqed || !team.dqed)
-    .sort((a, b) => b.totalPoints - a.totalPoints)
+    .sort((a, b) => a.totalPoints - b.totalPoints)
 
   return (
     <VStack alignItems="flex-start" spacing="8">
       <Heading>{fantasyEvent?.name || fantasyEvent?.event.name}</Heading>
+
       <HStack>
-        <FormControl>
-          <FormLabel>Show DQed</FormLabel>
+        <FormControl display="flex">
           <Checkbox
             checked={showDqed}
             onChange={(e) => setShowDqed(e.target.checked)}
-          />
+          >
+            Show DQed
+          </Checkbox>
         </FormControl>
       </HStack>
 
-      <Accordion allowMultiple allowToggle w="full">
-        {shownTeams.map((team) => (
-          <AccordionItem key={team.id}>
-            <AccordionButton>
-              <HStack>
-                <Text color="gray.500">{team.name || '(unnamed)'}</Text>
-                <Text fontWeight="medium" color="gray.600">
-                  {team.owner}
-                </Text>
-                <Text variant="sm" fontWeight="bold">
-                  {team.totalPoints}
+      {shownTeams.length === 0 ? (
+        <Card w="auto">
+          <CardHeader>
+            <Heading fontSize="lg">No teams to display 😬</Heading>
+          </CardHeader>
+        </Card>
+      ) : (
+        <Accordion allowMultiple allowToggle w="full">
+          {shownTeams.map((team) => (
+            <AccordionItem key={team.id}>
+              <AccordionButton>
+                <HStack>
+                  <Text color="gray.500">{team.name || '(unnamed)'}</Text>
+                  <Text fontWeight="medium" color="gray.600">
+                    {team.owner}
+                  </Text>
+                  <Text
+                    variant="sm"
+                    fontWeight="bold"
+                    color={team.dqed ? 'red.500' : 'green.500'}
+                  >
+                    {team.totalPoints}
+                  </Text>
                   {team.dqed ? (
                     <Text
                       fontSize="xs"
+                      fontWeight="bold"
                       as="span"
                       color="red.500"
                       ml="1"
@@ -56,53 +73,66 @@ const FantasyEventList = ({ fantasyEvent, teamsReport }: FindFantasyEvent) => {
                     >
                       DQed
                     </Text>
-                  ) : (
-                    ''
-                  )}
-                </Text>
-              </HStack>
-            </AccordionButton>
-            <AccordionPanel boxShadow="sm">
-              <List>
-                {team.teamMembers.map((teamMember) => (
-                  <ListItem key={teamMember.name}>
+                  ) : null}
+                </HStack>
+              </AccordionButton>
+              <AccordionPanel boxShadow="sm">
+                <List>
+                  {team.teamMembers.map((teamMember) => (
+                    <ListItem key={teamMember.name}>
+                      <HStack>
+                        <Text
+                          fontWeight="bold"
+                          color="gray.700"
+                          noOfLines={1}
+                          maxW="full"
+                        >
+                          {teamMember.name}
+                        </Text>
+                        <Text fontSize="sm" color="gray.500">
+                          {teamMember.points ? `${teamMember.points}` : 'DNF'}
+                        </Text>
+                      </HStack>
+                    </ListItem>
+                  ))}
+
+                  <ListItem>
                     <HStack>
                       <Text
                         fontWeight="bold"
-                        color="gray.700"
+                        color={team.dqed ? 'red.500' : 'green.500'}
                         noOfLines={1}
                         maxW="full"
                       >
-                        {teamMember.name}
+                        Total
                       </Text>
-                      <Text fontSize="sm" color="gray.500">
-                        {teamMember.points ? `${teamMember.points}` : 'DNF'}
+                      <Text
+                        fontSize="sm"
+                        fontWeight="bold"
+                        color={team.dqed ? 'red.500' : 'green.500'}
+                      >
+                        {team.totalPoints}
                       </Text>
+                      {team.dqed ? (
+                        <Text
+                          fontWeight="medium"
+                          fontSize="xs"
+                          as="span"
+                          color="red.500"
+                          ml="1"
+                          textTransform="uppercase"
+                        >
+                          DQed
+                        </Text>
+                      ) : null}
                     </HStack>
                   </ListItem>
-                ))}
-
-                <ListItem>
-                  <HStack>
-                    <Text
-                      fontWeight="bold"
-                      color="gray.700"
-                      noOfLines={1}
-                      maxW="full"
-                    >
-                      Total
-                    </Text>
-                    <Text fontSize="sm" fontWeight="bold" color="gray.500">
-                      {team.totalPoints}
-                      {team.dqed ? ' (DQed)' : ''}
-                    </Text>
-                  </HStack>
-                </ListItem>
-              </List>
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
+                </List>
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
     </VStack>
   )
 }
