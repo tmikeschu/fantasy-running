@@ -102,6 +102,7 @@ model EventRunner {
   seedNotes String?
 
   fantasyTeams FantasyTeamMember[]
+  result       EventRunnerResult?
 
   @@unique([eventId, runnerId])
 }
@@ -148,4 +149,13 @@ model FantasyTeamMember {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   pickNumber    Int
+}
+
+model EventRunnerResult {
+  id            String      @id @default(cuid())
+  eventRunnerId String      @unique
+  eventRunner   EventRunner @relation(fields: [eventRunnerId], references: [id])
+  time          String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
