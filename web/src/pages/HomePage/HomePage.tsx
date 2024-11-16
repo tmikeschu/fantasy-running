@@ -15,7 +15,7 @@ const HomePage = () => {
           mx="auto"
           px={{ base: '6', md: '8' }}
         >
-          <Box textAlign="center">
+          <Box textAlign="center" mb="4">
             <Heading
               as="h1"
               size="3xl"
