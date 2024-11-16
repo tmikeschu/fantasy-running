@@ -1,24 +1,10 @@
-import {
-  Button,
-  Heading,
-  Image,
-  Box,
-  Stack,
-  Text,
-  ButtonGroup,
-  LightMode,
-} from '@chakra-ui/react'
+import { Heading, Image, Box, Text } from '@chakra-ui/react'
 
-import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
-
-import { useAuth } from 'src/auth'
 
 import img from './runners.jpg'
 
 const HomePage = () => {
-  const { isAuthenticated, loading, logIn } = useAuth()
-
   return (
     <>
       <MetaTags title="Home" description="Home page" />
@@ -45,38 +31,6 @@ const HomePage = () => {
               Every second counts
             </Text>
           </Box>
-
-          <Stack
-            justify="center"
-            direction={{ base: 'column', md: 'row' }}
-            mt="10"
-            mb="20"
-            spacing="4"
-          >
-            <LightMode>
-              <ButtonGroup
-                justifyContent="center"
-                size={{ base: 'md', md: 'lg' }}
-                variant="solid"
-              >
-                {isAuthenticated ? (
-                  <>
-                    <Button
-                      as={Link}
-                      to={routes.fantasyEvents()}
-                      isLoading={loading}
-                    >
-                      Dashboard
-                    </Button>
-                  </>
-                ) : (
-                  <Button onClick={() => logIn()} isLoading={loading}>
-                    log in
-                  </Button>
-                )}
-              </ButtonGroup>
-            </LightMode>
-          </Stack>
 
           <Box
             className="group"
